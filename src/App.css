@@ -1,0 +1,77 @@
+/* Contenedor principal: ocupa todo el alto de cualquier pantalla */
+.main-container {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: radial-gradient(circle, #ffffff 0%, #dfe6e9 100%);
+  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  text-align: center;
+  padding: env(safe-area-inset-top) 20px env(safe-area-inset-bottom) 20px;
+}
+
+header h1 {
+  font-size: clamp(2rem, 8vw, 4rem); /* Tamaño fluido: se ajusta solo */
+  color: #2d3436;
+  margin-bottom: 0.5rem;
+}
+
+header p {
+  font-size: clamp(1rem, 3vw, 1.5rem);
+  color: #636e72;
+  margin-bottom: 3rem;
+  max-width: 80%
+}
+
+/* El contenedor de burbujas se adapta al ancho disponible */
+.bubble-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: clamp(20px, 5vw, 50px);
+  width: 100%;
+  max-width: 1200px;
+}
+
+/* Estilo de la burbuja: usamos 'vmin' para que sea proporcional a la pantalla */
+.bubble {
+  width: clamp(140px, 25vmin, 220px);
+  height: clamp(140px, 25vmin, 220px);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  color: white;
+  font-weight: bold;
+  font-size: clamp(0.9rem, 2vmin, 1.3rem);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  animation: float 5s ease-in-out infinite;
+  padding: 15px;
+}
+
+/* Efecto Hover para PC y Foco para TV/Teclado */
+.bubble:hover, .bubble:focus {
+  transform: scale(1.15) translateY(-10px);
+  box-shadow: 0 20px 40px rgba(0,0,0,0.25);
+  outline: none;
+  filter: brightness(1.1);
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-20px); }
+}
+
+/* Ajustes específicos para móviles muy pequeños */
+@media (max-width: 480px) {
+  .bubble-container {
+    gap: 20px;
+  }
+  header h1 {
+    margin-top: 20px;
+  }
+}
