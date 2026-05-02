@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mixed Conditionals | C1 Mastery Lab</title>
+    <style>
+        :root {
+            --primary: #2c3e50;
+            --accent: #d35400; /* Un naranja elegante para los condicionales */
+            --bg: #fdfcf0; /* Un tono crema papel antiguo */
+            --card: #ffffff;
+            --text: #34495e;
+        }
+
+        body {
+            font-family: 'Georgia', serif; /* Un toque más clásico y académico */
+            background-color: var(--bg);
+            color: var(--text);
+            line-height: 1.8;
+            margin: 0;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 850px;
+            margin: 0 auto;
+            background: var(--card);
+            padding: 50px;
+            border-radius: 2px; /* Estilo papel */
+            box-shadow: 20px 20px 0px #e1e1d1;
+            border: 1px solid #dcdcdc;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-bottom: 30px;
+            text-decoration: none;
+            color: var(--primary);
+            font-weight: bold;
+            font-family: sans-serif;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        h1 {
+            font-size: 3rem;
+            color: var(--primary);
+            margin-bottom: 10px;
+            text-align: center;
+            border-bottom: 2px solid var(--accent);
+            padding-bottom: 15px;
+        }
+
+        .intro {
+            text-align: center;
+            font-style: italic;
+            font-size: 1.2rem;
+            margin-bottom: 50px;
+            color: #7f8c8d;
+        }
+
+        .theory-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 50px;
+        }
+
+        .theory-card {
+            background: #f9f9f9;
+            padding: 25px;
+            border: 1px solid #eee;
+        }
+
+        .theory-card h3 {
+            margin-top: 0;
+            color: var(--accent);
+            font-family: sans-serif;
+        }
+
+        .formula {
+            background: #fff;
+            padding: 10px;
+            display: block;
+            margin: 15px 0;
+            font-family: 'Courier New', Courier, monospace;
+            font-weight: bold;
+            border-left: 3px solid var(--accent);
+        }
+
+        .practice-zone {
+            border-top: 1px solid #eee;
+            padding-top: 40px;
+        }
+
+        .scenario {
+            background: #fffcf0;
+            padding: 20px;
+            margin-bottom: 30px;
+            border-radius: 8px;
+        }
+
+        .scenario p { margin: 0 0 15px 0; font-weight: bold; }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ccc;
+            background: transparent;
+            font-size: 1.1rem;
+            font-family: inherit;
+            border-bottom: 2px solid var(--primary);
+            border-top: none; border-left: none; border-right: none;
+        }
+
+        .feedback {
+            margin-top: 10px;
+            font-weight: bold;
+            font-family: sans-serif;
+            font-size: 0.85rem;
+            display: none;
+        }
+
+        .correct { color: #27ae60; }
+        .wrong { color: #c0392b; }
+
+        .btn-verify {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            font-size: 1rem;
+            cursor: pointer;
+            margin: 40px auto;
+            display: block;
+            transition: 0.3s;
+            font-family: sans-serif;
+            font-weight: bold;
+            letter-spacing: 2px;
+        }
+
+        .btn-verify:hover {
+            background: var(--accent);
+            transform: translateY(-3px);
+        }
+
+        @media (max-width: 600px) {
+            .theory-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <a href="./index.html" class="back-link">← Return to Hub</a>
+    
+    <h1>Mixed Conditionals</h1>
+    <p class="intro">"The art of connecting the past to the present (and vice versa)."</p>
+
+    <div class="theory-grid">
+        <div class="theory-card">
+            <h3>Type A: Past Cause → Present Result</h3>
+            <p>You did (or didn't) something in the past, and it affects your current state.</p>
+            <span class="formula">If + Past Perfect, WOULD + Base Form</span>
+            <p><em>Example: If I had studied medicine, I would be a doctor now.</em></p>
+        </div>
+        <div class="theory-card">
+            <h3>Type B: Present Cause → Past Result</h3>
+            <p>Something about your general character or situation affected a past event.</p>
+            <span class="formula">If + Past Simple, WOULD HAVE + Past Participle</span>
+            <p><em>Example: If I weren't so shy, I would have invited her to the party last night.</em></p>
+        </div>
+    </div>
+
+    <div class="practice-zone">
+        <h2 style="text-align: center; font-family: sans-serif;">Hypothetical Scenarios</h2>
+        <p style="text-align: center; margin-bottom: 40px;">Rewrite the following situations using Mixed Conditionals.</p>
+
+        <div class="scenario">
+            <p>1. Situation: I didn't take your advice yesterday. Now I am in a lot of trouble.</p>
+            <input type="text" placeholder="If I..." data-answer="If I had taken your advice yesterday, I wouldn't be in a lot of trouble now">
+            <div class="feedback"></div>
+        </div>
+
+        <div class="scenario">
+            <p>2. Situation: Mark is not very talented. That's why he didn't get the job at the orchestra.</p>
+            <input type="text" placeholder="If Mark..." data-answer="If Mark were more talented, he would have got the job at the orchestra">
+            <div class="feedback"></div>
+        </div>
+
+        <div class="scenario">
+            <p>3. Situation: I spent all my money last week. I can't go to the cinema with you today.</p>
+            <input type="text" placeholder="If I..." data-answer="If I hadn't spent all my money last week, I would be able to go to the cinema with you today">
+            <div class="feedback"></div>
+        </div>
+
+        <button class="btn-verify" onclick="check()">Verify Logic</button>
+    </div>
+</div>
+
+<script>
+    function check() {
+        const inputs = document.querySelectorAll('input');
+        inputs.forEach(input => {
+            const user = input.value.trim().toLowerCase().replace(/[.,!]/g,"");
+            const correct = input.getAttribute('data-answer').toLowerCase().replace(/[.,!]/g,"");
+            const feedback = input.nextElementSibling;
+
+            feedback.style.display = 'block';
+            if (user === correct || user.includes(correct.substring(0, 15))) { // Tolerancia parcial para variaciones
+                feedback.innerHTML = "✓ Elegant logic! Well done.";
+                feedback.className = "feedback correct";
+            } else {
+                feedback.innerHTML = "× Logic flaw. Correct structure: " + input.getAttribute('data-answer');
+                feedback.className = "feedback wrong";
+            }
+        });
+    }
+</script>
+
+</body>
+</html>

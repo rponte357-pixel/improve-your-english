@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modal Deduction | C1 Mystery Lab</title>
+    <style>
+        :root {
+            --primary: #1a1a1a;
+            --accent: #c0392b;
+            --bg: #f2f2f2;
+            --paper: #ffffff;
+            --ink: #2c3e50;
+        }
+
+        body {
+            font-family: 'Courier New', Courier, monospace;
+            background-color: var(--bg);
+            color: var(--ink);
+            line-height: 1.6;
+            padding: 40px 20px;
+        }
+
+        .case-file {
+            max-width: 800px;
+            margin: 0 auto;
+            background: var(--paper);
+            padding: 50px;
+            box-shadow: 5px 5px 15px rgba(0,0,0,0.1);
+            border: 1px solid #ddd;
+            position: relative;
+        }
+
+        /* Estilo de sello de "Top Secret" */
+        .stamp {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            border: 4px solid var(--accent);
+            color: var(--accent);
+            padding: 5px 10px;
+            font-weight: bold;
+            transform: rotate(15deg);
+            text-transform: uppercase;
+            opacity: 0.7;
+        }
+
+        h1 {
+            text-align: center;
+            text-transform: uppercase;
+            border-bottom: 2px solid var(--primary);
+            padding-bottom: 10px;
+        }
+
+        .back-link {
+            text-decoration: none;
+            color: var(--accent);
+            font-weight: bold;
+            display: inline-block;
+            margin-bottom: 20px;
+        }
+
+        .theory-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 30px 0;
+        }
+
+        .theory-table th, .theory-table td {
+            border: 1px solid #ccc;
+            padding: 12px;
+            text-align: left;
+        }
+
+        .theory-table th { background: #f9f9f9; }
+
+        .evidence-room {
+            background: #fdfdfd;
+            border: 1px dashed #aaa;
+            padding: 20px;
+            margin-top: 40px;
+        }
+
+        .clue {
+            margin-bottom: 25px;
+            padding: 15px;
+            background: #fff;
+            border-left: 5px solid var(--primary);
+        }
+
+        input[type="text"] {
+            width: 95%;
+            padding: 10px;
+            border: 1px solid #999;
+            background: #fcfcfc;
+            font-family: inherit;
+            margin-top: 10px;
+        }
+
+        .btn-solve {
+            display: block;
+            width: 200px;
+            margin: 30px auto;
+            padding: 15px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-family: inherit;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        .btn-solve:hover { background: var(--accent); }
+
+        .feedback {
+            display: none;
+            margin-top: 10px;
+            font-weight: bold;
+        }
+
+        .correct { color: #27ae60; }
+        .wrong { color: #c0392b; }
+    </style>
+</head>
+<body>
+
+<div class="case-file">
+    <div class="stamp">C1 Classified</div>
+    <a href="./index.html" class="back-link">← Return to Headquarters</a>
+    
+    <h1>Case: Modal Deduction</h1>
+    <p style="text-align:center"><em>Analyzing the past and present with certainty and doubt.</em></p>
+
+    <table class="theory-table">
+        <tr>
+            <th>Certainty</th>
+            <th>Modals (Present)</th>
+            <th>Modals (Past)</th>
+        </tr>
+        <tr>
+            <td>100% Yes</td>
+            <td>Must be</td>
+            <td>Must have been</td>
+        </tr>
+        <tr>
+            <td>50% Maybe</td>
+            <td>Might / Could be</td>
+            <td>Might / Could have been</td>
+        </tr>
+        <tr>
+            <td>100% No</td>
+            <td>Can't be</td>
+            <td>Can't / Couldn't have been</td>
+        </tr>
+    </table>
+
+    <div class="evidence-room">
+        <h2>Evidence Room: Solve the Mysteries</h2>
+        <p>Use the clues to write a logical deduction.</p>
+
+        <div class="clue">
+            <p><strong>Clue 1:</strong> The suspect was in London during the robbery, but the robbery happened in Paris.</p>
+            <p><em>(Deduction: He / be / the thief)</em></p>
+            <input type="text" placeholder="He can't have been..." data-answer="He can't have been the thief">
+            <div class="feedback"></div>
+        </div>
+
+        <div class="clue">
+            <p><strong>Clue 2:</strong> Sarah's car is still in the driveway and her lights are on.</p>
+            <p><em>(Deduction: She / be / at home)</em></p>
+            <input type="text" placeholder="She must be..." data-answer="She must be at home">
+            <div class="feedback"></div>
+        </div>
+
+        <div class="clue">
+            <p><strong>Clue 3:</strong> The window is broken and the jewelry is gone, but the alarm didn't go off.</p>
+            <p><em>(Deduction: The thief / know / the code)</em></p>
+            <input type="text" placeholder="The thief must have known..." data-answer="The thief must have known the code">
+            <div class="feedback"></div>
+        </div>
+
+        <button class="btn-solve" onclick="validate()">Solve Case</button>
+    </div>
+</div>
+
+<script>
+    function validate() {
+        const inputs = document.querySelectorAll('input');
+        inputs.forEach(input => {
+            const user = input.value.trim().toLowerCase().replace(/[.!]/g,"");
+            const correct = input.getAttribute('data-answer').toLowerCase().replace(/[.!]/g,"");
+            const feedback = input.nextElementSibling;
+
+            feedback.style.display = 'block';
+            if (user === correct) {
+                feedback.innerHTML = "✓ Case Closed. Excellent deduction.";
+                feedback.className = "feedback correct";
+            } else {
+                feedback.innerHTML = "× Faulty logic. Correct deduction: " + input.getAttribute('data-answer');
+                feedback.className = "feedback wrong";
+            }
+        });
+    }
+</script>
+
+</body>
+</html>

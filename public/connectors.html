@@ -1,0 +1,461 @@
+
+<h2 class="sr-only">Atlas interactivo para aprender los conectores del inglés</h2>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+.app{font-family:var(--font-sans);max-width:100%}
+
+.nav{display:flex;border-bottom:0.5px solid var(--color-border-tertiary)}
+.nav-btn{flex:1;padding:13px 2px;font-size:12px;font-weight:500;border:none;background:none;color:var(--color-text-tertiary);border-bottom:2px solid transparent;margin-bottom:-0.5px;cursor:pointer;transition:color .15s,border-color .15s;touch-action:manipulation;line-height:1.2}
+.nav-btn.on{color:var(--color-text-primary);border-bottom-color:var(--color-text-primary)}
+.page{display:none;padding:.875rem 0}.page.on{display:block}
+.lbl{font-size:11px;font-weight:500;color:var(--color-text-tertiary);letter-spacing:.06em;text-transform:uppercase;margin-bottom:.6rem}
+
+.cadd{--cb:#E1F5EE;--ct:#085041;--cm:#9FE1CB}.ccon{--cb:#FAECE7;--ct:#712B13;--cm:#F5C4B3}
+.ccau{--cb:#FAEEDA;--ct:#633806;--cm:#FAC775}.cres{--cb:#EEEDFE;--ct:#3C3489;--cm:#CECBF6}
+.cpur{--cb:#E6F1FB;--ct:#0C447C;--cm:#B5D4F4}.ccnd{--cb:#FBEAF0;--ct:#72243E;--cm:#F4C0D1}
+.ctim{--cb:#EAF3DE;--ct:#27500A;--cm:#C0DD97}.cex{--cb:#F1EFE8;--ct:#444441;--cm:#D3D1C7}
+.cemp{--cb:#FCEBEB;--ct:#791F1F;--cm:#F7C1C1}
+
+.cat-pill{display:inline-block;font-size:10px;font-weight:500;padding:3px 8px;border-radius:var(--border-radius-md);background:var(--cb);color:var(--ct);border:0.5px solid var(--cm)}
+
+.map-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.5rem}
+.map-tile{border-radius:var(--border-radius-lg);padding:.7rem .8rem;border:0.5px solid var(--cm);background:var(--cb);cursor:pointer;touch-action:manipulation;transition:border-width .12s}
+.map-tile.expanded{border:1px solid var(--ct)}
+.map-tile-head{display:flex;align-items:center;justify-content:space-between}
+.map-sym{font-size:15px;font-weight:500;color:var(--ct);font-family:var(--font-mono);line-height:1}
+.map-name{font-size:12px;font-weight:500;color:var(--ct);margin-top:2px}
+.map-en{font-size:10px;color:var(--ct);opacity:.7}
+.map-arrow{font-size:11px;color:var(--ct);opacity:.6}
+.map-chips{display:flex;flex-wrap:wrap;gap:4px;margin-top:.5rem;max-height:0;overflow:hidden;transition:max-height .25s ease}
+.map-tile.expanded .map-chips{max-height:200px}
+.map-chip{font-size:10px;padding:2px 7px;border-radius:var(--border-radius-md);background:var(--ct);color:var(--cb);font-weight:500}
+
+.learn-nav{display:flex;align-items:center;justify-content:space-between;margin-bottom:.75rem}
+.learn-title{font-size:15px;font-weight:500;color:var(--color-text-primary)}
+.learn-cnt{font-size:12px;color:var(--color-text-tertiary)}
+.l-arrow{padding:8px 14px;border:0.5px solid var(--color-border-secondary);border-radius:var(--border-radius-md);font-size:16px;cursor:pointer;background:var(--color-background-primary);color:var(--color-text-primary);touch-action:manipulation;min-height:40px}
+.l-arrow:active{background:var(--color-background-secondary)}
+.l-arrow:disabled{opacity:.3;cursor:default}
+
+.lcard{border-radius:var(--border-radius-lg);border:0.5px solid var(--cm);overflow:hidden}
+.lcard-head{padding:.75rem 1rem;background:var(--cb)}
+.lcard-sym-big{font-size:28px;font-weight:500;color:var(--ct);font-family:var(--font-mono);line-height:1;margin-bottom:2px}
+.lcard-name{font-size:14px;font-weight:500;color:var(--ct)}
+.lcard-en{font-size:12px;color:var(--ct);opacity:.75}
+.lcard-body{padding:.85rem 1rem;background:var(--color-background-primary)}
+.rule-box{font-size:13px;color:var(--color-text-secondary);line-height:1.6;margin-bottom:.65rem;padding:.5rem .75rem;background:var(--color-background-secondary);border-radius:var(--border-radius-md)}
+.conn-row{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:.75rem}
+.ex-block{margin-bottom:.5rem}
+.ex-sent{font-size:13px;line-height:1.6;color:var(--color-text-primary)}
+.ex-conn{display:inline;font-weight:500;padding:1px 5px;border-radius:4px;background:var(--cb);color:var(--ct)}
+.ex-tr{font-size:12px;color:var(--color-text-tertiary);margin-top:2px;font-style:italic}
+
+.qcard{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:.9rem 1rem;margin-bottom:.65rem}
+.qsent{font-size:14px;line-height:1.7;color:var(--color-text-primary);margin-bottom:.75rem}
+.qblank{display:inline-block;min-width:80px;height:22px;border-bottom:2px solid var(--color-border-primary);vertical-align:middle;text-align:center;font-weight:500}
+.qblank.filled{color:#0C447C;border-color:#85B7EB;background:#E6F1FB;border-radius:4px;padding:0 6px;border-bottom-width:1.5px}
+.opts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}
+.opt{padding:10px 8px;border:0.5px solid var(--color-border-secondary);border-radius:var(--border-radius-md);font-size:13px;cursor:pointer;background:var(--color-background-primary);color:var(--color-text-primary);touch-action:manipulation;min-height:44px;transition:background .12s;font-family:var(--font-mono);font-weight:500}
+.opt:active{background:var(--color-background-secondary)}
+.opt.ok{background:#EAF3DE;border-color:#97C459;color:#27500A}
+.opt.err{background:#FCEBEB;border-color:#F09595;color:#791F1F}
+.opt:disabled{cursor:default}
+
+.fb{font-size:12px;padding:.5rem .75rem;border-radius:var(--border-radius-md);margin:.5rem 0;line-height:1.5}
+.fb.ok{background:#EAF3DE;color:#27500A}.fb.err{background:#FCEBEB;color:#791F1F}.fb.info{background:#FAEEDA;color:#633806}
+
+.score-row{display:flex;align-items:center;gap:.5rem;margin-bottom:.7rem}
+.spills{display:flex;gap:.6rem}
+.spill{font-size:13px;color:var(--color-text-secondary)}.spill b{color:var(--color-text-primary);font-weight:500}
+.pw{flex:1;height:5px;background:var(--color-background-secondary);border-radius:99px;overflow:hidden}
+.pf{height:100%;background:#1D9E75;border-radius:99px;transition:width .4s}
+
+.btn{padding:11px 16px;border:0.5px solid var(--color-border-secondary);border-radius:var(--border-radius-md);font-size:14px;cursor:pointer;background:var(--color-background-primary);color:var(--color-text-primary);touch-action:manipulation;min-height:44px;transition:background .12s;display:block;width:100%;text-align:center}
+.btn:active{background:var(--color-background-secondary)}
+.btn.pri{background:var(--color-text-primary);color:var(--color-background-primary)}
+.btn.pri:active{opacity:.8}
+.btn.sm{width:auto;display:inline-block;font-size:13px;padding:9px 14px}
+.btn:disabled{opacity:.35;cursor:not-allowed}
+
+.game-conn{font-size:32px;font-weight:500;font-family:var(--font-mono);color:var(--color-text-primary);text-align:center;padding:1.5rem 1rem;background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);margin-bottom:.75rem;transition:background .2s,color .2s;line-height:1.2}
+.game-conn.flash-ok{background:#EAF3DE;color:#27500A}
+.game-conn.flash-err{background:#FCEBEB;color:#791F1F}
+.game-cats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.5rem;margin-bottom:.75rem}
+.game-cat{padding:11px 8px;border-radius:var(--border-radius-md);font-size:12px;font-weight:500;cursor:pointer;border:0.5px solid var(--cm);background:var(--cb);color:var(--ct);touch-action:manipulation;min-height:48px;text-align:center;line-height:1.3;transition:opacity .12s}
+.game-cat:active{opacity:.75}
+.game-cat:disabled{opacity:.4;cursor:default}
+
+.res-wrap{text-align:center;padding:1.5rem .5rem}
+.res-big{font-size:52px;font-weight:500;color:var(--color-text-primary);line-height:1;font-family:var(--font-mono)}
+.res-sub{font-size:13px;color:var(--color-text-secondary);margin:.3rem 0 .5rem}
+.res-msg{font-size:13px;color:var(--color-text-secondary);margin-bottom:1.25rem;line-height:1.5}
+.btn-st{display:flex;flex-direction:column;gap:.5rem}
+</style>
+
+<div class="app">
+<div class="nav">
+  <button class="nav-btn on" onclick="goPage('map',this)">Mapa</button>
+  <button class="nav-btn" onclick="goPage('learn',this)">Aprende</button>
+  <button class="nav-btn" onclick="goPage('quiz',this);setupQuiz()">Quiz</button>
+  <button class="nav-btn" onclick="goPage('game',this);setupGame()">Juego</button>
+</div>
+
+<!-- MAP -->
+<div id="map" class="page on">
+  <p class="lbl">Atlas de conectores</p>
+  <div class="map-grid" id="map-grid"></div>
+  <p style="font-size:12px;color:var(--color-text-tertiary);margin-top:.75rem;text-align:center">Toca cada tarjeta para ver los conectores</p>
+</div>
+
+<!-- LEARN -->
+<div id="learn" class="page">
+  <div class="learn-nav">
+    <button class="l-arrow" id="l-prev" onclick="learnNav(-1)">←</button>
+    <div style="text-align:center">
+      <div class="learn-title" id="l-title">Adición</div>
+      <div class="learn-cnt" id="l-cnt">1 / 9</div>
+    </div>
+    <button class="l-arrow" id="l-next" onclick="learnNav(1)">→</button>
+  </div>
+  <div id="learn-card"></div>
+</div>
+
+<!-- QUIZ -->
+<div id="quiz" class="page">
+  <div id="quiz-start">
+    <p style="font-size:14px;color:var(--color-text-secondary);margin-bottom:.75rem;line-height:1.5">Completa las frases eligiendo el conector correcto. 10 preguntas, distintos tipos.</p>
+    <button class="btn pri" onclick="startQuiz()">Empezar quiz →</button>
+  </div>
+  <div id="quiz-play" style="display:none">
+    <div class="score-row">
+      <div class="spills"><span class="spill">⭐ <b id="qs">0</b></span><span class="spill"><b id="qn">1</b>/10</span></div>
+      <div class="pw"><div class="pf" id="qp" style="width:0%"></div></div>
+    </div>
+    <div class="qcard">
+      <div id="q-badge" class="cat-pill cadd" style="margin-bottom:.6rem">Tipo</div>
+      <div class="qsent" id="q-sent"></div>
+      <div class="opts" id="q-opts"></div>
+    </div>
+    <div id="q-fb"></div>
+    <button class="btn" id="q-next" onclick="nextQ()" style="display:none">Siguiente →</button>
+  </div>
+  <div id="quiz-end" style="display:none">
+    <div class="res-wrap">
+      <div class="res-big" id="qr-n">0</div>
+      <div class="res-sub">de 10 correctas</div>
+      <div id="qr-stars" style="font-size:24px;margin:.4rem 0"></div>
+      <div class="res-msg" id="qr-msg"></div>
+      <div class="btn-st">
+        <button class="btn pri" onclick="startQuiz()">Repetir quiz →</button>
+        <button class="btn" onclick="goPage('game',document.querySelectorAll('.nav-btn')[3]);setupGame()">Ir al Juego</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- GAME -->
+<div id="game" class="page">
+  <div id="game-start">
+    <p class="lbl">Clasificador de conectores</p>
+    <p style="font-size:13px;color:var(--color-text-secondary);margin-bottom:.1rem;line-height:1.5">Aparecerá un conector. Toca a qué familia pertenece.</p>
+    <p style="font-size:13px;color:var(--color-text-secondary);margin-bottom:.9rem;line-height:1.5">12 rondas. ¡Cuantos más aciertes mejor!</p>
+    <button class="btn pri" onclick="startGame()">¡Jugar →</button>
+  </div>
+  <div id="game-play" style="display:none">
+    <div class="score-row">
+      <div class="spills"><span class="spill">⭐ <b id="gs">0</b></span><span class="spill">Ronda <b id="gn">1</b>/12</span></div>
+      <div class="pw"><div class="pf" id="gp" style="width:0%"></div></div>
+    </div>
+    <div class="game-conn" id="g-conn">furthermore</div>
+    <div class="game-cats" id="g-cats"></div>
+    <div id="g-fb"></div>
+  </div>
+  <div id="game-end" style="display:none">
+    <div class="res-wrap">
+      <div class="res-big" id="gr-n">0</div>
+      <div class="res-sub">de 12 correctas</div>
+      <div id="gr-stars" style="font-size:24px;margin:.4rem 0"></div>
+      <div class="res-msg" id="gr-msg"></div>
+      <div class="btn-st">
+        <button class="btn pri" onclick="startGame()">Jugar de nuevo →</button>
+        <button class="btn" onclick="goPage('quiz',document.querySelectorAll('.nav-btn')[2]);setupQuiz()">Ir al Quiz</button>
+        <button class="btn" onclick="goPage('learn',document.querySelectorAll('.nav-btn')[1]);learnIdx=0;renderLearn()">Repasar teoría</button>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+<script>
+const CATS=[
+  {id:'add',sym:'+',name:'Adición',en:'Addition',cls:'cadd',
+   connectors:['furthermore','moreover','in addition','besides','also','as well as','not only…but also','what is more'],
+   rule:'Se usan para añadir información o ideas relacionadas con lo anterior.',
+   formula:'Frase 1. Furthermore / Moreover, + frase 2.',
+   exs:[
+     {s:'She speaks excellent French. <span class="ex-conn">Furthermore,</span> she is fluent in Mandarin.',tr:'Además, habla mandarín con fluidez.'},
+     {s:'The hotel was expensive. <span class="ex-conn">Moreover,</span> the service was terrible.',tr:'Además, el servicio era terrible.'},
+     {s:'He studies hard. <span class="ex-conn">In addition,</span> he attends extra classes.',tr:'Además de eso, asiste a clases extra.'},
+   ]},
+  {id:'con',sym:'≠',name:'Contraste',en:'Contrast',cls:'ccon',
+   connectors:['however','nevertheless','nonetheless','although','even though','despite','in spite of','whereas','while','on the other hand','yet'],
+   rule:'Introducen una idea que contrasta o se opone a la anterior.',
+   formula:'Frase 1. However / Nevertheless, + idea contraria.',
+   exs:[
+     {s:'He was exhausted. <span class="ex-conn">Nevertheless,</span> he kept working.',tr:'Sin embargo, siguió trabajando.'},
+     {s:'<span class="ex-conn">Although</span> it was raining, they went out.',tr:'Aunque llovía, salieron.'},
+     {s:'She earns a lot. <span class="ex-conn">However,</span> she never saves any money.',tr:'Sin embargo, nunca ahorra dinero.'},
+   ]},
+  {id:'cau',sym:'←',name:'Causa',en:'Cause & Reason',cls:'ccau',
+   connectors:['because','since','as','due to','owing to','because of','given that','seeing that'],
+   rule:'Explican el motivo o razón de algo. "Because" introduce cláusula; "due to" introduce sustantivo.',
+   formula:'Resultado + because / since / as + causa.',
+   exs:[
+     {s:'The match was cancelled <span class="ex-conn">because</span> it was raining heavily.',tr:'Porque llovía con fuerza.'},
+     {s:'<span class="ex-conn">Since</span> she had studied hard, she passed the exam.',tr:'Dado que había estudiado mucho, aprobó.'},
+     {s:'Flights were delayed <span class="ex-conn">due to</span> bad weather.',tr:'Debido al mal tiempo.'},
+   ]},
+  {id:'res',sym:'→',name:'Resultado',en:'Result & Consequence',cls:'cres',
+   connectors:['therefore','thus','hence','consequently','as a result','so','for this reason','that is why'],
+   rule:'Introducen la consecuencia o resultado de lo anterior.',
+   formula:'Causa. Therefore / Consequently, + resultado.',
+   exs:[
+     {s:'She missed the bus. <span class="ex-conn">As a result,</span> she arrived late.',tr:'Como resultado, llegó tarde.'},
+     {s:'He didn\'t study. <span class="ex-conn">Therefore,</span> he failed the exam.',tr:'Por lo tanto, suspendió el examen.'},
+     {s:'The report was late. <span class="ex-conn">Consequently,</span> the meeting was postponed.',tr:'En consecuencia, la reunión se aplazó.'},
+   ]},
+  {id:'pur',sym:'◎',name:'Propósito',en:'Purpose',cls:'cpur',
+   connectors:['so that','in order to','so as to','in order that','to','for the purpose of'],
+   rule:'"In order to" y "so as to" van seguidos de infinitivo. "So that" va seguido de cláusula.',
+   formula:'Acción + in order to / so that + objetivo.',
+   exs:[
+     {s:'She studied hard <span class="ex-conn">so that</span> she could pass the exam.',tr:'Para que pudiera aprobar el examen.'},
+     {s:'He left early <span class="ex-conn">in order to</span> catch the train.',tr:'Con el fin de coger el tren.'},
+     {s:'She whispered <span class="ex-conn">so as not to</span> wake the baby.',tr:'Para no despertar al bebé.'},
+   ]},
+  {id:'cnd',sym:'?',name:'Condición',en:'Condition',cls:'ccnd',
+   connectors:['if','unless','provided that','as long as','on condition that','supposing that','in case'],
+   rule:'Establecen una condición necesaria para que algo ocurra.',
+   formula:'Condición (if / unless / provided that…) + resultado.',
+   exs:[
+     {s:'<span class="ex-conn">Unless</span> you hurry, you\'ll miss the flight.',tr:'A menos que te des prisa, perderás el vuelo.'},
+     {s:'You can come <span class="ex-conn">provided that</span> you finish your work first.',tr:'Con la condición de que termines tu trabajo.'},
+     {s:'<span class="ex-conn">As long as</span> you practise, you will improve.',tr:'Siempre que practiques, mejorarás.'},
+   ]},
+  {id:'tim',sym:'○',name:'Tiempo',en:'Time',cls:'ctim',
+   connectors:['when','while','as soon as','after','before','until','once','whenever','by the time','as'],
+   rule:'Indican la relación temporal entre dos eventos.',
+   formula:'Evento temporal + connector + evento principal.',
+   exs:[
+     {s:'<span class="ex-conn">As soon as</span> she arrived, the meeting started.',tr:'En cuanto llegó, comenzó la reunión.'},
+     {s:'<span class="ex-conn">Once</span> you finish, send me the report.',tr:'Una vez que termines, mándame el informe.'},
+     {s:'He was reading <span class="ex-conn">while</span> she was cooking.',tr:'Mientras ella cocinaba.'},
+   ]},
+  {id:'ex',sym:'e.g.',name:'Ejemplo',en:'Exemplification',cls:'cex',
+   connectors:['for example','for instance','such as','namely','in particular','including','to illustrate','like'],
+   rule:'Introducen ejemplos o ilustraciones de una idea general.',
+   formula:'Idea general, + for example / for instance + ejemplo.',
+   exs:[
+     {s:'Many animals are endangered, <span class="ex-conn">such as</span> tigers and elephants.',tr:'Como los tigres y los elefantes.'},
+     {s:'Some cities, <span class="ex-conn">namely</span> Paris and Rome, are very expensive.',tr:'En concreto, París y Roma.'},
+     {s:'<span class="ex-conn">For instance,</span> you could try cycling to work.',tr:'Por ejemplo, podrías ir al trabajo en bici.'},
+   ]},
+  {id:'emp',sym:'!',name:'Énfasis',en:'Emphasis',cls:'cemp',
+   connectors:['indeed','in fact','above all','especially','particularly','most importantly','clearly','undoubtedly'],
+   rule:'Refuerzan o subrayan la importancia de una idea.',
+   formula:'Frase. Indeed / In fact, + énfasis.',
+   exs:[
+     {s:'She is very talented. <span class="ex-conn">Indeed,</span> she is the best in the class.',tr:'De hecho, es la mejor de la clase.'},
+     {s:'<span class="ex-conn">Above all,</span> make sure you stay safe.',tr:'Sobre todo, asegúrate de estar a salvo.'},
+     {s:'This step is <span class="ex-conn">particularly</span> important.',tr:'Este paso es especialmente importante.'},
+   ]},
+];
+
+const QUIZ_DATA=[
+  {cat:'con',sent:'She was tired; _____, she stayed to finish the project.',opts:['nevertheless','furthermore','because','unless'],ans:0,exp:'"Nevertheless" indica contraste: a pesar del cansancio, se quedó.'},
+  {cat:'add',sent:'The film was long. _____, the ending was disappointing.',opts:['Moreover','Therefore','Although','Once'],ans:0,exp:'"Moreover" añade información negativa adicional.'},
+  {cat:'res',sent:'He didn\'t prepare his speech. _____, he performed very poorly.',opts:['Consequently','Unless','Besides','While'],ans:0,exp:'"Consequently" introduce el resultado de no prepararse.'},
+  {cat:'cau',sent:'The event was cancelled _____ the heavy rain.',opts:['due to','so that','whereas','indeed'],ans:0,exp:'"Due to" + sustantivo introduce la causa.'},
+  {cat:'pur',sent:'She left early _____ catch the first train.',opts:['in order to','so that','although','as soon as'],ans:0,exp:'"In order to" + infinitivo expresa propósito.'},
+  {cat:'cnd',sent:'You can borrow the car _____ you return it by nine.',opts:['as long as','because','however','thus'],ans:0,exp:'"As long as" establece la condición necesaria.'},
+  {cat:'tim',sent:'_____ she arrived, everyone stood up.',opts:['As soon as','In spite of','Furthermore','Unless'],ans:0,exp:'"As soon as" indica que algo ocurre inmediatamente después.'},
+  {cat:'ex',sent:'Many sports, _____ tennis and cycling, are good for your heart.',opts:['such as','so that','nevertheless','therefore'],ans:0,exp:'"Such as" introduce ejemplos específicos de la categoría.'},
+  {cat:'con',sent:'_____ he is rich, he lives very simply.',opts:['Although','Moreover','Hence','Due to'],ans:0,exp:'"Although" introduce contraste entre ser rico y vivir simplemente.'},
+  {cat:'emp',sent:'This is _____ the most important rule to remember.',opts:['above all','unless','however','as soon as'],ans:0,exp:'"Above all" enfatiza que esta regla es la más importante.'},
+];
+
+const GAME_ITEMS=[
+  {w:'furthermore',cat:'add'},{w:'however',cat:'con'},{w:'therefore',cat:'res'},
+  {w:'because',cat:'cau'},{w:'so that',cat:'pur'},{w:'unless',cat:'cnd'},
+  {w:'as soon as',cat:'tim'},{w:'for instance',cat:'ex'},{w:'indeed',cat:'emp'},
+  {w:'moreover',cat:'add'},{w:'nevertheless',cat:'con'},{w:'consequently',cat:'res'},
+  {w:'due to',cat:'cau'},{w:'in order to',cat:'pur'},{w:'provided that',cat:'cnd'},
+  {w:'while',cat:'tim'},{w:'namely',cat:'ex'},{w:'in fact',cat:'emp'},
+  {w:'in addition',cat:'add'},{w:'whereas',cat:'con'},
+];
+
+function goPage(id,btn){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('on'));
+  document.getElementById(id).classList.add('on');
+  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('on'));
+  btn.classList.add('on');
+}
+
+function catById(id){return CATS.find(c=>c.id===id)}
+
+function buildMap(){
+  const g=document.getElementById('map-grid');
+  g.innerHTML='';
+  CATS.forEach(c=>{
+    const t=document.createElement('div');
+    t.className='map-tile '+c.cls;
+    t.innerHTML=`<div class="map-tile-head"><div><div class="map-sym">${c.sym}</div><div class="map-name">${c.name}</div><div class="map-en">${c.en}</div></div><span class="map-arrow">▾</span></div><div class="map-chips">${c.connectors.map(w=>`<span class="map-chip">${w}</span>`).join('')}</div>`;
+    t.onclick=()=>{t.classList.toggle('expanded')};
+    g.appendChild(t);
+  });
+}
+
+let learnIdx=0;
+function renderLearn(){
+  const c=CATS[learnIdx];
+  document.getElementById('l-title').textContent=c.name+' — '+c.en;
+  document.getElementById('l-cnt').textContent=(learnIdx+1)+' / '+CATS.length;
+  document.getElementById('l-prev').disabled=learnIdx===0;
+  document.getElementById('l-next').disabled=learnIdx===CATS.length-1;
+  document.getElementById('learn-card').innerHTML=`
+<div class="lcard ${c.cls}">
+  <div class="lcard-head">
+    <div class="lcard-sym-big">${c.sym}</div>
+    <div class="lcard-name">${c.name}</div>
+    <div class="lcard-en">${c.en}</div>
+  </div>
+  <div class="lcard-body">
+    <div class="rule-box">${c.rule}</div>
+    <p class="lbl" style="margin-bottom:.4rem">Conectores</p>
+    <div class="conn-row">${c.connectors.map(w=>`<span class="cat-pill ${c.cls}">${w}</span>`).join('')}</div>
+    <p class="lbl" style="margin-bottom:.4rem">Ejemplos</p>
+    ${c.exs.map(e=>`<div class="ex-block"><div class="ex-sent">${e.s}</div><div class="ex-tr">${e.tr}</div></div>`).join('')}
+  </div>
+</div>`;
+}
+function learnNav(d){learnIdx=Math.max(0,Math.min(CATS.length-1,learnIdx+d));renderLearn()}
+
+let qIdx=0,qScore=0,qSet=[];
+function setupQuiz(){
+  document.getElementById('quiz-start').style.display='';
+  document.getElementById('quiz-play').style.display='none';
+  document.getElementById('quiz-end').style.display='none';
+}
+function shuffle(a){return a.slice().sort(()=>Math.random()-.5)}
+function startQuiz(){
+  document.getElementById('quiz-start').style.display='none';
+  document.getElementById('quiz-end').style.display='none';
+  document.getElementById('quiz-play').style.display='';
+  qSet=shuffle(QUIZ_DATA).slice(0,10);
+  qIdx=0;qScore=0;showQ();
+}
+function showQ(){
+  const q=qSet[qIdx];
+  const c=catById(q.cat);
+  document.getElementById('qn').textContent=qIdx+1;
+  document.getElementById('qs').textContent=qScore;
+  document.getElementById('qp').style.width=(qIdx/10*100)+'%';
+  const badge=document.getElementById('q-badge');
+  badge.className='cat-pill '+c.cls;badge.textContent=c.name+' — '+c.en;
+  const sent=q.sent.replace('_____','<span class="qblank" id="blank">_____</span>');
+  document.getElementById('q-sent').innerHTML=sent;
+  document.getElementById('q-fb').innerHTML='';
+  document.getElementById('q-next').style.display='none';
+  const opts=document.getElementById('q-opts');opts.innerHTML='';
+  const shuffled=shuffle(q.opts.map((o,i)=>({o,i})));
+  shuffled.forEach(({o,i})=>{
+    const b=document.createElement('button');
+    b.className='opt';b.textContent=o;
+    b.onclick=()=>ansQ(b,i===q.ans,q,o);
+    opts.appendChild(b);
+  });
+}
+function ansQ(btn,ok,q,chosen){
+  document.querySelectorAll('.opt').forEach(b=>b.disabled=true);
+  const blank=document.getElementById('blank');
+  if(blank){blank.textContent=chosen;blank.classList.add('filled')}
+  if(ok){
+    btn.classList.add('ok');qScore++;
+    document.getElementById('qs').textContent=qScore;
+    document.getElementById('q-fb').innerHTML=`<div class="fb ok">✓ Correcto. ${q.exp}</div>`;
+  } else {
+    btn.classList.add('err');
+    document.querySelectorAll('.opt').forEach(b=>{if(b.textContent===q.opts[q.ans])b.classList.add('ok')});
+    document.getElementById('q-fb').innerHTML=`<div class="fb err">✗ Incorrecto. ${q.exp}</div>`;
+  }
+  document.getElementById('q-next').style.display='';
+}
+function nextQ(){qIdx++;if(qIdx>=10){endQuiz();return}showQ()}
+function endQuiz(){
+  document.getElementById('quiz-play').style.display='none';
+  document.getElementById('quiz-end').style.display='';
+  document.getElementById('qr-n').textContent=qScore;
+  const pct=qScore/10;
+  document.getElementById('qr-stars').textContent=pct>=.8?'⭐⭐⭐':pct>=.5?'⭐⭐':'⭐';
+  document.getElementById('qr-msg').textContent=pct>=.8?'¡Excelente! Dominas los conectores del inglés.':pct>=.5?'¡Buen trabajo! Sigue practicando para perfeccionarlo.':'Repasa el atlas y las tarjetas y vuelve a intentarlo.';
+}
+
+let gIdx=0,gScore=0,gSet=[],gBlocked=false;
+function setupGame(){
+  document.getElementById('game-start').style.display='';
+  document.getElementById('game-play').style.display='none';
+  document.getElementById('game-end').style.display='none';
+}
+function startGame(){
+  document.getElementById('game-start').style.display='none';
+  document.getElementById('game-end').style.display='none';
+  document.getElementById('game-play').style.display='';
+  gSet=shuffle(GAME_ITEMS).slice(0,12);
+  gIdx=0;gScore=0;gBlocked=false;showG();
+}
+function showG(){
+  gBlocked=false;
+  const item=gSet[gIdx];
+  document.getElementById('gs').textContent=gScore;
+  document.getElementById('gn').textContent=gIdx+1;
+  document.getElementById('gp').style.width=(gIdx/12*100)+'%';
+  const conn=document.getElementById('g-conn');
+  conn.className='game-conn';conn.textContent=item.w;
+  document.getElementById('g-fb').innerHTML='';
+  const cats=document.getElementById('g-cats');cats.innerHTML='';
+  const shown=shuffle(CATS).slice(0,3).map(c=>c.id);
+  if(!shown.includes(item.cat)) shown[Math.floor(Math.random()*3)]=item.cat;
+  shuffle(shown).forEach(id=>{
+    const c=catById(id);
+    const b=document.createElement('button');
+    b.className='game-cat '+c.cls;
+    b.innerHTML=`<div style="font-size:16px;margin-bottom:2px">${c.sym}</div>${c.name}`;
+    b.onclick=()=>ansG(id===item.cat,id,item.cat,b);
+    cats.appendChild(b);
+  });
+}
+function ansG(ok,chosen,correct,btn){
+  if(gBlocked) return;gBlocked=true;
+  const conn=document.getElementById('g-conn');
+  document.querySelectorAll('.game-cat').forEach(b=>b.disabled=true);
+  if(ok){
+    conn.classList.add('flash-ok');gScore++;
+    document.getElementById('gs').textContent=gScore;
+    document.getElementById('g-fb').innerHTML=`<div class="fb ok">✓ ¡Correcto! Es de tipo <b>${catById(correct).name}</b>.</div>`;
+  } else {
+    conn.classList.add('flash-err');
+    document.getElementById('g-fb').innerHTML=`<div class="fb err">✗ No. Es de tipo <b>${catById(correct).name}</b> (${catById(correct).en}).</div>`;
+  }
+  setTimeout(()=>{gIdx++;if(gIdx>=12){endGame();return}showG()},1400);
+}
+function endGame(){
+  document.getElementById('game-play').style.display='none';
+  document.getElementById('game-end').style.display='';
+  document.getElementById('gr-n').textContent=gScore;
+  const pct=gScore/12;
+  document.getElementById('gr-stars').textContent=pct>=.83?'⭐⭐⭐':pct>=.58?'⭐⭐':'⭐';
+  document.getElementById('gr-msg').textContent=pct>=.83?'¡Dominas las familias de conectores! Nivel avanzado.':pct>=.58?'¡Buen nivel! Algunas familias aún se confunden.':'Repasa el Mapa y las tarjetas para conocer mejor cada familia.';
+}
+
+buildMap();renderLearn();
+</script>

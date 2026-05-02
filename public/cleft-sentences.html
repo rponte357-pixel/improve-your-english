@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cleft Sentences | C1 Mastery</title>
+    <style>
+        :root {
+            --primary: #2c3e50;
+            --accent: #5D6D7E;
+            --text: #34495e;
+            --bg: #f4f7f6;
+            --white: #ffffff;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            margin: 0;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: var(--white);
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.05);
+        }
+
+        h1 {
+            color: var(--primary);
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: var(--accent);
+            font-style: italic;
+            margin-bottom: 40px;
+        }
+
+        .theory-section {
+            background: #f9fbff;
+            border-left: 4px solid var(--accent);
+            padding: 20px;
+            margin-bottom: 30px;
+            border-radius: 0 10px 10px 0;
+        }
+
+        .example-box {
+            background: #fff;
+            border: 1px dashed #cbd5e0;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 8px;
+        }
+
+        .highlight { color: #e67e22; font-weight: bold; }
+
+        .exercise-card {
+            margin-top: 40px;
+        }
+
+        .question {
+            margin-bottom: 25px;
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            margin-top: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 1rem;
+            color: var(--primary);
+        }
+
+        .btn-check {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: 0.3s;
+            display: block;
+            margin: 30px auto;
+        }
+
+        .btn-check:hover { background: var(--accent); }
+
+        .back-link {
+            display: inline-block;
+            margin-bottom: 20px;
+            text-decoration: none;
+            color: var(--accent);
+            font-weight: bold;
+        }
+
+        .feedback {
+            display: none;
+            margin-top: 10px;
+            font-weight: bold;
+            font-size: 0.9rem;
+        }
+
+        .correct { color: #27ae60; }
+        .wrong { color: #e74c3c; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <a href="index.html" class="back-link">← Return to Hub</a>
+    
+    <h1>Cleft Sentences</h1>
+    <p class="subtitle">Mastering emphasis for advanced academic and formal discourse.</p>
+
+    <div class="theory-section">
+        <h3>Why use them?</h3>
+        <p>In C1 English, we use cleft sentences to focus on specific information. They "cut" a sentence in two to highlight the most important part.</p>
+        
+        <div class="example-box">
+            <strong>Normal:</strong> I need a coffee.<br>
+            <strong>It-Cleft:</strong> <span class="highlight">It is</span> a coffee <span class="highlight">that</span> I need.<br>
+            <strong>What-Cleft:</strong> <span class="highlight">What</span> I need <span class="highlight">is</span> a coffee.
+        </div>
+    </div>
+
+    <div class="exercise-card">
+        <h3>Practice Lab</h3>
+        <p>Rewrite the following sentences using the prompts provided to add emphasis.</p>
+
+        <div class="question" id="q1">
+            <p>1. <strong>Original:</strong> She forgot her keys, not her phone.</p>
+            <p><em>(Use an "It" cleft)</em></p>
+            <input type="text" placeholder="Your answer..." data-answer="It was her keys that she forgot, not her phone">
+            <div class="feedback"></div>
+        </div>
+
+        <div class="question" id="q2">
+            <p>2. <strong>Original:</strong> I hate the way he interrupts everyone during meetings.</p>
+            <p><em>(Use a "What" cleft)</em></p>
+            <input type="text" placeholder="Your answer..." data-answer="What I hate is the way he interrupts everyone during meetings">
+            <div class="feedback"></div>
+        </div>
+
+        <div class="question" id="q3">
+            <p>3. <strong>Original:</strong> The CEO decided to resign only after the scandal broke.</p>
+            <p><em>(Use "It wasn't until...")</em></p>
+            <input type="text" placeholder="Your answer..." data-answer="It wasn't until the scandal broke that the CEO decided to resign">
+            <div class="feedback"></div>
+        </div>
+
+        <button class="btn-check" onclick="checkAnswers()">Verify Excellence</button>
+    </div>
+</div>
+
+<script>
+    function checkAnswers() {
+        const inputs = document.querySelectorAll('input');
+        inputs.forEach(input => {
+            const userAnswer = input.value.trim().toLowerCase().replace(/[.,/#!$%^&*;:{}=\-_`~()]/g,"");
+            const correctAnswer = input.getAttribute('data-answer').toLowerCase().replace(/[.,/#!$%^&*;:{}=\-_`~()]/g,"");
+            const feedback = input.nextElementSibling;
+
+            feedback.style.display = 'block';
+            if (userAnswer === correctAnswer) {
+                feedback.innerHTML = "✓ Perfect. Spot on!";
+                feedback.className = "feedback correct";
+            } else {
+                feedback.innerHTML = "× Not quite. Try: " + input.getAttribute('data-answer');
+                feedback.className = "feedback wrong";
+            }
+        });
+    }
+</script>
+
+</body>
+</html>
