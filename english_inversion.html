@@ -1,0 +1,363 @@
+
+<h2 class="sr-only">Juego para aprender oraciones inversas en inglés — versión móvil y tablet</h2>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+.app{font-family:var(--font-sans);max-width:100%;padding:.75rem}
+.tabs{display:flex;gap:0;margin-bottom:1.25rem;border-bottom:0.5px solid var(--color-border-tertiary)}
+.tab{flex:1;padding:12px 8px;font-size:15px;cursor:pointer;border:none;background:none;color:var(--color-text-secondary);border-bottom:2px solid transparent;margin-bottom:-1px;transition:color .15s,border-color .15s;text-align:center}
+.tab.active{color:var(--color-text-primary);border-bottom-color:var(--color-text-primary);font-weight:500}
+.section{display:none}.section.active{display:block}
+
+.card{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:1rem;margin-bottom:.75rem}
+.type-badge{display:inline-block;font-size:11px;font-weight:500;padding:4px 10px;border-radius:var(--border-radius-md);margin-bottom:.6rem}
+.b-neg{background:#EEEDFE;color:#3C3489}.b-cond{background:#E1F5EE;color:#085041}.b-so{background:#FAEEDA;color:#633806}.b-place{background:#FAECE7;color:#712B13}
+.rule{font-size:13px;color:var(--color-text-secondary);margin-bottom:.5rem;line-height:1.6}
+.formula{font-size:12px;font-family:var(--font-mono);background:var(--color-background-secondary);padding:7px 10px;border-radius:var(--border-radius-md);color:var(--color-text-secondary);margin:.4rem 0;border-left:3px solid #B5D4F4;line-height:1.5}
+.ex-pair{margin-top:.5rem;display:flex;flex-direction:column;gap:4px}
+.ex-chip{font-size:13px;padding:5px 10px;border-radius:var(--border-radius-md);background:var(--color-background-secondary);color:var(--color-text-primary);border:0.5px solid var(--color-border-tertiary);line-height:1.5}
+.ex-chip.inv{background:#E6F1FB;color:#0C447C;border-color:#B5D4F4;font-weight:500}
+.ex-arrow{font-size:12px;color:var(--color-text-tertiary);padding-left:4px}
+
+.score-bar{display:flex;align-items:center;gap:.5rem;margin-bottom:1rem;flex-wrap:wrap}
+.score-pills{display:flex;gap:.75rem}
+.score-pill{font-size:13px;color:var(--color-text-secondary)}.score-pill span{font-weight:500;color:var(--color-text-primary)}
+.progress-wrap{flex:1;min-width:80px;height:6px;background:var(--color-background-secondary);border-radius:99px;overflow:hidden}
+.progress-fill{height:100%;background:#1D9E75;border-radius:99px;transition:width .4s ease}
+
+.question-card{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:1rem;margin-bottom:.75rem}
+.q-label{font-size:11px;font-weight:500;color:var(--color-text-tertiary);letter-spacing:.05em;margin-bottom:.4rem}
+.q-original{font-size:14px;color:var(--color-text-secondary);padding:.6rem .75rem;background:var(--color-background-secondary);border-radius:var(--border-radius-md);line-height:1.5}
+.q-task{font-size:13px;color:var(--color-text-secondary);margin-top:.6rem;line-height:1.4}
+
+.tiles-area{min-height:58px;border:1px dashed var(--color-border-secondary);border-radius:var(--border-radius-md);padding:.5rem;display:flex;flex-wrap:wrap;gap:6px;margin:.6rem 0;cursor:pointer;align-content:flex-start;position:relative}
+.tiles-area .placeholder{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:12px;color:var(--color-text-tertiary);pointer-events:none;white-space:nowrap}
+
+.word-tile{display:inline-flex;align-items:center;justify-content:center;padding:8px 13px;border-radius:var(--border-radius-md);font-size:14px;font-weight:500;cursor:pointer;border:0.5px solid;transition:transform .1s,background .12s;user-select:none;min-height:40px;touch-action:manipulation}
+.word-tile:active{transform:scale(0.93)}
+.tile-pool{display:flex;flex-wrap:wrap;gap:8px;margin:.5rem 0;min-height:48px}
+.tile-pool .word-tile{background:#E6F1FB;color:#0C447C;border-color:#85B7EB}
+.tile-pool .word-tile:active{background:#B5D4F4}
+.tiles-area .word-tile{background:#EAF3DE;color:#27500A;border-color:#97C459}
+.tiles-area .word-tile:active{background:#C0DD97}
+@keyframes wpulse{0%,100%{background:#EAF3DE}50%{background:#F7C1C1;border-color:#F09595}}
+.shake{animation:wpulse .35s}
+
+.feedback{font-size:13px;padding:.6rem .75rem;border-radius:var(--border-radius-md);margin:.5rem 0;font-weight:500;line-height:1.5}
+.feedback.ok{background:#EAF3DE;color:#27500A}.feedback.err{background:#FCEBEB;color:#791F1F}.feedback.hint{background:#FAEEDA;color:#633806}
+
+.btn-row{display:flex;gap:.5rem;margin-top:.75rem;flex-wrap:wrap}
+button.btn{flex:1;min-width:80px;padding:11px 12px;border:0.5px solid var(--color-border-secondary);border-radius:var(--border-radius-md);font-size:14px;cursor:pointer;background:var(--color-background-primary);color:var(--color-text-primary);transition:background .12s;touch-action:manipulation;min-height:44px}
+button.btn:active{background:var(--color-background-secondary)}
+button.btn.primary{background:var(--color-text-primary);color:var(--color-background-primary);border-color:var(--color-text-primary)}
+button.btn.primary:active{opacity:.8}
+button.btn:disabled{opacity:.35;cursor:not-allowed}
+button.btn.full{flex:unset;width:100%}
+
+.level-select{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:.6rem;margin-bottom:1rem}
+.level-btn{padding:.9rem 1rem;border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);cursor:pointer;background:var(--color-background-primary);text-align:left;transition:border-color .15s;touch-action:manipulation;min-height:72px}
+.level-btn:active{background:var(--color-background-secondary)}
+.level-btn.selected{border:2px solid #1D9E75;background:#E1F5EE}
+.level-name{font-size:14px;font-weight:500;color:var(--color-text-primary);margin-bottom:.2rem}
+.level-desc{font-size:12px;color:var(--color-text-secondary)}
+
+.result-card{text-align:center;padding:2rem .5rem}
+.result-big{font-size:52px;font-weight:500;color:var(--color-text-primary);line-height:1}
+.result-sub{font-size:15px;color:var(--color-text-secondary);margin-top:.3rem}
+.result-msg{font-size:14px;color:var(--color-text-secondary);margin-top:.75rem;line-height:1.5}
+.result-btns{margin-top:1.5rem;display:flex;flex-direction:column;gap:.5rem}
+
+.clear-btn{font-size:12px;color:var(--color-text-tertiary);background:none;border:none;cursor:pointer;padding:4px 8px;text-decoration:underline;touch-action:manipulation}
+</style>
+
+<div class="app">
+  <div class="tabs">
+    <button class="tab active" onclick="showSection('learn')">📖 Aprende</button>
+    <button class="tab" onclick="showSection('game')">🎮 Practica</button>
+  </div>
+
+  <!-- LEARN -->
+  <div id="learn" class="section active">
+
+    <div class="card">
+      <span class="type-badge b-neg">Tipo 1 — Adverbios negativos</span>
+      <p class="rule">Con <b>Never, Rarely, Seldom, Hardly, Scarcely, Not only, Little, No sooner</b> al inicio, el sujeto y el auxiliar se invierten.</p>
+      <div class="formula">Adv. negativo + AUXILIAR + SUJETO + verbo</div>
+      <div class="ex-pair">
+        <span class="ex-chip">I have never seen this.</span>
+        <span class="ex-arrow">↓ invertida</span>
+        <span class="ex-chip inv">Never have I seen this.</span>
+      </div>
+      <div class="ex-pair" style="margin-top:.5rem">
+        <span class="ex-chip">She rarely goes out.</span>
+        <span class="ex-arrow">↓ invertida</span>
+        <span class="ex-chip inv">Rarely does she go out.</span>
+      </div>
+    </div>
+
+    <div class="card">
+      <span class="type-badge b-cond">Tipo 2 — Condicionales invertidas</span>
+      <p class="rule">Se elimina el <b>if</b> y se invierte el auxiliar. Tres formas:</p>
+      <div class="formula">Had + sujeto + participio… (if had)</div>
+      <div class="formula">Were + sujeto + to/adj… (if were)</div>
+      <div class="formula">Should + sujeto + infinitivo…</div>
+      <div class="ex-pair">
+        <span class="ex-chip">If I had known, I would have helped.</span>
+        <span class="ex-arrow">↓ invertida</span>
+        <span class="ex-chip inv">Had I known, I would have helped.</span>
+      </div>
+      <div class="ex-pair" style="margin-top:.5rem">
+        <span class="ex-chip">If you should need help, call me.</span>
+        <span class="ex-arrow">↓ invertida</span>
+        <span class="ex-chip inv">Should you need help, call me.</span>
+      </div>
+    </div>
+
+    <div class="card">
+      <span class="type-badge b-so">Tipo 3 — So / Neither / Nor</span>
+      <p class="rule">Para mostrar acuerdo con lo que dice otra persona.</p>
+      <div class="formula">So + AUXILIAR + sujeto → acuerdo positivo</div>
+      <div class="formula">Neither/Nor + AUXILIAR + sujeto → acuerdo negativo</div>
+      <div class="ex-pair">
+        <span class="ex-chip">I love pizza. — Yo también.</span>
+        <span class="ex-arrow">↓</span>
+        <span class="ex-chip inv">So do I.</span>
+      </div>
+      <div class="ex-pair" style="margin-top:.5rem">
+        <span class="ex-chip">I can't swim. — Yo tampoco.</span>
+        <span class="ex-arrow">↓</span>
+        <span class="ex-chip inv">Neither can I.</span>
+      </div>
+    </div>
+
+    <div class="card">
+      <span class="type-badge b-place">Tipo 4 — Lugar / Dirección</span>
+      <p class="rule">Con <b>Here, There, Down, Up, Out, In</b> al inicio, el verbo va antes del sujeto.</p>
+      <div class="formula">Adv. de lugar + VERBO + SUJETO nominal</div>
+      <div class="ex-pair">
+        <span class="ex-chip">The bus comes here.</span>
+        <span class="ex-arrow">↓</span>
+        <span class="ex-chip inv">Here comes the bus!</span>
+      </div>
+    </div>
+
+    <button class="btn primary full" onclick="showSection('game');startGame()" style="margin-top:.25rem;margin-bottom:.5rem">¡Empezar a practicar →</button>
+  </div>
+
+  <!-- GAME -->
+  <div id="game" class="section">
+
+    <div id="game-setup">
+      <p style="font-size:14px;color:var(--color-text-secondary);margin-bottom:.75rem">Elige un nivel:</p>
+      <div class="level-select">
+        <div class="level-btn selected" onclick="selectLevel(1,this)">
+          <div class="level-name">🌱 Principiante</div>
+          <div class="level-desc">Never, Rarely, So do I</div>
+        </div>
+        <div class="level-btn" onclick="selectLevel(2,this)">
+          <div class="level-name">⚡ Intermedio</div>
+          <div class="level-desc">Hardly, Not only, Neither</div>
+        </div>
+        <div class="level-btn" onclick="selectLevel(3,this)">
+          <div class="level-name">🔥 Avanzado</div>
+          <div class="level-desc">Condicionales + mezcla</div>
+        </div>
+      </div>
+      <button class="btn primary full" onclick="startGame()">Comenzar →</button>
+    </div>
+
+    <div id="game-play" style="display:none">
+      <div class="score-bar">
+        <div class="score-pills">
+          <span class="score-pill">⭐ <span id="score-val">0</span></span>
+          <span class="score-pill">Pregunta <span id="q-num">1</span>/8</span>
+        </div>
+        <div class="progress-wrap"><div class="progress-fill" id="prog" style="width:0%"></div></div>
+      </div>
+
+      <div class="question-card">
+        <div class="q-label type-badge b-neg" id="q-type-label">Tipo</div>
+        <p style="font-size:12px;color:var(--color-text-tertiary);margin-bottom:.35rem">Oración normal:</p>
+        <div class="q-original" id="q-original">…</div>
+        <p class="q-task">Toca las palabras en el orden correcto para construir la inversión:</p>
+      </div>
+
+      <div class="tiles-area" id="answer-area" onclick="removeLastTile()">
+        <span class="placeholder" id="ans-placeholder">Tu respuesta aquí</span>
+      </div>
+      <div style="display:flex;justify-content:flex-end"><button class="clear-btn" onclick="clearAll()">✕ Borrar todo</button></div>
+
+      <div class="tile-pool" id="word-pool"></div>
+
+      <div id="feedback-area"></div>
+
+      <div class="btn-row">
+        <button class="btn" id="btn-hint" onclick="showHint()">💡 Pista</button>
+        <button class="btn primary" id="btn-check" onclick="checkAnswer()" style="flex:2">Comprobar</button>
+        <button class="btn" id="btn-next" onclick="nextQuestion()" style="display:none;flex:2">Siguiente →</button>
+      </div>
+    </div>
+
+    <div id="game-result" style="display:none">
+      <div class="result-card">
+        <div class="result-big" id="res-score">0</div>
+        <div class="result-sub">puntos de 16 posibles</div>
+        <div id="res-stars" style="font-size:28px;margin-top:.5rem"></div>
+        <div class="result-msg" id="res-msg"></div>
+        <div class="result-btns">
+          <button class="btn primary full" onclick="startGame()">Jugar de nuevo →</button>
+          <button class="btn full" onclick="showSection('learn')">Repasar teoría</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const QUESTIONS={
+  1:[
+    {type:'Adverbio negativo',label:'b-neg',orig:'I have never seen such a beautiful place.',inv:'Never have I seen such a beautiful place.',words:['Never','have','I','seen','such','a','beautiful','place.']},
+    {type:'Adverbio negativo',label:'b-neg',orig:'She rarely speaks in public.',inv:'Rarely does she speak in public.',words:['Rarely','does','she','speak','in','public.']},
+    {type:'Adverbio negativo',label:'b-neg',orig:'They seldom visit their grandparents.',inv:'Seldom do they visit their grandparents.',words:['Seldom','do','they','visit','their','grandparents.']},
+    {type:'So / Neither',label:'b-so',orig:'I love chocolate. (Yo también)',inv:'So do I.',words:['So','do','I.']},
+    {type:'So / Neither',label:'b-so',orig:'She can dance. (Yo también)',inv:'So can I.',words:['So','can','I.']},
+    {type:'So / Neither',label:'b-so',orig:"He doesn't like fish. (Yo tampoco)",inv:'Neither do I.',words:['Neither','do','I.']},
+    {type:'Adverbio negativo',label:'b-neg',orig:'I have never been to Japan.',inv:'Never have I been to Japan.',words:['Never','have','I','been','to','Japan.']},
+    {type:'So / Neither',label:'b-so',orig:'They have finished. (Nosotros también)',inv:'So have we.',words:['So','have','we.']},
+  ],
+  2:[
+    {type:'Adverbio negativo',label:'b-neg',orig:'We had hardly arrived when it started to rain.',inv:'Hardly had we arrived when it started to rain.',words:['Hardly','had','we','arrived','when','it','started','to','rain.']},
+    {type:'Adverbio negativo',label:'b-neg',orig:'He not only lied but also stole money.',inv:'Not only did he lie but he also stole money.',words:['Not','only','did','he','lie','but','he','also','stole','money.']},
+    {type:'Adverbio negativo',label:'b-neg',orig:'I had scarcely sat down when the phone rang.',inv:'Scarcely had I sat down when the phone rang.',words:['Scarcely','had','I','sat','down','when','the','phone','rang.']},
+    {type:'So / Neither',label:'b-so',orig:"I can't speak German. (Ella tampoco)",inv:'Neither can she.',words:['Neither','can','she.']},
+    {type:'Adverbio negativo',label:'b-neg',orig:'She no sooner left than he arrived.',inv:'No sooner had she left than he arrived.',words:['No','sooner','had','she','left','than','he','arrived.']},
+    {type:'So / Neither',label:'b-so',orig:'We were tired. (Ellos también)',inv:'So were they.',words:['So','were','they.']},
+    {type:'Adverbio negativo',label:'b-neg',orig:'I little knew what was coming.',inv:'Little did I know what was coming.',words:['Little','did','I','know','what','was','coming.']},
+    {type:'Adverbio negativo',label:'b-neg',orig:'She had never imagined such a thing.',inv:'Never had she imagined such a thing.',words:['Never','had','she','imagined','such','a','thing.']},
+  ],
+  3:[
+    {type:'Condicional invertida',label:'b-cond',orig:'If I had known, I would have helped.',inv:'Had I known, I would have helped.',words:['Had','I','known,','I','would','have','helped.']},
+    {type:'Condicional invertida',label:'b-cond',orig:'If she were here, she would understand.',inv:'Were she here, she would understand.',words:['Were','she','here,','she','would','understand.']},
+    {type:'Condicional invertida',label:'b-cond',orig:'If you should need help, please call me.',inv:'Should you need help, please call me.',words:['Should','you','need','help,','please','call','me.']},
+    {type:'Adverbio negativo',label:'b-neg',orig:'He had never experienced such cold before.',inv:'Never had he experienced such cold before.',words:['Never','had','he','experienced','such','cold','before.']},
+    {type:'Condicional invertida',label:'b-cond',orig:'If they had arrived earlier, they would have met him.',inv:'Had they arrived earlier, they would have met him.',words:['Had','they','arrived','earlier,','they','would','have','met','him.']},
+    {type:'Adverbio negativo',label:'b-neg',orig:'I not only finished my work but also helped others.',inv:'Not only did I finish my work but I also helped others.',words:['Not','only','did','I','finish','my','work','but','I','also','helped','others.']},
+    {type:'Condicional invertida',label:'b-cond',orig:'If it were to rain, we would cancel the trip.',inv:'Were it to rain, we would cancel the trip.',words:['Were','it','to','rain,','we','would','cancel','the','trip.']},
+    {type:'So / Neither',label:'b-so',orig:"I haven't finished yet. (Él tampoco)",inv:'Neither has he.',words:['Neither','has','he.']},
+  ]
+};
+
+let currentLevel=1,currentSet=[],currentIdx=0,score=0,selectedTiles=[],currentWords=[],hintUsed=false;
+
+function showSection(id){
+  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  document.querySelectorAll('.tab').forEach((t,i)=>{t.classList.toggle('active',(id==='learn'&&i===0)||(id==='game'&&i===1));});
+}
+function selectLevel(n,el){
+  currentLevel=n;
+  document.querySelectorAll('.level-btn').forEach(b=>b.classList.remove('selected'));
+  el.classList.add('selected');
+}
+function shuffle(a){return a.slice().sort(()=>Math.random()-.5)}
+
+function startGame(){
+  document.getElementById('game-setup').style.display='none';
+  document.getElementById('game-result').style.display='none';
+  document.getElementById('game-play').style.display='block';
+  currentSet=shuffle(QUESTIONS[currentLevel]).slice(0,8);
+  currentIdx=0;score=0;
+  showQuestion();
+}
+
+function showQuestion(){
+  const q=currentSet[currentIdx];
+  document.getElementById('q-num').textContent=currentIdx+1;
+  document.getElementById('score-val').textContent=score;
+  document.getElementById('prog').style.width=(currentIdx/8*100)+'%';
+  const lbl=document.getElementById('q-type-label');
+  lbl.textContent=q.type;lbl.className='q-label type-badge '+q.label;
+  document.getElementById('q-original').textContent=q.orig;
+  document.getElementById('feedback-area').innerHTML='';
+  document.getElementById('btn-check').style.display='';
+  document.getElementById('btn-next').style.display='none';
+  document.getElementById('btn-hint').disabled=false;
+  document.getElementById('btn-check').disabled=false;
+  hintUsed=false;selectedTiles=[];
+  currentWords=shuffle(q.words);
+  renderTiles();
+}
+
+function renderTiles(){
+  const pool=document.getElementById('word-pool');
+  const area=document.getElementById('answer-area');
+  pool.innerHTML='';area.innerHTML='';
+  if(!selectedTiles.length){
+    area.innerHTML='<span class="placeholder" id="ans-placeholder">Tu respuesta aquí</span>';
+  }
+  currentWords.forEach((w,i)=>{
+    if(!selectedTiles.includes(i)){
+      const t=document.createElement('span');
+      t.className='word-tile';t.textContent=w;
+      t.ontouchstart=()=>{};
+      t.onclick=(e)=>{e.stopPropagation();addTile(i)};
+      pool.appendChild(t);
+    }
+  });
+  selectedTiles.forEach((i,pos)=>{
+    const t=document.createElement('span');
+    t.className='word-tile';t.textContent=currentWords[i];
+    t.ontouchstart=()=>{};
+    t.onclick=(e)=>{e.stopPropagation();removeTileAt(pos)};
+    area.appendChild(t);
+  });
+}
+
+function addTile(i){selectedTiles.push(i);renderTiles()}
+function removeLastTile(){if(selectedTiles.length>0){selectedTiles.pop();renderTiles()}}
+function removeTileAt(pos){selectedTiles.splice(pos,1);renderTiles()}
+function clearAll(){selectedTiles=[];renderTiles()}
+
+function checkAnswer(){
+  const q=currentSet[currentIdx];
+  const ans=selectedTiles.map(i=>currentWords[i]).join(' ');
+  const fb=document.getElementById('feedback-area');
+  if(!selectedTiles.length){fb.innerHTML='<div class="feedback hint">Selecciona las palabras primero.</div>';return}
+  if(ans===q.inv){
+    const pts=hintUsed?1:2;score+=pts;
+    document.getElementById('score-val').textContent=score;
+    fb.innerHTML=`<div class="feedback ok">✓ ¡Correcto! ${hintUsed?'(+1 con pista)':'(+2)'}<br><b>${q.inv}</b></div>`;
+    document.getElementById('btn-check').style.display='none';
+    document.getElementById('btn-next').style.display='';
+    document.getElementById('btn-hint').disabled=true;
+  } else {
+    fb.innerHTML='<div class="feedback err">✗ No es correcto. Intenta de nuevo o pide una pista.</div>';
+    document.querySelectorAll('#answer-area .word-tile').forEach(t=>{t.classList.remove('shake');void t.offsetWidth;t.classList.add('shake')});
+  }
+}
+
+function showHint(){
+  const q=currentSet[currentIdx];
+  document.getElementById('feedback-area').innerHTML=`<div class="feedback hint">💡 La primera palabra es "<b>${q.words[0]}</b>"</div>`;
+  hintUsed=true;document.getElementById('btn-hint').disabled=true;
+}
+
+function nextQuestion(){
+  currentIdx++;
+  if(currentIdx>=8){showResult();return}
+  showQuestion();
+}
+
+function showResult(){
+  document.getElementById('game-play').style.display='none';
+  document.getElementById('game-result').style.display='block';
+  document.getElementById('game-setup').style.display='block';
+  const pct=Math.round(score/16*100);
+  document.getElementById('res-score').textContent=score;
+  let stars='',msg='';
+  if(pct>=80){stars='⭐⭐⭐';msg='¡Excelente! Dominas las oraciones inversas del inglés.'}
+  else if(pct>=50){stars='⭐⭐';msg='¡Buen trabajo! Sigue practicando para perfeccionarlo.'}
+  else{stars='⭐';msg='Repasa la teoría e inténtalo de nuevo. ¡Tú puedes!'}
+  document.getElementById('res-stars').textContent=stars;
+  document.getElementById('res-msg').textContent=msg;
+}
+</script>

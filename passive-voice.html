@@ -1,0 +1,510 @@
+
+<h2 class="sr-only">Aplicación interactiva para aprender Advanced Passive en inglés</h2>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+.app{font-family:var(--font-sans);max-width:100%}
+.nav{display:flex;border-bottom:0.5px solid var(--color-border-tertiary);margin-bottom:0}
+.nav-btn{flex:1;padding:13px 4px;font-size:13px;font-weight:500;border:none;background:none;color:var(--color-text-tertiary);border-bottom:2px solid transparent;margin-bottom:-0.5px;cursor:pointer;transition:color .15s,border-color .15s;touch-action:manipulation}
+.nav-btn.on{color:var(--color-text-primary);border-bottom-color:var(--color-text-primary)}
+.page{display:none;padding:1rem 0}.page.on{display:block}
+
+.badge{display:inline-block;font-size:11px;font-weight:500;padding:3px 9px;border-radius:var(--border-radius-md);margin-bottom:.5rem}
+.bp{background:#EEEDFE;color:#3C3489}.bt{background:#E1F5EE;color:#085041}
+.bb{background:#E6F1FB;color:#0C447C}.ba{background:#FAEEDA;color:#633806}
+.bc{background:#FAECE7;color:#712B13}.bg{background:#EAF3DE;color:#27500A}
+
+.card{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:1rem;margin-bottom:.75rem}
+.card-title{font-size:14px;font-weight:500;color:var(--color-text-primary);margin-bottom:.3rem}
+.rule{font-size:13px;color:var(--color-text-secondary);line-height:1.6;margin-bottom:.5rem}
+.formula{font-family:var(--font-mono);font-size:12px;background:var(--color-background-secondary);padding:7px 10px;border-radius:var(--border-radius-md);color:var(--color-text-secondary);margin:.4rem 0;border-left:3px solid #B5D4F4;line-height:1.5}
+.ex{margin-top:.6rem}
+.ex-row{display:flex;flex-direction:column;gap:3px;margin-bottom:.5rem}
+.ex-a{font-size:13px;padding:5px 9px;background:var(--color-background-secondary);border-radius:var(--border-radius-md);color:var(--color-text-secondary);line-height:1.5}
+.ex-b{font-size:13px;padding:5px 9px;background:#E6F1FB;border-radius:var(--border-radius-md);color:#0C447C;font-weight:500;line-height:1.5}
+.arr{font-size:11px;color:var(--color-text-tertiary);padding-left:4px}
+
+.section-label{font-size:11px;font-weight:500;color:var(--color-text-tertiary);letter-spacing:.06em;text-transform:uppercase;margin-bottom:.6rem;padding-top:.25rem}
+
+.q-card{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:1rem;margin-bottom:.75rem}
+.q-stem{font-size:14px;color:var(--color-text-primary);line-height:1.6;margin-bottom:.75rem}
+.q-stem em{font-style:normal;color:#0C447C;font-weight:500;background:#E6F1FB;padding:1px 5px;border-radius:4px}
+.opts{display:flex;flex-direction:column;gap:8px}
+.opt{padding:11px 14px;border:0.5px solid var(--color-border-secondary);border-radius:var(--border-radius-md);font-size:13px;color:var(--color-text-primary);cursor:pointer;text-align:left;background:var(--color-background-primary);transition:background .12s,border-color .12s;touch-action:manipulation;min-height:44px;line-height:1.4}
+.opt:active{background:var(--color-background-secondary)}
+.opt.correct{background:#EAF3DE;border-color:#97C459;color:#27500A;font-weight:500}
+.opt.wrong{background:#FCEBEB;border-color:#F09595;color:#791F1F}
+.opt:disabled{cursor:default}
+
+.fb{font-size:13px;padding:.6rem .75rem;border-radius:var(--border-radius-md);margin:.6rem 0;line-height:1.5}
+.fb.ok{background:#EAF3DE;color:#27500A}.fb.err{background:#FCEBEB;color:#791F1F}.fb.info{background:#FAEEDA;color:#633806}
+
+.score-row{display:flex;align-items:center;gap:.5rem;margin-bottom:.75rem}
+.score-pills{display:flex;gap:.6rem}
+.spill{font-size:13px;color:var(--color-text-secondary)}.spill b{color:var(--color-text-primary);font-weight:500}
+.prog-wrap{flex:1;height:5px;background:var(--color-background-secondary);border-radius:99px;overflow:hidden}
+.prog-fill{height:100%;background:#1D9E75;border-radius:99px;transition:width .4s}
+
+.btn{padding:11px 16px;border:0.5px solid var(--color-border-secondary);border-radius:var(--border-radius-md);font-size:14px;cursor:pointer;background:var(--color-background-primary);color:var(--color-text-primary);touch-action:manipulation;min-height:44px;transition:background .12s}
+.btn:active{background:var(--color-background-secondary)}
+.btn.primary{background:var(--color-text-primary);color:var(--color-background-primary);border-color:var(--color-text-primary)}
+.btn.primary:active{opacity:.8}
+.btn.full{width:100%;display:block}
+.btn:disabled{opacity:.35;cursor:not-allowed}
+
+.tile-zone{min-height:54px;border:1px dashed var(--color-border-secondary);border-radius:var(--border-radius-md);padding:.5rem;display:flex;flex-wrap:wrap;gap:6px;margin:.5rem 0;cursor:pointer;align-content:flex-start;position:relative}
+.tile-ph{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:12px;color:var(--color-text-tertiary);pointer-events:none;white-space:nowrap}
+.tile-pool{display:flex;flex-wrap:wrap;gap:6px;min-height:42px;margin:.5rem 0}
+.tile{display:inline-flex;align-items:center;padding:7px 11px;border-radius:var(--border-radius-md);font-size:13px;font-weight:500;cursor:pointer;border:0.5px solid;touch-action:manipulation;min-height:38px;user-select:none;transition:transform .1s}
+.tile:active{transform:scale(.93)}
+.pool-tile{background:#E6F1FB;color:#0C447C;border-color:#85B7EB}
+.pool-tile:active{background:#B5D4F4}
+.ans-tile{background:#EAF3DE;color:#27500A;border-color:#97C459}
+.ans-tile:active{background:#C0DD97}
+.clear-lnk{font-size:11px;color:var(--color-text-tertiary);background:none;border:none;cursor:pointer;text-decoration:underline;padding:2px 4px;touch-action:manipulation}
+
+.result-wrap{text-align:center;padding:1.5rem .5rem}
+.result-num{font-size:52px;font-weight:500;color:var(--color-text-primary);line-height:1}
+.result-sub{font-size:14px;color:var(--color-text-secondary);margin:.3rem 0 .5rem}
+.result-msg{font-size:13px;color:var(--color-text-secondary);line-height:1.5;margin-bottom:1.25rem}
+.btn-stack{display:flex;flex-direction:column;gap:.5rem}
+
+.mode-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.6rem;margin-bottom:1rem}
+.mode-card{padding:.9rem;border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);cursor:pointer;background:var(--color-background-primary);text-align:left;touch-action:manipulation;min-height:72px;transition:border-color .12s,background .12s}
+.mode-card:active{background:var(--color-background-secondary)}
+.mode-card.on{border:2px solid #1D9E75;background:#E1F5EE}
+.mode-name{font-size:13px;font-weight:500;color:var(--color-text-primary);margin-bottom:.2rem}
+.mode-desc{font-size:11px;color:var(--color-text-secondary);line-height:1.4}
+</style>
+
+<div class="app">
+<div class="nav">
+  <button class="nav-btn on" onclick="goPage('learn',this)">📖 Aprende</button>
+  <button class="nav-btn" onclick="goPage('quiz',this)">🎯 Quiz</button>
+  <button class="nav-btn" onclick="goPage('build',this)">🔨 Construye</button>
+</div>
+
+<!-- ═══ LEARN ═══ -->
+<div id="learn" class="page on">
+
+  <div class="card">
+    <span class="badge bp">Tipo 1 — Verbos de reporte</span>
+    <p class="rule">Se usan con verbos como <b>say, think, believe, know, expect, report, consider, claim</b>. Hay dos estructuras:</p>
+    <div class="formula">It + be + past participle + that-clause</div>
+    <div class="formula">Subject + be + past participle + to-infinitive</div>
+    <div class="ex">
+      <div class="ex-row">
+        <span class="ex-a">People say she is very talented.</span>
+        <span class="arr">↓ impersonal</span>
+        <span class="ex-b">It is said that she is very talented.</span>
+        <span class="arr">↓ personal</span>
+        <span class="ex-b">She is said to be very talented.</span>
+      </div>
+      <div class="ex-row">
+        <span class="ex-a">They believed he had escaped.</span>
+        <span class="arr">↓</span>
+        <span class="ex-b">He was believed to have escaped.</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <span class="badge bt">Tipo 2 — Causativa have / get</span>
+    <p class="rule">Expresa que alguien hace que otra persona realice una acción por nosotros.</p>
+    <div class="formula">have + object + past participle</div>
+    <div class="formula">get + object + past participle</div>
+    <div class="ex">
+      <div class="ex-row">
+        <span class="ex-a">Someone repaired my car. (I arranged it)</span>
+        <span class="arr">↓</span>
+        <span class="ex-b">I had my car repaired.</span>
+      </div>
+      <div class="ex-row">
+        <span class="ex-a">Someone cut her hair.</span>
+        <span class="arr">↓</span>
+        <span class="ex-b">She got her hair cut.</span>
+      </div>
+      <div class="ex-row">
+        <span class="ex-a">Someone is delivering the packages.</span>
+        <span class="arr">↓</span>
+        <span class="ex-b">We are having the packages delivered.</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <span class="badge bb">Tipo 3 — Pasiva con modales</span>
+    <p class="rule">Los modales se combinan con pasiva para expresar obligación, posibilidad o deducción.</p>
+    <div class="formula">modal + be + past participle (presente)</div>
+    <div class="formula">modal + have been + past participle (pasado)</div>
+    <div class="ex">
+      <div class="ex-row">
+        <span class="ex-b">This must be done immediately.</span>
+        <span class="ex-b">The report should have been submitted yesterday.</span>
+        <span class="ex-b">The package might have been stolen.</span>
+        <span class="ex-b">These rules ought to be followed.</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <span class="badge ba">Tipo 4 — Pasiva impersonal</span>
+    <p class="rule">Se usa para distanciarse de la información, típico en contextos formales, noticias o académicos.</p>
+    <div class="formula">It is said / known / reported / believed / thought / claimed + that</div>
+    <div class="ex">
+      <div class="ex-row">
+        <span class="ex-b">It is widely known that the economy is recovering.</span>
+        <span class="ex-b">It has been reported that several people were injured.</span>
+        <span class="ex-b">It is claimed that the new policy will create jobs.</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <span class="badge bc">Tipo 5 — Infinitivo y gerundio pasivos</span>
+    <p class="rule">El infinitivo y el gerundio también pueden ir en forma pasiva.</p>
+    <div class="formula">to be + past participle (infinitivo pasivo)</div>
+    <div class="formula">being + past participle (gerundio pasivo)</div>
+    <div class="ex">
+      <div class="ex-row">
+        <span class="ex-b">She expects to be promoted next year.</span>
+        <span class="ex-b">He hates being interrupted during meetings.</span>
+        <span class="ex-b">The contract needs to be signed today.</span>
+        <span class="ex-b">I remember being told about this rule.</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <span class="badge bg">Tipo 6 — Doble objeto pasivo</span>
+    <p class="rule">Verbos como <b>give, send, show, offer, tell, award, teach</b> pueden tener dos formas pasivas.</p>
+    <div class="formula">Indirect obj. + be + past participle + direct obj.</div>
+    <div class="formula">Direct obj. + be + past participle + to + indirect obj.</div>
+    <div class="ex">
+      <div class="ex-row">
+        <span class="ex-a">They gave her a prize.</span>
+        <span class="arr">↓ forma 1</span>
+        <span class="ex-b">She was given a prize.</span>
+        <span class="arr">↓ forma 2</span>
+        <span class="ex-b">A prize was given to her.</span>
+      </div>
+    </div>
+  </div>
+
+  <button class="btn primary full" onclick="goPage('quiz',document.querySelectorAll('.nav-btn')[1]);setupQuiz()">Ir al Quiz →</button>
+</div>
+
+<!-- ═══ QUIZ ═══ -->
+<div id="quiz" class="page">
+  <div id="quiz-setup">
+    <p class="section-label">Elige el tipo de pasiva</p>
+    <div class="mode-grid">
+      <div class="mode-card on" onclick="selType('all',this)"><div class="mode-name">Todos los tipos</div><div class="mode-desc">Mezcla completa</div></div>
+      <div class="mode-card" onclick="selType('report',this)"><div class="mode-name">Verbos de reporte</div><div class="mode-desc">It is said / believed</div></div>
+      <div class="mode-card" onclick="selType('caus',this)"><div class="mode-name">Causativa</div><div class="mode-desc">Have / get done</div></div>
+      <div class="mode-card" onclick="selType('modal',this)"><div class="mode-name">Con modales</div><div class="mode-desc">Must be / should have</div></div>
+    </div>
+    <button class="btn primary full" onclick="startQuiz()">Empezar quiz →</button>
+  </div>
+
+  <div id="quiz-play" style="display:none">
+    <div class="score-row">
+      <div class="score-pills">
+        <span class="spill">⭐ <b id="qscore">0</b></span>
+        <span class="spill">Pregunta <b id="qnum">1</b>/8</span>
+      </div>
+      <div class="prog-wrap"><div class="prog-fill" id="qprog" style="width:0%"></div></div>
+    </div>
+    <div class="q-card">
+      <div id="q-badge" class="badge bp" style="margin-bottom:.5rem">Tipo</div>
+      <div class="q-stem" id="q-stem">Cargando…</div>
+      <div class="opts" id="q-opts"></div>
+    </div>
+    <div id="q-fb"></div>
+    <div style="display:flex;gap:.5rem;margin-top:.5rem">
+      <button class="btn" id="q-hint-btn" onclick="quizHint()">💡 Pista</button>
+      <button class="btn primary" id="q-next-btn" onclick="quizNext()" style="flex:2;display:none">Siguiente →</button>
+    </div>
+  </div>
+
+  <div id="quiz-result" style="display:none">
+    <div class="result-wrap">
+      <div class="result-num" id="qres-num">0</div>
+      <div class="result-sub">de 8 preguntas correctas</div>
+      <div id="qres-stars" style="font-size:26px;margin:.4rem 0"></div>
+      <div class="result-msg" id="qres-msg"></div>
+      <div class="btn-stack">
+        <button class="btn primary full" onclick="startQuiz()">Repetir quiz →</button>
+        <button class="btn full" onclick="goPage('build',document.querySelectorAll('.nav-btn')[2]);setupBuild()">Ir a Construye →</button>
+        <button class="btn full" onclick="goPage('learn',document.querySelectorAll('.nav-btn')[0])">Repasar teoría</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ BUILD ═══ -->
+<div id="build" class="page">
+  <div id="build-setup">
+    <p class="section-label">Construye la oración pasiva</p>
+    <p style="font-size:13px;color:var(--color-text-secondary);margin-bottom:.75rem;line-height:1.5">Toca las palabras en el orden correcto para formar la versión pasiva avanzada.</p>
+    <button class="btn primary full" onclick="startBuild()">Empezar →</button>
+  </div>
+
+  <div id="build-play" style="display:none">
+    <div class="score-row">
+      <div class="score-pills">
+        <span class="spill">⭐ <b id="bscore">0</b></span>
+        <span class="spill">Frase <b id="bnum">1</b>/8</span>
+      </div>
+      <div class="prog-wrap"><div class="prog-fill" id="bprog" style="width:0%"></div></div>
+    </div>
+    <div class="q-card">
+      <div id="b-badge" class="badge bp">Tipo</div>
+      <p style="font-size:12px;color:var(--color-text-tertiary);margin:.3rem 0 .25rem">Activa / base:</p>
+      <div class="ex-a" id="b-orig" style="margin-bottom:.4rem">…</div>
+      <p style="font-size:12px;color:var(--color-text-tertiary)">Construye la forma pasiva:</p>
+    </div>
+    <div class="tile-zone" id="b-ans" onclick="removeLastBTile()">
+      <span class="tile-ph" id="b-ans-ph">Tu respuesta aquí</span>
+    </div>
+    <div style="text-align:right"><button class="clear-lnk" onclick="clearBTiles()">✕ Borrar todo</button></div>
+    <div class="tile-pool" id="b-pool"></div>
+    <div id="b-fb"></div>
+    <div style="display:flex;gap:.5rem;margin-top:.6rem">
+      <button class="btn" id="b-hint-btn" onclick="buildHint()">💡 Pista</button>
+      <button class="btn primary" id="b-check-btn" onclick="buildCheck()" style="flex:2">Comprobar</button>
+      <button class="btn" id="b-next-btn" onclick="buildNext()" style="display:none;flex:2">Siguiente →</button>
+    </div>
+  </div>
+
+  <div id="build-result" style="display:none">
+    <div class="result-wrap">
+      <div class="result-num" id="bres-num">0</div>
+      <div class="result-sub">puntos de 16 posibles</div>
+      <div id="bres-stars" style="font-size:26px;margin:.4rem 0"></div>
+      <div class="result-msg" id="bres-msg"></div>
+      <div class="btn-stack">
+        <button class="btn primary full" onclick="startBuild()">Repetir →</button>
+        <button class="btn full" onclick="goPage('quiz',document.querySelectorAll('.nav-btn')[1]);setupQuiz()">Ir al Quiz</button>
+        <button class="btn full" onclick="goPage('learn',document.querySelectorAll('.nav-btn')[0])">Repasar teoría</button>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+<script>
+function goPage(id,btn){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('on'));
+  document.getElementById(id).classList.add('on');
+  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('on'));
+  btn.classList.add('on');
+}
+
+const BADGES={report:'bp',caus:'bt',modal:'bb',impers:'ba',infger:'bc',double:'bg'};
+const BADGE_LABELS={report:'Verbos de reporte',caus:'Causativa have/get',modal:'Pasiva con modales',impers:'Pasiva impersonal',infger:'Infinitivo/gerundio pasivo',double:'Doble objeto'};
+
+const ALL_QUIZ=[
+  {type:'report',stem:'People <em>say</em> that she is the best doctor in the city. → Impersonal:',opts:['It said that she is the best doctor.','It is said that she is the best doctor in the city.','She said to be the best doctor.','It has said that she is the best doctor.'],ans:1,hint:'It is + past participle + that…',exp:'La estructura impersonal es: It is said that + cláusula completa.'},
+  {type:'report',stem:'They <em>think</em> he has left the country. → Personal:',opts:['He thinks to have left the country.','It thinks that he has left.','He is thought to have left the country.','He is thinking to leave the country.'],ans:2,hint:'Subject + is thought + to have + past participle',exp:'El pasado perfecto en la cláusula → to have + past participle en la estructura personal.'},
+  {type:'report',stem:'Authorities <em>believe</em> the fire was caused deliberately. → Impersonal:',opts:['It believed the fire was caused deliberately.','It is believed that the fire was caused deliberately.','The fire is believed caused deliberately.','It is believing that the fire was caused.'],ans:1,hint:'It is + verb3 + that…',exp:'Pasiva impersonal: It is believed that + cláusula activa original.'},
+  {type:'caus',stem:'Someone repaired her laptop. She arranged it. → Causativa:',opts:['She had repaired her laptop.','She had her laptop repaired.','She got repaired her laptop.','Her laptop had repaired.'],ans:1,hint:'have + objeto + past participle',exp:'La estructura causativa es: have + objeto (her laptop) + participio (repaired).'},
+  {type:'caus',stem:'Which is CORRECT?',opts:['I want to get my eyes test.','I want to get my eyes tested.','I want to have test my eyes.','I want my eyes get tested.'],ans:1,hint:'get + objeto + past participle',exp:'get + objeto directo + participio pasado = "get my eyes tested"'},
+  {type:'caus',stem:'They are building a pool for us. → Causativa:',opts:['We have a pool build.','We are having a pool built.','We are getting build a pool.','We have built a pool.'],ans:1,hint:'have/get + objeto + participio (presente continuo)',exp:'En continuo: be + having + objeto + past participle.'},
+  {type:'modal',stem:'Someone must submit the report immediately. → Pasiva:',opts:['The report must submitted immediately.','The report must be submitting immediately.','The report must be submitted immediately.','The report must have submitted immediately.'],ans:2,hint:'modal + be + past participle',exp:'Pasiva presente con modal: must + be + past participle.'},
+  {type:'modal',stem:'Someone should have told her about the meeting. → Pasiva:',opts:['She should have been told about the meeting.','She should be told about the meeting.','She should had been told about the meeting.','She must have been told about the meeting.'],ans:0,hint:'modal + have been + past participle (pasado)',exp:'Pasiva pasada con modal: should + have been + past participle.'},
+  {type:'modal',stem:'Elige la forma CORRECTA:',opts:['The package might been delivered.','The package might have deliver.','The package might have been delivered.','The package might had been delivered.'],ans:2,hint:'might + have been + past participle',exp:'"might have been delivered" = modal + have been + participio. Correcto.'},
+  {type:'impers',stem:'Everyone knows the climate is changing. → Impersonal formal:',opts:['It knows that the climate is changing.','It is known that the climate is changing.','The climate is known changing.','It was known the climate changes.'],ans:1,hint:'It is known that…',exp:'Pasiva impersonal formal: It is known that + cláusula.'},
+  {type:'infger',stem:'She expects ___ next year. (promote)',opts:['to promote','to be promoting','to be promoted','being promoted'],ans:2,hint:'to be + past participle',exp:'Infinitivo pasivo: to be + participio (promoted).'},
+  {type:'infger',stem:'He hates ___ during class. (interrupt)',opts:['to interrupt','being interrupted','to be interrupting','to have interrupted'],ans:1,hint:'being + past participle después de hate',exp:'Después de verbos como hate/enjoy/mind → gerundio pasivo: being + participio.'},
+  {type:'double',stem:'They gave the winner a trophy. → Pasiva preferida:',opts:['A trophy was given the winner.','The winner was given a trophy.','The winner was given to a trophy.','A trophy gave to the winner.'],ans:1,hint:'Obj. indirecto + was given + obj. directo',exp:'La pasiva con obj. indirecto como sujeto es más natural: The winner was given a trophy.'},
+  {type:'double',stem:'They awarded her the prize. → Pasiva alternativa:',opts:['A prize was awarded her.','She was awarded the prize.','The prize was awarded to her.','Both B and C are correct.'],ans:3,hint:'Hay dos formas correctas aquí',exp:'Ambas son correctas: "She was awarded the prize" y "The prize was awarded to her."'},
+  {type:'report',stem:'"Experts <em>claim</em> the treatment is effective." → Personal passive:',opts:['The treatment is claimed to be effective.','It claimed the treatment is effective.','The treatment has claimed to be effective.','Experts are claimed the treatment is effective.'],ans:0,hint:'subject + is claimed + to be',exp:'Estructura personal: The treatment + is claimed + to be + adjective.'},
+  {type:'modal',stem:'You ought to complete this form. → Pasiva:',opts:['This form ought complete.','This form ought to be completed.','This form ought to have completed.','This form ought to complete.'],ans:1,hint:'ought to + be + past participle',exp:'"ought to be completed" = ought to + be + participio pasado.'},
+];
+
+const ALL_BUILD=[
+  {type:'report',orig:'People say she is brilliant.',inv:'She is said to be brilliant.',words:['She','is','said','to','be','brilliant.'],badge:'bp'},
+  {type:'report',orig:'They think he has fled the country.',inv:'He is thought to have fled the country.',words:['He','is','thought','to','have','fled','the','country.'],badge:'bp'},
+  {type:'caus',orig:'Someone cleaned my house. (I arranged it)',inv:'I had my house cleaned.',words:['I','had','my','house','cleaned.'],badge:'bt'},
+  {type:'caus',orig:'They are painting our flat.',inv:'We are having our flat painted.',words:['We','are','having','our','flat','painted.'],badge:'bt'},
+  {type:'modal',orig:'Someone should inform the committee.',inv:'The committee should be informed.',words:['The','committee','should','be','informed.'],badge:'bb'},
+  {type:'modal',orig:'Someone could have warned us.',inv:'We could have been warned.',words:['We','could','have','been','warned.'],badge:'bb'},
+  {type:'infger',orig:'She hates it when people interrupt her.',inv:'She hates being interrupted.',words:['She','hates','being','interrupted.'],badge:'bc'},
+  {type:'double',orig:'They sent him a letter.',inv:'He was sent a letter.',words:['He','was','sent','a','letter.'],badge:'bg'},
+];
+
+let qType='all',qSet=[],qIdx=0,qScore=0,qHintUsed=false;
+let bSet=[],bIdx=0,bScore=0,bHintUsed=false,bSel=[],bWords=[];
+
+function selType(t,el){
+  qType=t;
+  document.querySelectorAll('.mode-card').forEach(c=>c.classList.remove('on'));
+  el.classList.add('on');
+}
+function setupQuiz(){
+  document.getElementById('quiz-setup').style.display='';
+  document.getElementById('quiz-play').style.display='none';
+  document.getElementById('quiz-result').style.display='none';
+}
+function shuffle(a){return a.slice().sort(()=>Math.random()-.5)}
+function startQuiz(){
+  document.getElementById('quiz-setup').style.display='none';
+  document.getElementById('quiz-result').style.display='none';
+  document.getElementById('quiz-play').style.display='';
+  let pool=qType==='all'?ALL_QUIZ:ALL_QUIZ.filter(q=>q.type===qType);
+  if(pool.length<8) pool=[...pool,...pool,...pool];
+  qSet=shuffle(pool).slice(0,8);
+  qIdx=0;qScore=0;showQ();
+}
+function showQ(){
+  const q=qSet[qIdx];
+  qHintUsed=false;
+  document.getElementById('qnum').textContent=qIdx+1;
+  document.getElementById('qscore').textContent=qScore;
+  document.getElementById('qprog').style.width=(qIdx/8*100)+'%';
+  const badge=document.getElementById('q-badge');
+  badge.className='badge '+BADGES[q.type];
+  badge.textContent=BADGE_LABELS[q.type];
+  document.getElementById('q-stem').innerHTML=q.stem;
+  document.getElementById('q-fb').innerHTML='';
+  document.getElementById('q-next-btn').style.display='none';
+  document.getElementById('q-hint-btn').disabled=false;
+  const opts=document.getElementById('q-opts');
+  opts.innerHTML='';
+  shuffle(q.opts.map((o,i)=>({o,i}))).forEach(({o,i})=>{
+    const b=document.createElement('button');
+    b.className='opt';b.textContent=o;
+    b.onclick=()=>answerQ(b,i===q.ans,q);
+    opts.appendChild(b);
+  });
+}
+function answerQ(btn,correct,q){
+  document.querySelectorAll('.opt').forEach(b=>b.disabled=true);
+  if(correct){
+    btn.classList.add('correct');
+    const pts=qHintUsed?0:1;qScore+=pts;
+    document.getElementById('qscore').textContent=qScore;
+    document.getElementById('q-fb').innerHTML=`<div class="fb ok">✓ Correcto${qHintUsed?' (sin puntos por pista)':' (+1)'}. ${q.exp}</div>`;
+  } else {
+    btn.classList.add('wrong');
+    document.querySelectorAll('.opt').forEach((b,i)=>{if(b.textContent===q.opts[q.ans])b.classList.add('correct')});
+    document.getElementById('q-fb').innerHTML=`<div class="fb err">✗ Incorrecto. ${q.exp}</div>`;
+  }
+  document.getElementById('q-next-btn').style.display='';
+  document.getElementById('q-hint-btn').disabled=true;
+}
+function quizHint(){
+  const q=qSet[qIdx];
+  document.getElementById('q-fb').innerHTML=`<div class="fb info">💡 Pista: ${q.hint}</div>`;
+  qHintUsed=true;document.getElementById('q-hint-btn').disabled=true;
+}
+function quizNext(){
+  qIdx++;
+  if(qIdx>=8){showQResult();return}
+  showQ();
+}
+function showQResult(){
+  document.getElementById('quiz-play').style.display='none';
+  document.getElementById('quiz-result').style.display='';
+  document.getElementById('qres-num').textContent=qScore;
+  const pct=Math.round(qScore/8*100);
+  let stars='',msg='';
+  if(pct>=75){stars='⭐⭐⭐';msg='¡Excelente dominio del Advanced Passive! Prueba el ejercicio de construcción.'}
+  else if(pct>=50){stars='⭐⭐';msg='¡Buen nivel! Repasa los tipos donde fallaste y vuelve a intentarlo.'}
+  else{stars='⭐';msg='Repasa la sección de teoría y luego vuelve a intentarlo. ¡Puedes mejorar!'}
+  document.getElementById('qres-stars').textContent=stars;
+  document.getElementById('qres-msg').textContent=msg;
+}
+
+function setupBuild(){
+  document.getElementById('build-setup').style.display='';
+  document.getElementById('build-play').style.display='none';
+  document.getElementById('build-result').style.display='none';
+}
+function startBuild(){
+  document.getElementById('build-setup').style.display='none';
+  document.getElementById('build-result').style.display='none';
+  document.getElementById('build-play').style.display='';
+  bSet=shuffle(ALL_BUILD).slice(0,8);
+  bIdx=0;bScore=0;showB();
+}
+function showB(){
+  const q=bSet[bIdx];
+  bHintUsed=false;bSel=[];bWords=shuffle(q.words);
+  document.getElementById('bnum').textContent=bIdx+1;
+  document.getElementById('bscore').textContent=bScore;
+  document.getElementById('bprog').style.width=(bIdx/8*100)+'%';
+  const badge=document.getElementById('b-badge');
+  badge.className='badge '+q.badge;
+  badge.textContent=BADGE_LABELS[q.type];
+  document.getElementById('b-orig').textContent=q.orig;
+  document.getElementById('b-fb').innerHTML='';
+  document.getElementById('b-check-btn').style.display='';
+  document.getElementById('b-next-btn').style.display='none';
+  document.getElementById('b-hint-btn').disabled=false;
+  document.getElementById('b-check-btn').disabled=false;
+  renderBTiles();
+}
+function renderBTiles(){
+  const pool=document.getElementById('b-pool');
+  const ans=document.getElementById('b-ans');
+  pool.innerHTML='';ans.innerHTML='';
+  if(!bSel.length) ans.innerHTML='<span class="tile-ph" id="b-ans-ph">Tu respuesta aquí</span>';
+  bWords.forEach((w,i)=>{
+    if(!bSel.includes(i)){
+      const t=document.createElement('span');
+      t.className='tile pool-tile';t.textContent=w;
+      t.ontouchstart=()=>{};
+      t.onclick=(e)=>{e.stopPropagation();bSel.push(i);renderBTiles()};
+      pool.appendChild(t);
+    }
+  });
+  bSel.forEach((i,pos)=>{
+    const t=document.createElement('span');
+    t.className='tile ans-tile';t.textContent=bWords[i];
+    t.ontouchstart=()=>{};
+    t.onclick=(e)=>{e.stopPropagation();bSel.splice(pos,1);renderBTiles()};
+    ans.appendChild(t);
+  });
+}
+function removeLastBTile(){if(bSel.length){bSel.pop();renderBTiles()}}
+function clearBTiles(){bSel=[];renderBTiles()}
+function buildHint(){
+  const q=bSet[bIdx];
+  document.getElementById('b-fb').innerHTML=`<div class="fb info">💡 La primera palabra es "<b>${q.words[0]}</b>"</div>`;
+  bHintUsed=true;document.getElementById('b-hint-btn').disabled=true;
+}
+function buildCheck(){
+  const q=bSet[bIdx];
+  if(!bSel.length){document.getElementById('b-fb').innerHTML='<div class="fb info">Selecciona las palabras primero.</div>';return}
+  const ans=bSel.map(i=>bWords[i]).join(' ');
+  if(ans===q.inv){
+    const pts=bHintUsed?1:2;bScore+=pts;
+    document.getElementById('bscore').textContent=bScore;
+    document.getElementById('b-fb').innerHTML=`<div class="fb ok">✓ ¡Correcto! ${bHintUsed?'(+1)':'(+2)'} — <b>${q.inv}</b></div>`;
+    document.getElementById('b-check-btn').style.display='none';
+    document.getElementById('b-next-btn').style.display='';
+    document.getElementById('b-hint-btn').disabled=true;
+    document.getElementById('b-check-btn').disabled=true;
+  } else {
+    document.getElementById('b-fb').innerHTML='<div class="fb err">✗ No es correcto. Intenta de nuevo o pide una pista.</div>';
+  }
+}
+function buildNext(){
+  bIdx++;
+  if(bIdx>=8){showBResult();return}
+  showB();
+}
+function showBResult(){
+  document.getElementById('build-play').style.display='none';
+  document.getElementById('build-result').style.display='';
+  document.getElementById('bres-num').textContent=bScore;
+  const pct=Math.round(bScore/16*100);
+  let stars='',msg='';
+  if(pct>=75){stars='⭐⭐⭐';msg='¡Dominas la construcción de pasivas avanzadas! Nivel excelente.'}
+  else if(pct>=50){stars='⭐⭐';msg='¡Muy bien! Sigue practicando para afianzar los patrones.'}
+  else{stars='⭐';msg='Repasa la teoría y vuelve a intentarlo. ¡Con práctica lo dominarás!'}
+  document.getElementById('bres-stars').textContent=stars;
+  document.getElementById('bres-msg').textContent=msg;
+}
+</script>
