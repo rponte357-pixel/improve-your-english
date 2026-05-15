@@ -21,6 +21,7 @@ import Verbs from "./pages/Verbs";
 import VerbFamily from "./pages/VerbFamily";
 import Cohesion from "./pages/Cohesion";
 import CohesionFamily from "./pages/CohesionFamily";
+import Pronunciation from "./pages/Pronunciation";
 
 import "./App.css";
 
@@ -63,6 +64,8 @@ export default function App() {
           <Route path="/grammar/formal/:familyId" element={<FormalFamily />} />
           <Route path="/grammar/cohesion" element={<Cohesion />} />
           <Route path="/grammar/cohesion/:familyId" element={<CohesionFamily />} />
+
+          <Route path="/pronunciation" element={<Pronunciation />} />
 
           {/* Catch-all: send unknown paths back to the main hub. */}
           <Route path="*" element={<Hub />} />

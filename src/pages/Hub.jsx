@@ -19,7 +19,7 @@ export default function Hub() {
           title="Pronunciation"
           color="#4ECDC4"
           delay="0.1s"
-          href="https://rponte357-pixel.github.io/english-pronunciation/"
+          to="/pronunciation"
         />
         <Bubble title="Grammar" color="#2E4053" delay="0.2s" to="/grammar" />
       </div>
