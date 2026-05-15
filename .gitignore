@@ -22,3 +22,15 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Local backups (use git history instead)
+src-backup
+src-backup-*
+scaffold
+scaffold-*
+
+# Local environment variables (NEVER commit these)
+.env
+.env.local
+.env.development.local
+.env.production.local
