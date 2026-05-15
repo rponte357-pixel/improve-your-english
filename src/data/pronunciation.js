@@ -13,7 +13,7 @@
 export const PRONUNCIATION_RULES = {
   id: {
     sound: '/ɪd/',
-    color: '#E74C3C',
+    color: '#6C5CE7',
     title: 'Extra syllable',
     rule: "When the base verb ends in a /t/ or /d/ sound, -ed adds an extra syllable.",
     example: { verb: 'wanted', ipa: '/ˈwɒn.tɪd/', sounds_like: 'WON-tid' },
