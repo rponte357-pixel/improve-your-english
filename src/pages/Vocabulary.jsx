@@ -469,6 +469,22 @@ function Matching({ words, themeId, level, markLearned }) {
     setRunning(true);
   };
 
+  // Reset to setup screen whenever the theme or level changes (i.e. the
+  // `words` prop is replaced with a different list). Without this, the
+  // previous game's end state would linger and the user would be stuck
+  // seeing the wrong content until they switched mode.
+  useEffect(() => {
+    setItems([]);
+    setShuffledEs([]);
+    setPickedEn(null);
+    setMatched(new Set());
+    setScore(0);
+    setTimeLeft(60);
+    setRunning(false);
+    setWrongPulse(null);
+    if (timerRef.current) clearInterval(timerRef.current);
+  }, [words]);
+
   // Timer effect
   useEffect(() => {
     if (!running) return;
