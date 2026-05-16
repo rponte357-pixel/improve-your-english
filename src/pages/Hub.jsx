@@ -13,7 +13,7 @@ export default function Hub() {
           title="Daily Phrases"
           color="#FF6B6B"
           delay="0s"
-          href="https://rponte357-pixel.github.io/phraseup/"
+          to="/phrases"
         />
         <Bubble
           title="Pronunciation"
