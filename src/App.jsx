@@ -24,6 +24,9 @@ import CohesionFamily from "./pages/CohesionFamily";
 import Pronunciation from "./pages/Pronunciation";
 import Phrases from "./pages/Phrases";
 import PhraseDetail from "./pages/PhraseDetail";
+import Games from "./pages/Games";
+import InversionsGame from "./pages/InversionsGame";
+import Vocabulary from "./pages/Vocabulary";
 
 import "./App.css";
 
@@ -71,6 +74,11 @@ export default function App() {
 
           <Route path="/phrases" element={<Phrases />} />
           <Route path="/phrases/:id" element={<PhraseDetail />} />
+
+          <Route path="/games" element={<Games />} />
+          <Route path="/games/inversions" element={<InversionsGame />} />
+
+          <Route path="/vocabulary" element={<Vocabulary />} />
 
           {/* Catch-all: send unknown paths back to the main hub. */}
           <Route path="*" element={<Hub />} />

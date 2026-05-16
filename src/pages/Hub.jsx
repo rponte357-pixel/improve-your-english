@@ -30,6 +30,20 @@ export default function Hub() {
           delay="0.2s"
           to="/grammar"
         />
+        <Bubble
+          variant="playful"
+          eyebrow="✦ Play"
+          title="Games"
+          delay="0.3s"
+          to="/games"
+        />
+        <Bubble
+          variant="flags"
+          eyebrow="Grow your"
+          title="Vocabulary"
+          delay="0.4s"
+          to="/vocabulary"
+        />
       </div>
     </>
   );

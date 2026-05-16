@@ -226,6 +226,84 @@
   font-size: 1.9rem;
 }
 
+/* --- Variant: playful (Games) ----------------------------------
+   Violet→magenta gradient with floating sparkles. Highest visual
+   energy of the four — deliberately so, to attract discovery to
+   the newest section. */
+.bubble-playful {
+  background: linear-gradient(135deg, #7B2FF7 0%, #F107A3 100%);
+  color: #fff;
+  box-shadow: 0 10px 24px rgba(123, 47, 247, 0.30);
+}
+.bubble-playful:hover {
+  box-shadow: 0 18px 38px rgba(241, 7, 163, 0.36);
+}
+.bubble-playful::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200'><g fill='%23ffffff'><path opacity='0.55' d='M40 36 L43 43 L50 46 L43 49 L40 56 L37 49 L30 46 L37 43 Z'/><path opacity='0.40' d='M158 50 L162 60 L172 64 L162 68 L158 78 L154 68 L144 64 L154 60 Z'/><path opacity='0.45' d='M168 130 L170 135 L175 137 L170 139 L168 144 L166 139 L161 137 L166 135 Z'/><path opacity='0.30' d='M32 150 L35 158 L43 161 L35 164 L32 172 L29 164 L21 161 L29 158 Z'/><circle opacity='0.50' cx='55' cy='100' r='2.5'/><circle opacity='0.35' cx='148' cy='155' r='3'/></g></svg>");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 100% 100%;
+  z-index: 1;
+  pointer-events: none;
+}
+.bubble-playful .bubble-eyebrow {
+  color: #F6D365;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.18);
+}
+.bubble-playful .bubble-title {
+  font-family: inherit;
+  font-weight: 800;
+  font-size: 1.85rem;
+  letter-spacing: -0.5px;
+  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.22);
+}
+
+/* --- Variant: flags (Vocabulary) -------------------------------
+   Navy gradient background with three Anglosphere flag emojis in
+   a row at the bottom — UK, US, Australia. The text sits in the
+   upper half so it doesn't fight with the flags below.
+   Note: on Windows, the flag emojis render as country codes
+   ("GB US AU") because Windows doesn't ship flag glyphs. Acceptable
+   trade-off for the simplicity of using native emojis. */
+.bubble-flags {
+  background: linear-gradient(180deg, #0A2F5C 0%, #0A2F5C 60%, #14478C 100%);
+  color: #fff;
+  justify-content: flex-start;
+  padding-top: 44px;
+  box-shadow: 0 10px 24px rgba(10, 47, 92, 0.32);
+}
+.bubble-flags:hover {
+  box-shadow: 0 18px 38px rgba(10, 47, 92, 0.42);
+}
+.bubble-flags .bubble-eyebrow {
+  color: #fff;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.40);
+  opacity: 0.95;
+}
+.bubble-flags .bubble-title {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-weight: 700;
+  font-size: 1.8rem;
+  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.45);
+}
+.bubble-flags-row {
+  position: absolute;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 6px;
+  z-index: 2;
+}
+.bubble-flag {
+  border-radius: 3px;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.45));
+  display: block;
+}
+
 /* 4. Lesson view --------------------------------------------- */
 .lesson {
   width: 100%;
@@ -438,9 +516,14 @@
   .bubble { width: 160px; height: 160px; font-size: 0.9rem; }
   .bubble-editorial .bubble-title,
   .bubble-academic  .bubble-title { font-size: 1.5rem; }
+  .bubble-playful   .bubble-title { font-size: 1.5rem; }
+  .bubble-flags     .bubble-title { font-size: 1.45rem; }
   .bubble-audio     .bubble-title { font-size: 1.05rem; }
   .bubble-editorial::after { font-size: 7rem; bottom: -28px; right: 10px; }
   .bubble-academic::before { background-size: 90px 90px; }
+  .bubble-flags { padding-top: 32px; }
+  .bubble-flags-row { gap: 5px; bottom: 18px; }
+  .bubble-flag { width: 26px; height: 17px; }
   .lesson { padding: 24px 20px; }
   .hub-header h1 { font-size: 2rem; }
 }
