@@ -67,9 +67,13 @@
   max-width: 900px;
 }
 
+/* Base bubble — shape, size, hover, animation.
+   Themed variants below override colours, typography, and add ornaments. */
 .bubble {
-  width: 180px;
-  height: 180px;
+  position: relative;
+  overflow: hidden;
+  width: 200px;
+  height: 200px;
   border-radius: 50%;
   border: none;
   display: flex;
@@ -88,12 +92,138 @@
   font-family: inherit;
 }
 .bubble:hover {
-  transform: scale(1.08);
-  box-shadow: 0 14px 28px rgba(0, 0, 0, 0.15);
+  transform: scale(1.06);
+  box-shadow: 0 18px 34px rgba(0, 0, 0, 0.16);
 }
 .bubble:focus-visible {
   outline: 3px solid var(--ink);
   outline-offset: 4px;
+}
+
+.bubble-content {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+.bubble-eyebrow {
+  font-size: 0.62rem;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  font-weight: 600;
+  opacity: 0.9;
+}
+.bubble-title {
+  display: block;
+  line-height: 1.1;
+}
+
+/* --- Variant: editorial (Daily Phrases) ------------------------
+   Cream surface with terracotta border, serif italic title and a
+   decorative quote mark fading at the bottom — echoes the look of
+   the /phrases section it links to. */
+.bubble-editorial {
+  background: #F8F4EE;
+  border: 2px solid #B5451B;
+  box-shadow: 0 10px 20px rgba(181, 69, 27, 0.10);
+  color: #1A1714;
+}
+.bubble-editorial:hover {
+  box-shadow: 0 18px 34px rgba(181, 69, 27, 0.18);
+}
+.bubble-editorial .bubble-eyebrow {
+  color: #B5451B;
+  font-family: 'Outfit', system-ui, sans-serif;
+}
+.bubble-editorial .bubble-title {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-style: italic;
+  font-weight: 700;
+  font-size: 1.9rem;
+  color: #1A1714;
+}
+.bubble-editorial::after {
+  content: '"';
+  position: absolute;
+  right: 14px;
+  bottom: -38px;
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: 9rem;
+  line-height: 1;
+  color: #B5451B;
+  opacity: 0.10;
+  pointer-events: none;
+}
+
+/* --- Variant: audio (Pronunciation) ----------------------------
+   Solid teal with concentric sound-wave rings behind the text —
+   suggests audio output without literal icons. */
+.bubble-audio {
+  background: #4ECDC4;
+  color: #fff;
+  box-shadow: 0 10px 20px rgba(78, 205, 196, 0.25);
+}
+.bubble-audio:hover {
+  box-shadow: 0 18px 34px rgba(78, 205, 196, 0.38);
+}
+.bubble-audio::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  border: 2px solid rgba(255, 255, 255, 0.55);
+  transform: translate(-50%, -50%);
+  box-shadow:
+    0 0 0 18px rgba(255, 255, 255, 0.22),
+    0 0 0 38px rgba(255, 255, 255, 0.14),
+    0 0 0 60px rgba(255, 255, 255, 0.08);
+  z-index: 1;
+  pointer-events: none;
+}
+.bubble-audio .bubble-eyebrow {
+  color: rgba(255, 255, 255, 0.88);
+}
+.bubble-audio .bubble-title {
+  font-family: inherit;
+  font-weight: 600;
+  font-size: 1.25rem;
+}
+
+/* --- Variant: academic (Grammar) -------------------------------
+   Dark slate background, gold eyebrow, serif title — evokes the
+   classic textbook / scholarly feel. */
+.bubble-academic {
+  background: #2E4053;
+  color: #fff;
+  box-shadow: 0 10px 20px rgba(46, 64, 83, 0.30);
+}
+.bubble-academic:hover {
+  box-shadow: 0 18px 34px rgba(46, 64, 83, 0.42);
+}
+.bubble-academic::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><path d='M50 18 L50 82 M28 28 Q28 22 34 22 L50 22 M72 28 Q72 22 66 22 L50 22 M28 28 L28 76 Q28 80 32 80 L50 80 M72 28 L72 76 Q72 80 68 80 L50 80 M34 36 L46 36 M34 44 L46 44 M34 52 L46 52 M54 36 L66 36 M54 44 L66 44 M54 52 L66 52' stroke='%23ffffff' stroke-width='2' fill='none' stroke-linecap='round'/></svg>");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 110px 110px;
+  opacity: 0.10;
+  z-index: 1;
+  pointer-events: none;
+}
+.bubble-academic .bubble-eyebrow {
+  color: #F1C40F;
+}
+.bubble-academic .bubble-title {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-weight: 700;
+  font-size: 1.9rem;
 }
 
 /* 4. Lesson view --------------------------------------------- */
@@ -305,7 +435,12 @@
 }
 
 @media (max-width: 600px) {
-  .bubble { width: 140px; height: 140px; font-size: 0.9rem; }
+  .bubble { width: 160px; height: 160px; font-size: 0.9rem; }
+  .bubble-editorial .bubble-title,
+  .bubble-academic  .bubble-title { font-size: 1.5rem; }
+  .bubble-audio     .bubble-title { font-size: 1.05rem; }
+  .bubble-editorial::after { font-size: 7rem; bottom: -28px; right: 10px; }
+  .bubble-academic::before { background-size: 90px 90px; }
   .lesson { padding: 24px 20px; }
   .hub-header h1 { font-size: 2rem; }
 }

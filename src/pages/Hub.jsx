@@ -10,18 +10,26 @@ export default function Hub() {
 
       <div className="bubble-container">
         <Bubble
-          title="Daily Phrases"
-          color="#FF6B6B"
+          variant="editorial"
+          eyebrow="✦ Daily"
+          title="Phrases"
           delay="0s"
           to="/phrases"
         />
         <Bubble
+          variant="audio"
+          eyebrow="Speak it right"
           title="Pronunciation"
-          color="#4ECDC4"
           delay="0.1s"
           to="/pronunciation"
         />
-        <Bubble title="Grammar" color="#2E4053" delay="0.2s" to="/grammar" />
+        <Bubble
+          variant="academic"
+          eyebrow="Master C1"
+          title="Grammar"
+          delay="0.2s"
+          to="/grammar"
+        />
       </div>
     </>
   );
