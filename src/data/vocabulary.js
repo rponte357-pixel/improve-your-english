@@ -1,6 +1,7 @@
 // Vocabulary data — EOI exam preparation, organised by theme and level.
 //
-// 300 words across 5 themes × 3 levels × 20 words.
+// 300 words across 5 themes × 3 levels × 20 words (Block 1 only as of r19).
+// Blocks 2, 3, 4 contain themes but no words yet — those land in rounds 20-22.
 //
 // ⚠️  CONTENT DISCLAIMER:
 //   This vocabulary was generated based on standard EOI exam syllabuses
@@ -16,6 +17,72 @@
 //   en       — English word or expression (the headword)
 //   es       — Spanish translation
 //   example  — One short example sentence in English (max ~12 words)
+
+// ────────────────────────────────────────────────────────────────────
+// Thematic blocks — group related themes for the BlockSelector UI.
+// Each block has its own colour palette (used for the bubble gradient
+// and for the particle colours when the bubble "crashes").
+// ────────────────────────────────────────────────────────────────────
+export const BLOCKS = {
+  daily: {
+    id: "daily",
+    name: "Daily Life",
+    eyebrow: "Block 1",
+    icon: "🌍",
+    themeIds: ["cities", "relationships", "goingout", "play", "trends"],
+    // The 5 themes in Daily Life cover everyday topics. C2 isn't pedagogically
+    // sensible for "going out" or "sports", so this block stops at C1.
+    levels: ["B1", "B2", "C1"],
+    // Gradient for the block bubble in the selector. Mirrors the look of the
+    // existing Vocabulary bubble in the Hub (navy/teal feel).
+    gradientFrom: "#4ECDC4",
+    gradientTo:   "#2A9D90",
+    // Particle palette used for the crash animation. The first colour is the
+    // most prominent; tints/shades help the burst feel rich rather than flat.
+    particleColors: ["#4ECDC4", "#7AE0D8", "#2A9D90", "#F8F4EE", "#A8E8E0"],
+  },
+  identity: {
+    id: "identity",
+    name: "Identity & Science",
+    eyebrow: "Block 2",
+    icon: "🧠",
+    themeIds: ["culture", "science", "nature", "health"],
+    levels: ["B1", "B2", "C1", "C2"],
+    gradientFrom: "#9B59B6",
+    gradientTo:   "#5E2A7C",
+    particleColors: ["#9B59B6", "#B47BC9", "#5E2A7C", "#F8F4EE", "#D7B3E8"],
+  },
+  politics: {
+    id: "politics",
+    name: "Politics & History",
+    eyebrow: "Block 3",
+    icon: "⚖️",
+    themeIds: ["politics", "conflict", "history", "news"],
+    levels: ["B1", "B2", "C1", "C2"],
+    gradientFrom: "#C0392B",
+    gradientTo:   "#7B1F15",
+    particleColors: ["#C0392B", "#E06154", "#7B1F15", "#F8F4EE", "#F0B5AE"],
+  },
+  economy: {
+    id: "economy",
+    name: "Economy & Challenges",
+    eyebrow: "Block 4",
+    icon: "💼",
+    themeIds: ["work", "business", "danger"],
+    levels: ["B1", "B2", "C1", "C2"],
+    gradientFrom: "#F39C12",
+    gradientTo:   "#985E04",
+    particleColors: ["#F39C12", "#F5B547", "#985E04", "#F8F4EE", "#F8D9A4"],
+  },
+};
+
+// Helper: given a theme id, find which block it belongs to.
+export function getBlockForTheme(themeId) {
+  for (const block of Object.values(BLOCKS)) {
+    if (block.themeIds.includes(themeId)) return block;
+  }
+  return null;
+}
 
 export const VOCAB_THEMES = {
   cities: {
@@ -386,6 +453,85 @@ export const VOCAB_THEMES = {
         { en: "Boycott",                 es: "Boicot",                         example: "Activists called for a boycott of the brand." },
       ],
     },
+  },
+
+  // ──────────────────────────────────────────────────────────────────
+  // Block 2 placeholders — Identity & Science
+  // Content lands in round 20. Until then these render as "Coming soon".
+  // ──────────────────────────────────────────────────────────────────
+  culture: {
+    name: "Culture & Identity",
+    icon: "🎭",
+    color: "#9B59B6",
+    levels: { B1: [], B2: [], C1: [], C2: [] },
+  },
+  science: {
+    name: "Science & Research",
+    icon: "🔬",
+    color: "#9B59B6",
+    levels: { B1: [], B2: [], C1: [], C2: [] },
+  },
+  nature: {
+    name: "Nature & Nurture",
+    icon: "🌱",
+    color: "#9B59B6",
+    levels: { B1: [], B2: [], C1: [], C2: [] },
+  },
+  health: {
+    name: "Health & Illness",
+    icon: "🏥",
+    color: "#9B59B6",
+    levels: { B1: [], B2: [], C1: [], C2: [] },
+  },
+
+  // ──────────────────────────────────────────────────────────────────
+  // Block 3 placeholders — Politics & History
+  // ──────────────────────────────────────────────────────────────────
+  politics: {
+    name: "Politics",
+    icon: "🏛️",
+    color: "#C0392B",
+    levels: { B1: [], B2: [], C1: [], C2: [] },
+  },
+  conflict: {
+    name: "Conflict & Resolution",
+    icon: "⚔️",
+    color: "#C0392B",
+    levels: { B1: [], B2: [], C1: [], C2: [] },
+  },
+  history: {
+    name: "History",
+    icon: "📜",
+    color: "#C0392B",
+    levels: { B1: [], B2: [], C1: [], C2: [] },
+  },
+  news: {
+    name: "News & the Media",
+    icon: "📰",
+    color: "#C0392B",
+    levels: { B1: [], B2: [], C1: [], C2: [] },
+  },
+
+  // ──────────────────────────────────────────────────────────────────
+  // Block 4 placeholders — Economy & Challenges
+  // ──────────────────────────────────────────────────────────────────
+  work: {
+    name: "Work",
+    icon: "🛠️",
+    color: "#F39C12",
+    levels: { B1: [], B2: [], C1: [], C2: [] },
+  },
+  business: {
+    name: "Business & Economics",
+    icon: "📊",
+    color: "#F39C12",
+    levels: { B1: [], B2: [], C1: [], C2: [] },
+  },
+  danger: {
+    name: "Danger & Risk",
+    icon: "⚠️",
+    color: "#F39C12",
+    levels: { B1: [], B2: [], C1: [], C2: [] },
   },
 };
 

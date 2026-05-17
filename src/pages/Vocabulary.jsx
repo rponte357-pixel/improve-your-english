@@ -1,6 +1,15 @@
-// Vocabulary — EOI exam vocabulary practice across 5 themes and 3 levels.
+// Vocabulary — EOI exam vocabulary practice, organised in 4 thematic blocks.
 //
-// Four practice modes:
+// Navigation flow:
+//   1. BlockSelector  — 4 large bubbles (Daily Life, Identity & Science,
+//                       Politics & History, Economy & Challenges)
+//   2. ThemeView      — pills with the 3-5 themes inside the chosen block,
+//                       plus level picker, mode tabs, and the practice area
+//
+// Click a block bubble → it "crashes" (200ms shake then explodes into ~20
+// coloured particles using a canvas), then the ThemeView renders.
+//
+// Four practice modes inside ThemeView:
 //   • Flashcards — flip card EN ↔ ES + example, with text-to-speech.
 //   • Quiz       — pick the correct Spanish translation out of 4 options.
 //   • Matching   — match shuffled EN words with their ES translations.
@@ -14,11 +23,18 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Link } from "react-router-dom";
-import { VOCAB_THEMES, hasContent, getTotalWordCount } from "../data/vocabulary";
+import {
+  VOCAB_THEMES,
+  BLOCKS,
+  hasContent,
+  getTotalWordCount,
+} from "../data/vocabulary";
 import "../styles/vocabulary.css";
 
 const STORAGE_KEY = "iye:vocab:progress";
-const LEVELS = ["B1", "B2", "C1"];
+// All possible levels. Each block exposes its own subset via block.levels
+// (Block 1 has B1/B2/C1; Blocks 2-4 also include C2).
+const ALL_LEVELS = ["B1", "B2", "C1", "C2"];
 const MODES = [
   { id: "flashcards", label: "🃏 Flashcards" },
   { id: "quiz",       label: "❓ Quiz" },
@@ -68,19 +84,17 @@ function useProgress() {
 }
 
 // =======================================================================
-// Main component
+// Main component — owns block selection and progress; delegates the actual
+// theme/level/mode UI to <ThemeView> once a block is chosen.
 // =======================================================================
 
 export default function Vocabulary() {
-  const [theme, setTheme] = useState("cities");
-  const [level, setLevel] = useState("B1");
-  const [mode, setMode] = useState("flashcards");
+  // null = show the BlockSelector. Otherwise it's a block id from BLOCKS.
+  const [selectedBlock, setSelectedBlock] = useState(null);
   const { progress, markLearned, isLearned, totalLearned } = useProgress();
-
-  const themeData = VOCAB_THEMES[theme];
-  const words = themeData?.levels[level] || [];
-  const isEmpty = words.length === 0;
   const totalWords = getTotalWordCount();
+
+  const block = selectedBlock ? BLOCKS[selectedBlock] : null;
 
   return (
     <section className="vocab">
@@ -96,19 +110,279 @@ export default function Vocabulary() {
         </div>
       </div>
 
+      {!block && (
+        <BlockSelector onPick={(id) => setSelectedBlock(id)} />
+      )}
+
+      {block && (
+        <ThemeView
+          block={block}
+          onBack={() => setSelectedBlock(null)}
+          progress={progress}
+          markLearned={markLearned}
+          isLearned={isLearned}
+        />
+      )}
+    </section>
+  );
+}
+
+// =======================================================================
+// BlockSelector — 4 large bubbles, one per thematic block.
+// Clicking a bubble triggers the crash animation and then calls onPick.
+// =======================================================================
+
+function BlockSelector({ onPick }) {
+  // While a bubble is crashing we hide everything else and let the
+  // BubbleCrash component own the screen. Stores the id of the block
+  // being crashed, or null while idle.
+  const [crashingId, setCrashingId] = useState(null);
+
+  const handleClick = (id) => {
+    if (crashingId) return; // ignore other clicks mid-crash
+    setCrashingId(id);
+  };
+
+  const handleCrashEnd = (id) => {
+    setCrashingId(null);
+    onPick(id);
+  };
+
+  return (
+    <>
       <header className="vocab-hero">
-        <div className="vocab-eye">EOI Exam Prep · B1 · B2 · C1</div>
+        <div className="vocab-eye">EOI Exam Prep · B1 · B2 · C1 · C2</div>
         <h1 className="vocab-h1">Grow your Vocabulary</h1>
         <p className="vocab-sub">
-          Essential vocabulary for EOI official exams, organised by theme and
-          level. Practise with flashcards, quizzes and matching games.
+          Choose a thematic block to start. Each block groups related topics
+          you'll see across EOI exams.
         </p>
       </header>
 
-      {/* Theme picker */}
+      <div className="vocab-blocks">
+        {Object.values(BLOCKS).map((b) => {
+          // Count words available in this block to decide whether it's
+          // marked "ready" or "coming soon".
+          const wordCount = b.themeIds.reduce((sum, themeId) => {
+            const theme = VOCAB_THEMES[themeId];
+            if (!theme) return sum;
+            return sum + Object.values(theme.levels).reduce(
+              (s, arr) => s + arr.length, 0
+            );
+          }, 0);
+          const ready = wordCount > 0;
+
+          // Preview text: list of theme names inside this block.
+          const previewThemes = b.themeIds
+            .map((id) => VOCAB_THEMES[id]?.name?.split(" & ")[0]
+                          || VOCAB_THEMES[id]?.name)
+            .filter(Boolean);
+
+          // Render an invisible placeholder while this specific block is
+          // crashing — keeps the grid layout stable.
+          const isCrashing = crashingId === b.id;
+
+          return (
+            <button
+              key={b.id}
+              className={`vocab-block ${ready ? "" : "vocab-block-soon"} ${isCrashing ? "vocab-block-crashing" : ""}`}
+              data-block-id={b.id}
+              style={{
+                "--block-from": b.gradientFrom,
+                "--block-to":   b.gradientTo,
+              }}
+              onClick={() => handleClick(b.id)}
+              disabled={!!crashingId}
+            >
+              <div className="vocab-block-icon">{b.icon}</div>
+              <div className="vocab-block-title">{b.name}</div>
+              <div className="vocab-block-preview">
+                {previewThemes.join(" · ")}
+              </div>
+              <div className="vocab-block-badge">
+                {ready ? `${b.themeIds.length} THEMES` : "COMING SOON"}
+              </div>
+            </button>
+          );
+        })}
+      </div>
+
+      {crashingId && (
+        <BubbleCrash
+          block={BLOCKS[crashingId]}
+          onEnd={() => handleCrashEnd(crashingId)}
+        />
+      )}
+    </>
+  );
+}
+
+// =======================================================================
+// BubbleCrash — full-screen overlay that animates the chosen bubble
+// shaking, scaling up, fading out, and emitting ~20 coloured particles
+// before invoking onEnd. Uses a canvas for the particle system.
+// =======================================================================
+
+function BubbleCrash({ block, onEnd }) {
+  const canvasRef = useRef(null);
+  const [phase, setPhase] = useState("shake"); // shake → burst → done
+
+  useEffect(() => {
+    const shakeT = setTimeout(() => setPhase("burst"), 200);
+    return () => clearTimeout(shakeT);
+  }, []);
+
+  useEffect(() => {
+    if (phase !== "burst") return;
+    const canvas = canvasRef.current;
+    if (!canvas) { onEnd(); return; }
+
+    // Size the canvas to the viewport pixel-for-pixel.
+    const dpr = window.devicePixelRatio || 1;
+    const w = window.innerWidth;
+    const h = window.innerHeight;
+    canvas.width  = w * dpr;
+    canvas.height = h * dpr;
+    canvas.style.width  = w + "px";
+    canvas.style.height = h + "px";
+    const ctx = canvas.getContext("2d");
+    ctx.scale(dpr, dpr);
+
+    // Emit 20 particles from the centre of the screen with random
+    // outward velocity + a small upward bias.
+    const N = 20;
+    const cx = w / 2;
+    const cy = h / 2;
+    const particles = [];
+    for (let i = 0; i < N; i++) {
+      const angle = (Math.PI * 2 * i) / N + (Math.random() - 0.5) * 0.4;
+      const speed = 4 + Math.random() * 5;
+      particles.push({
+        x: cx, y: cy,
+        vx: Math.cos(angle) * speed,
+        vy: Math.sin(angle) * speed - 2,
+        r: 5 + Math.random() * 7,
+        color: block.particleColors[Math.floor(Math.random() * block.particleColors.length)],
+        life: 1.0,
+        rot: Math.random() * Math.PI * 2,
+        vrot: (Math.random() - 0.5) * 0.3,
+      });
+    }
+
+    let raf;
+    let ended = false;
+    const safelyEnd = () => {
+      if (ended) return;
+      ended = true;
+      onEnd();
+    };
+
+    // Safety net: in the worst case (browser bug, ctx error, weird device),
+    // the animation must not strand the user. Force-end after 2s.
+    const safetyTimer = setTimeout(safelyEnd, 2000);
+
+    const tick = () => {
+      ctx.clearRect(0, 0, w, h);
+      let alive = false;
+      for (const p of particles) {
+        if (p.life <= 0) continue;
+        alive = true;
+        p.x  += p.vx;
+        p.y  += p.vy;
+        p.vy += 0.22;       // gravity
+        p.vx *= 0.99;       // horizontal drag
+        p.rot += p.vrot;
+        p.life -= 0.018;
+
+        // p.life can dip below 0 on the same frame it gets decremented, and
+        // arc() throws on a negative radius. Clamp so the particle simply
+        // collapses to 0 size on its last frame instead of crashing the
+        // animation loop (which is what was breaking the second click).
+        const radius = Math.max(0, p.r * p.life);
+        if (radius <= 0) continue;
+
+        ctx.save();
+        ctx.translate(p.x, p.y);
+        ctx.rotate(p.rot);
+        ctx.globalAlpha = Math.max(0, p.life);
+        ctx.fillStyle = p.color;
+        ctx.beginPath();
+        ctx.arc(0, 0, radius, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.restore();
+      }
+      if (alive) {
+        raf = requestAnimationFrame(tick);
+      } else {
+        safelyEnd();
+      }
+    };
+    raf = requestAnimationFrame(tick);
+
+    return () => {
+      cancelAnimationFrame(raf);
+      clearTimeout(safetyTimer);
+    };
+  }, [phase, block, onEnd]);
+
+  return (
+    <div className="vocab-crash-overlay">
+      <div
+        className={`vocab-crash-bubble ${phase === "shake" ? "vocab-crash-shake" : "vocab-crash-burst"}`}
+        style={{
+          "--block-from": block.gradientFrom,
+          "--block-to":   block.gradientTo,
+        }}
+      >
+        <div className="vocab-block-icon">{block.icon}</div>
+        <div className="vocab-block-title">{block.name}</div>
+      </div>
+      <canvas ref={canvasRef} className="vocab-crash-canvas" />
+    </div>
+  );
+}
+
+// =======================================================================
+// ThemeView — the original screen (themes + levels + modes + practice),
+// now scoped to a single block. Shows a "← Back to blocks" button.
+// =======================================================================
+
+function ThemeView({ block, onBack, progress, markLearned, isLearned }) {
+  // Default to the first theme of this block.
+  const [theme, setTheme] = useState(block.themeIds[0]);
+  const [level, setLevel] = useState(block.levels[0]);
+  const [mode, setMode] = useState("flashcards");
+
+  // If the user comes back into a different block, reset the selection.
+  useEffect(() => {
+    setTheme(block.themeIds[0]);
+    setLevel(block.levels[0]);
+    setMode("flashcards");
+  }, [block]);
+
+  const themeData = VOCAB_THEMES[theme];
+  const words = themeData?.levels[level] || [];
+  const isEmpty = words.length === 0;
+
+  return (
+    <>
+      <div className="vocab-blocknav">
+        <button className="vocab-blocknav-back" onClick={onBack}>
+          ← Back to blocks
+        </button>
+        <div className="vocab-blocknav-title">
+          <span className="vocab-blocknav-icon">{block.icon}</span>
+          <span>{block.name}</span>
+        </div>
+        <div className="vocab-blocknav-spacer" />
+      </div>
+
+      {/* Theme picker — only themes that belong to this block */}
       <div className="vocab-themes">
-        {Object.entries(VOCAB_THEMES).map(([id, t]) => {
-          const hasAny = LEVELS.some((lvl) => hasContent(id, lvl));
+        {block.themeIds.map((id) => {
+          const t = VOCAB_THEMES[id];
+          if (!t) return null;
+          const hasAny = block.levels.some((lvl) => hasContent(id, lvl));
           return (
             <button
               key={id}
@@ -124,9 +398,9 @@ export default function Vocabulary() {
         })}
       </div>
 
-      {/* Level picker */}
+      {/* Level picker — only the levels this block exposes */}
       <div className="vocab-levels">
-        {LEVELS.map((lvl) => {
+        {block.levels.map((lvl) => {
           const count = themeData?.levels[lvl]?.length || 0;
           return (
             <button
@@ -188,9 +462,9 @@ export default function Vocabulary() {
           />
         )}
 
-        {mode === "stats" && <Stats progress={progress} />}
+        {mode === "stats" && <Stats progress={progress} block={block} />}
       </div>
-    </section>
+    </>
   );
 }
 
@@ -642,17 +916,24 @@ function Matching({ words, themeId, level, markLearned }) {
 // Stats mode
 // =======================================================================
 
-function Stats({ progress }) {
+function Stats({ progress, block }) {
+  // When invoked from ThemeView we always receive a block — scope the
+  // stats to its themes and levels. Defensive default for safety.
+  const themeIds = block ? block.themeIds : Object.keys(VOCAB_THEMES);
+  const levels   = block ? block.levels   : ALL_LEVELS;
+
   return (
     <div className="vocab-st">
       <h2 className="vocab-st-h">Your progress</h2>
       <div className="vocab-st-grid">
-        {Object.entries(VOCAB_THEMES).map(([id, theme]) => {
-          const themeTotal = LEVELS.reduce(
+        {themeIds.map((id) => {
+          const theme = VOCAB_THEMES[id];
+          if (!theme) return null;
+          const themeTotal = levels.reduce(
             (s, lvl) => s + (theme.levels[lvl]?.length || 0),
             0
           );
-          const themeLearned = LEVELS.reduce(
+          const themeLearned = levels.reduce(
             (s, lvl) => s + (progress[`${id}-${lvl}`]?.length || 0),
             0
           );
@@ -671,7 +952,7 @@ function Stats({ progress }) {
                 />
               </div>
               <div className="vocab-st-rows">
-                {LEVELS.map((lvl) => {
+                {levels.map((lvl) => {
                   const total = theme.levels[lvl]?.length || 0;
                   const learned = progress[`${id}-${lvl}`]?.length || 0;
                   return (

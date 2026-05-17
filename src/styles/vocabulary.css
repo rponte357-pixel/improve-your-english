@@ -834,3 +834,230 @@
   .vocab-mt-col-h { font-size: 0.65rem; }
   .vocab-mt-cell { padding: 0.7rem 0.8rem; font-size: 0.85rem; }
 }
+
+/* =====================================================================
+   Block Selector — 4 large bubbles, one per thematic block.
+   Bubbles use --block-from and --block-to (set inline on each button)
+   so a single rule serves all 4 colour palettes.
+===================================================================== */
+.vocab-blocks {
+  display: grid;
+  /* Fixed 2-column layout in desktop — avoids the auto-fit reflowing
+     into weird 3- or 4-column states at mid-range widths. Mobile falls
+     back to 1 column via the media query below. */
+  grid-template-columns: repeat(2, 200px);
+  gap: 1.8rem;
+  justify-content: center;
+  justify-items: center;
+  margin: 0 auto 2rem;
+  padding: 0 1rem;
+}
+
+.vocab-block {
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  border: none;
+  cursor: pointer;
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+  font-family: inherit;
+  background: linear-gradient(135deg, var(--block-from) 0%, var(--block-to) 100%);
+  color: #fff;
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.30);
+  transition: transform 0.18s ease, box-shadow 0.18s ease, opacity 0.18s ease;
+  position: relative;
+  overflow: hidden;
+}
+.vocab-block:hover:not(:disabled) {
+  transform: translateY(-4px);
+  box-shadow: 0 18px 36px rgba(0, 0, 0, 0.38);
+}
+.vocab-block:active:not(:disabled) {
+  transform: translateY(-2px) scale(0.98);
+}
+.vocab-block:disabled { cursor: default; }
+.vocab-block-soon { opacity: 0.65; }
+
+/* Bigger, denser interior text — approved in the r19.1 sketch.
+   The bubble itself stays 200px to match the Hub bubbles, but the
+   contents now occupy ~80% of the surface instead of ~50%. */
+.vocab-block-icon {
+  font-size: 2rem;       /* was 1.6rem */
+  line-height: 1;
+  margin-bottom: 4px;
+}
+.vocab-block-title {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: 1.5rem;     /* was 1.15rem */
+  font-weight: 700;
+  text-align: center;
+  line-height: 1.05;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.30);
+  margin-bottom: 6px;
+}
+.vocab-block-preview {
+  font-size: 0.72rem;    /* was 0.55rem */
+  color: rgba(255, 255, 255, 0.92);
+  text-align: center;
+  line-height: 1.4;
+  max-width: 150px;
+  margin-bottom: 8px;
+}
+.vocab-block-badge {
+  font-size: 0.7rem;     /* was 0.55rem */
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  padding: 3px 10px;
+  border-radius: 50px;
+  background: rgba(255, 255, 255, 0.22);
+}
+.vocab-block-soon .vocab-block-badge {
+  background: rgba(255, 255, 255, 0.16);
+}
+/* The "Economy & Challenges" block has a longer title — shave a touch
+   off so it doesn't wrap awkwardly inside a 200px circle. */
+.vocab-block[data-block-id="economy"] .vocab-block-title {
+  font-size: 1.4rem;
+}
+/* Visually hide a bubble while it's being crashed (the overlay takes over).
+   We keep it in the layout so the grid doesn't reflow. */
+.vocab-block-crashing { opacity: 0; pointer-events: none; }
+
+/* =====================================================================
+   BlockNav — the back bar shown above the theme picker once you're
+   inside a block.
+===================================================================== */
+.vocab-blocknav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+.vocab-blocknav-back {
+  background: var(--v-card);
+  border: 1px solid var(--v-border);
+  color: var(--v-ink);
+  padding: 8px 14px;
+  border-radius: 50px;
+  font-size: 0.85rem;
+  font-family: inherit;
+  cursor: pointer;
+  transition: background 0.18s, border-color 0.18s;
+}
+.vocab-blocknav-back:hover {
+  background: var(--v-card-hi);
+  border-color: rgba(255, 255, 255, 0.25);
+}
+.vocab-blocknav-title {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--v-ink);
+}
+.vocab-blocknav-icon { font-size: 1.4rem; }
+.vocab-blocknav-spacer {
+  /* Mirror the width of the back button so the title stays centred.
+     Hidden on mobile (just lets the title sit naturally). */
+  width: 130px;
+}
+
+/* =====================================================================
+   Crash overlay — full-screen during the bubble explosion.
+   Z-index sits above everything else in the section.
+===================================================================== */
+.vocab-crash-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+}
+.vocab-crash-bubble {
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--block-from) 0%, var(--block-to) 100%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.38);
+}
+.vocab-crash-bubble .vocab-block-icon  { font-size: 2rem; }
+.vocab-crash-bubble .vocab-block-title {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: 1.5rem;
+  font-weight: 700;
+  line-height: 1.05;
+  text-align: center;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.30);
+}
+.vocab-crash-shake {
+  animation: vocab-crash-shake 0.2s ease-in-out;
+}
+.vocab-crash-burst {
+  animation: vocab-crash-burst 0.28s ease-out forwards;
+}
+@keyframes vocab-crash-shake {
+  0%   { transform: scale(1) rotate(0deg); }
+  25%  { transform: scale(0.96) rotate(-3deg); }
+  50%  { transform: scale(1) rotate(0deg); }
+  75%  { transform: scale(1.03) rotate(3deg); }
+  100% { transform: scale(1) rotate(0deg); }
+}
+@keyframes vocab-crash-burst {
+  0%   { transform: scale(1);   opacity: 1; }
+  100% { transform: scale(1.4); opacity: 0; }
+}
+.vocab-crash-canvas {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 51;
+}
+
+/* =====================================================================
+   C2 level badge colour (new in r19).
+   B1 green, B2 blue, C1 purple — C2 amber to stand out at the top.
+===================================================================== */
+.vocab-level-c2 .vocab-level-badge { color: #fbbf24; }
+.vocab-st-lvl-c2 {
+  background: rgba(251, 191, 36, 0.18);
+  color: #fbbf24;
+}
+
+/* =====================================================================
+   Mobile tweaks for the new block UI.
+===================================================================== */
+@media (max-width: 600px) {
+  /* On mobile we drop to 1 column. The fixed 2×200px grid would scroll
+     horizontally on small screens, so override it. */
+  .vocab-blocks {
+    grid-template-columns: 200px;
+    gap: 1rem;
+    padding: 0;
+  }
+  /* Same 200px bubble on mobile so the proportions read the same. */
+  .vocab-block-icon { font-size: 1.7rem; }
+  .vocab-block-title { font-size: 1.3rem; }
+  .vocab-block[data-block-id="economy"] .vocab-block-title { font-size: 1.2rem; }
+  .vocab-block-preview { font-size: 0.65rem; max-width: 130px; }
+  .vocab-block-badge { font-size: 0.62rem; }
+  .vocab-blocknav-spacer { display: none; }
+  .vocab-blocknav-title { font-size: 1.1rem; }
+  .vocab-crash-bubble .vocab-block-icon { font-size: 1.7rem; }
+  .vocab-crash-bubble .vocab-block-title { font-size: 1.3rem; }
+}
