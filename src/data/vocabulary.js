@@ -1,18 +1,25 @@
 // Vocabulary data — EOI exam preparation, organised by theme and level.
 //
-// 380 words across 4 thematic blocks (as of r20). Block 1 (Daily Life) has
-// 300 words at B1/B2/C1. Block 2 (Identity & Science) has 80 words at C1
-// only — the rest of Block 2 levels and Blocks 3-4 land in future rounds.
+// 460 words across 4 thematic blocks (as of r21). Block 1 (Daily Life) has
+// 300 words at B1/B2/C1. Block 2 (Identity & Science) now has 160 words:
+// 80 at B2 (NEW in r21) and 80 at C1 (from r20). B1 and C2 of Block 2,
+// plus all of Blocks 3-4, land in future rounds.
 //
 // ⚠️  CONTENT DISCLAIMER:
 //   • Block 1 (Daily Life): vocabulary generated based on standard EOI exam
 //     syllabuses (Cambridge, BBC English, CEFR descriptors). Examples are
 //     short and didactic in style.
-//   • Block 2 C1 (Identity & Science): examples are crafted in the style of
+//   • Block 2 C1 (Identity & Science): examples crafted in the style of
 //     real EOI Andalucía certification exams (convocatoria extraordinaria
 //     2024/2025, NIVEL C1 INGLÉS). Longer, journalistic register, drawing
-//     on actual exam reading passages for tone and structure. NOT extracted
-//     verbatim from any single exam paper.
+//     on actual exam reading passages for tone and structure.
+//   • Block 2 B2 (Identity & Science): examples crafted in the style of
+//     real EOI Andalucía certification exams (convocatoria ordinaria
+//     2024/2025, NIVEL B2 INGLÉS). Shorter, more accessible register —
+//     "lifestyle journalism" tone (think Guardian Wellbeing section),
+//     8-15 words per example, simpler subordinate clauses than C1.
+//   • All Block 2 EOI-style examples are NEW compositions inspired by
+//     the exam style — NOT extracted verbatim from any single exam paper.
 //
 //   ALL content should be reviewed by a certified EOI teacher before being
 //   used as preparation for the official exam.
@@ -24,7 +31,9 @@
 //   en       — English word or expression (the headword)
 //   es       — Spanish translation
 //   example  — One example sentence in English (varies by level/block:
-//                Block 1 ≈ 6-10 words, Block 2 C1 ≈ 12-20 words EOI-style)
+//                Block 1     ≈ 6-10 words
+//                Block 2 B2  ≈ 8-15 words, EOI lifestyle-journalism style
+//                Block 2 C1  ≈ 12-20 words, EOI editorial-journalism style)
 
 // ────────────────────────────────────────────────────────────────────
 // Thematic blocks — group related themes for the BlockSelector UI.
@@ -473,7 +482,28 @@ export const VOCAB_THEMES = {
     color: "#9B59B6",
     levels: {
       B1: [],
-      B2: [],
+      B2: [
+        { en: "Cultural heritage",      es: "Patrimonio cultural",                   example: "The festival is an important part of the town's cultural heritage." },
+        { en: "Cultural shock",         es: "Choque cultural",                       example: "Moving to Japan gave him a real cultural shock at first." },
+        { en: "To blend in",            es: "Integrarse / Mezclarse",                example: "He's been trying hard to blend in since he moved to Madrid." },
+        { en: "Mother tongue",          es: "Lengua materna",                        example: "She speaks three languages, but Spanish is still her mother tongue." },
+        { en: "Open-minded",            es: "De mente abierta",                      example: "Travelling abroad has made her much more open-minded about other cultures." },
+        { en: "To feel at home",        es: "Sentirse como en casa",                 example: "After two years in Berlin, I finally feel at home here." },
+        { en: "Custom",                 es: "Costumbre",                             example: "Removing your shoes before entering a house is a common custom in Japan." },
+        { en: "To make a fresh start",  es: "Empezar de cero",                       example: "She moved to Barcelona hoping to make a fresh start after the divorce." },
+        { en: "Sense of belonging",     es: "Sentido de pertenencia",                example: "Joining the local choir gave him a real sense of belonging." },
+        { en: "Mixed-race",             es: "Mestizo / De raza mixta",               example: "More and more mixed-race families are visible in television advertising today." },
+        { en: "Stereotype",             es: "Estereotipo",                           example: "The film unfortunately reinforces an old stereotype about teenage girls." },
+        { en: "To get along with",      es: "Llevarse bien con",                     example: "She gets along really well with her flatmates from different countries." },
+        { en: "Generation gap",         es: "Brecha generacional",                   example: "There's a clear generation gap between my parents and my grandparents." },
+        { en: "Native speaker",         es: "Hablante nativo",                       example: "Practising with a native speaker is the best way to improve pronunciation." },
+        { en: "To value diversity",     es: "Valorar la diversidad",                 example: "Modern companies say they value diversity but often fail to show it." },
+        { en: "Lifestyle",              es: "Estilo de vida",                        example: "Living by the coast has completely changed her family's lifestyle." },
+        { en: "To stand out",           es: "Destacar",                              example: "His unusual sense of humour really makes him stand out at work." },
+        { en: "Cultural background",    es: "Trasfondo cultural",                    example: "Her cultural background gave her a fresh perspective on the project." },
+        { en: "To get used to",         es: "Acostumbrarse a",                       example: "It took her months to get used to the British weather." },
+        { en: "Way of life",            es: "Modo de vida",                          example: "Slow travel has become a popular way of life among young people." },
+      ],
       C1: [
         { en: "Cultural appropriation",   es: "Apropiación cultural",                          example: "The brand faced backlash for what critics described as blatant cultural appropriation." },
         { en: "Melting pot",              es: "Crisol de culturas",                            example: "New York has long been seen as the ultimate melting pot of immigrant communities." },
@@ -505,7 +535,28 @@ export const VOCAB_THEMES = {
     color: "#9B59B6",
     levels: {
       B1: [],
-      B2: [],
+      B2: [
+        { en: "Breakthrough",            es: "Avance crucial",                       example: "Scientists hope the new vaccine will be a breakthrough in cancer treatment." },
+        { en: "To carry out a study",    es: "Realizar un estudio",                  example: "The university is carrying out a study on student sleep habits." },
+        { en: "Findings",                es: "Resultados / Hallazgos",               example: "The findings of the report came as a surprise to many experts." },
+        { en: "Scientific evidence",     es: "Evidencia científica",                 example: "There is strong scientific evidence that walking improves overall mood." },
+        { en: "To discover",             es: "Descubrir",                            example: "Researchers have discovered a new species of frog in the Amazon." },
+        { en: "Side effect",             es: "Efecto secundario",                    example: "The medicine works well but has some minor side effects." },
+        { en: "Lab experiment",          es: "Experimento de laboratorio",           example: "The students designed a simple lab experiment to test their hypothesis." },
+        { en: "Research team",           es: "Equipo de investigación",              example: "A research team from Oxford has published an interesting paper this month." },
+        { en: "Cure",                    es: "Cura",                                 example: "Doctors are still searching for a cure for the common cold." },
+        { en: "Outcome",                 es: "Resultado",                            example: "The outcome of the experiment will be announced next week." },
+        { en: "To test",                 es: "Probar / Comprobar",                   example: "Engineers are testing the new electric car on different surfaces." },
+        { en: "Trial and error",         es: "Prueba y error",                       example: "She learnt to bake mostly through trial and error at home." },
+        { en: "To make progress",        es: "Hacer progresos",                      example: "Researchers are making real progress in understanding climate patterns." },
+        { en: "Brain power",             es: "Capacidad mental",                     example: "Solving puzzles is a fun way to keep your brain power sharp." },
+        { en: "To prove",                es: "Demostrar",                            example: "Recent studies have proved that small habits really do make a difference." },
+        { en: "Research paper",          es: "Artículo de investigación",            example: "She published her first research paper while still at university." },
+        { en: "Sample",                  es: "Muestra",                              example: "The doctor took a blood sample to check her vitamin levels." },
+        { en: "Hi-tech",                 es: "De alta tecnología",                   example: "The hospital has invested heavily in new hi-tech equipment." },
+        { en: "To analyse data",         es: "Analizar datos",                       example: "Scientists are analysing the data collected during last year's expedition." },
+        { en: "Discovery",               es: "Descubrimiento",                       example: "The discovery of penicillin changed modern medicine forever." },
+      ],
       C1: [
         { en: "Cutting-edge technology",         es: "Tecnología de vanguardia",                  example: "Researchers rely on cutting-edge technology to push the boundaries of medical science." },
         { en: "Clinical trials",                 es: "Ensayos clínicos",                          example: "The drug must complete three phases of clinical trials before reaching the market." },
@@ -537,7 +588,28 @@ export const VOCAB_THEMES = {
     color: "#9B59B6",
     levels: {
       B1: [],
-      B2: [],
+      B2: [
+        { en: "Endangered species",         es: "Especies en peligro",                example: "Pandas remain one of the world's most famous endangered species." },
+        { en: "Climate change",             es: "Cambio climático",                   example: "Many young people are worried about the effects of climate change." },
+        { en: "Global warming",             es: "Calentamiento global",               example: "Global warming is causing sea levels to rise faster than predicted." },
+        { en: "Pollution",                  es: "Contaminación",                      example: "Pollution in big cities has become a serious health problem." },
+        { en: "Wildlife",                   es: "Vida salvaje / Fauna",               example: "The new national park aims to protect local wildlife." },
+        { en: "Recycling",                  es: "Reciclaje",                          example: "Recycling at home is one of the easiest ways to help the planet." },
+        { en: "To take after",              es: "Parecerse a (familia)",              example: "She really takes after her mother in both looks and personality." },
+        { en: "Habit",                      es: "Hábito",                             example: "Reading before bed has become a relaxing habit for me." },
+        { en: "To raise a child",           es: "Criar a un hijo",                    example: "Many parents struggle to raise a child in the digital age." },
+        { en: "Eco-friendly",               es: "Respetuoso con el medio ambiente",   example: "More families are choosing eco-friendly products for their daily routines." },
+        { en: "To run in the family",       es: "Venir de familia",                   example: "Musical talent definitely runs in their family." },
+        { en: "Natural habitat",            es: "Hábitat natural",                    example: "Many animals struggle to survive outside their natural habitat." },
+        { en: "Green energy",               es: "Energía verde",                      example: "Spain has invested heavily in green energy over the last decade." },
+        { en: "Upbringing",                 es: "Educación / Crianza",                example: "His upbringing in the countryside taught him to value simple things." },
+        { en: "Carbon footprint",           es: "Huella de carbono",                  example: "Eating less meat is a good way to reduce your carbon footprint." },
+        { en: "To go green",                es: "Hacerse ecológico",                  example: "Many small businesses are trying to go green this year." },
+        { en: "Genes",                      es: "Genes",                              example: "Scientists believe many illnesses are linked to our genes." },
+        { en: "Personality trait",          es: "Rasgo de personalidad",              example: "Patience is probably her most attractive personality trait." },
+        { en: "To plant trees",             es: "Plantar árboles",                    example: "The local school plants trees every spring as part of a project." },
+        { en: "Single-use plastic",         es: "Plástico de un solo uso",            example: "Several countries have banned single-use plastic bags entirely." },
+      ],
       C1: [
         { en: "Biodiversity loss",              es: "Pérdida de biodiversidad",                       example: "Biodiversity loss is accelerating faster than at any other point in recorded history." },
         { en: "Environmental awareness",        es: "Conciencia medioambiental",                      example: "Schools have a crucial role to play in raising environmental awareness from an early age." },
@@ -569,7 +641,28 @@ export const VOCAB_THEMES = {
     color: "#9B59B6",
     levels: {
       B1: [],
-      B2: [],
+      B2: [
+        { en: "Get over an illness",           es: "Superar una enfermedad",                example: "It took her almost two months to fully get over the flu." },
+        { en: "To stay fit",                   es: "Mantenerse en forma",                   example: "Cycling to work is a great way to stay fit and save money." },
+        { en: "Symptoms",                      es: "Síntomas",                              example: "If your symptoms get worse, you should call the doctor straight away." },
+        { en: "Healthy diet",                  es: "Dieta saludable",                       example: "Doctors agree that a healthy diet is the basis of good health." },
+        { en: "To work out",                   es: "Hacer ejercicio",                       example: "He tries to work out three times a week after work." },
+        { en: "Painkiller",                    es: "Analgésico",                            example: "She took a painkiller because of her terrible headache." },
+        { en: "To put on weight",              es: "Engordar",                              example: "Many people put on weight over the Christmas holidays." },
+        { en: "To lose weight",                es: "Perder peso",                           example: "He's been trying to lose weight by eating less sugar." },
+        { en: "Common cold",                   es: "Resfriado común",                       example: "There's still no real cure for the common cold." },
+        { en: "Side effect",                   es: "Efecto secundario",                     example: "Drowsiness is the most common side effect of this medicine." },
+        { en: "To feel sick",                  es: "Sentirse mal / con náuseas",            example: "I started feeling sick during the long bus journey." },
+        { en: "Check-up",                      es: "Revisión médica",                       example: "It's a good idea to have a check-up at least once a year." },
+        { en: "Stress-related",                es: "Relacionado con el estrés",             example: "Many of her health problems turned out to be stress-related." },
+        { en: "To get vaccinated",             es: "Vacunarse",                             example: "Doctors recommend getting vaccinated against the flu every autumn." },
+        { en: "Wellbeing",                     es: "Bienestar",                             example: "Companies are paying more attention to the wellbeing of their staff." },
+        { en: "To recover from",               es: "Recuperarse de",                        example: "She's still recovering from the surgery she had last month." },
+        { en: "Mental health",                 es: "Salud mental",                          example: "Talking to friends regularly is great for your mental health." },
+        { en: "To suffer from",                es: "Padecer / Sufrir",                      example: "He has been suffering from chronic back pain for years." },
+        { en: "Balanced lifestyle",            es: "Estilo de vida equilibrado",            example: "A balanced lifestyle is more effective than any short diet." },
+        { en: "To make an appointment",        es: "Pedir cita",                            example: "I'll make an appointment with the dentist for next Friday." },
+      ],
       C1: [
         { en: "Burnout syndrome",                 es: "Síndrome de estar quemado",                        example: "Long working hours have contributed to a sharp rise in burnout syndrome among professionals." },
         { en: "Chronic ailment",                  es: "Dolencia crónica",                                 example: "She has been battling a chronic ailment that has gradually limited her mobility over the years." },
