@@ -1,14 +1,21 @@
 // Vocabulary data — EOI exam preparation, organised by theme and level.
 //
-// 300 words across 5 themes × 3 levels × 20 words (Block 1 only as of r19).
-// Blocks 2, 3, 4 contain themes but no words yet — those land in rounds 20-22.
+// 380 words across 4 thematic blocks (as of r20). Block 1 (Daily Life) has
+// 300 words at B1/B2/C1. Block 2 (Identity & Science) has 80 words at C1
+// only — the rest of Block 2 levels and Blocks 3-4 land in future rounds.
 //
 // ⚠️  CONTENT DISCLAIMER:
-//   This vocabulary was generated based on standard EOI exam syllabuses
-//   (Cambridge, BBC English, Council of Europe CEFR descriptors). It is a
-//   solid starting point but it has NOT been reviewed by a certified EOI
-//   teacher. The official syllabus may vary between autonomous communities
-//   in Spain. Before using this for a real exam, have a teacher review it.
+//   • Block 1 (Daily Life): vocabulary generated based on standard EOI exam
+//     syllabuses (Cambridge, BBC English, CEFR descriptors). Examples are
+//     short and didactic in style.
+//   • Block 2 C1 (Identity & Science): examples are crafted in the style of
+//     real EOI Andalucía certification exams (convocatoria extraordinaria
+//     2024/2025, NIVEL C1 INGLÉS). Longer, journalistic register, drawing
+//     on actual exam reading passages for tone and structure. NOT extracted
+//     verbatim from any single exam paper.
+//
+//   ALL content should be reviewed by a certified EOI teacher before being
+//   used as preparation for the official exam.
 //
 // To edit an item: find it below by its English word and update the
 // `en`, `es`, or `example` fields. The UI picks up changes automatically.
@@ -16,7 +23,8 @@
 // Format of each item:
 //   en       — English word or expression (the headword)
 //   es       — Spanish translation
-//   example  — One short example sentence in English (max ~12 words)
+//   example  — One example sentence in English (varies by level/block:
+//                Block 1 ≈ 6-10 words, Block 2 C1 ≈ 12-20 words EOI-style)
 
 // ────────────────────────────────────────────────────────────────────
 // Thematic blocks — group related themes for the BlockSelector UI.
@@ -463,25 +471,129 @@ export const VOCAB_THEMES = {
     name: "Culture & Identity",
     icon: "🎭",
     color: "#9B59B6",
-    levels: { B1: [], B2: [], C1: [], C2: [] },
+    levels: {
+      B1: [],
+      B2: [],
+      C1: [
+        { en: "Cultural appropriation",   es: "Apropiación cultural",                          example: "The brand faced backlash for what critics described as blatant cultural appropriation." },
+        { en: "Melting pot",              es: "Crisol de culturas",                            example: "New York has long been seen as the ultimate melting pot of immigrant communities." },
+        { en: "To preserve traditions",   es: "Preservar las tradiciones",                     example: "Younger generations are increasingly reluctant to preserve traditions they consider outdated." },
+        { en: "Alienation",               es: "Alienación / Aislamiento cultural",             example: "Many expatriates report a deep sense of alienation despite years spent abroad." },
+        { en: "Deep-rooted",              es: "Profundamente arraigado",                       example: "The festival reflects deep-rooted beliefs that have shaped the region for centuries." },
+        { en: "Social cohesion",          es: "Cohesión social",                               example: "Politicians warn that rising inequality is gradually eroding social cohesion." },
+        { en: "To fit the mold",          es: "Ajustarse al molde",                            example: "She refused to fit the mold her conservative family had prepared for her." },
+        { en: "Biculturalism",            es: "Biculturalismo",                                example: "Biculturalism, once seen as a disadvantage, is now considered a valuable asset." },
+        { en: "To pass down",             es: "Transmitir de generación en generación",        example: "Recipes are passed down from mother to daughter as a form of cultural heritage." },
+        { en: "Shunned by society",       es: "Marginado por la sociedad",                     example: "Whistleblowers are too often shunned by society rather than celebrated for their courage." },
+        { en: "To lose one's identity",   es: "Perder la propia identidad",                    example: "Many immigrants fear losing their identity while adapting to a foreign culture." },
+        { en: "Intercultural dialogue",   es: "Diálogo intercultural",                         example: "The initiative aims to foster intercultural dialogue in schools across the region." },
+        { en: "Social mores",             es: "Costumbres / Normas morales",                   example: "The novel offers a sharp critique of the social mores of Victorian England." },
+        { en: "To uproot oneself",        es: "Desarraigarse",                                 example: "Few people are willing to uproot themselves entirely for a job opportunity." },
+        { en: "Secular society",          es: "Sociedad laica",                                example: "France has long prided itself on being one of Europe's most resolutely secular societies." },
+        { en: "To be steeped in history", es: "Estar impregnado de historia",                  example: "The old quarter of the city is utterly steeped in history at every corner." },
+        { en: "Common misconception",     es: "Idea falsa común",                              example: "It's a common misconception that bats are blind, when in fact most see perfectly well." },
+        { en: "To ostracize",             es: "Marginar / Excluir socialmente",                example: "Members who broke the code of silence were ostracized by the entire community." },
+        { en: "Assimilation",             es: "Asimilación cultural",                          example: "Forced assimilation has historically caused indigenous languages to vanish within generations." },
+        { en: "A sense of pride",         es: "Sentido del orgullo",                           example: "Watching her daughter graduate filled her with an overwhelming sense of pride." },
+      ],
+      C2: [],
+    },
   },
   science: {
     name: "Science & Research",
     icon: "🔬",
     color: "#9B59B6",
-    levels: { B1: [], B2: [], C1: [], C2: [] },
+    levels: {
+      B1: [],
+      B2: [],
+      C1: [
+        { en: "Cutting-edge technology",         es: "Tecnología de vanguardia",                  example: "Researchers rely on cutting-edge technology to push the boundaries of medical science." },
+        { en: "Clinical trials",                 es: "Ensayos clínicos",                          example: "The drug must complete three phases of clinical trials before reaching the market." },
+        { en: "Ethical dilemma",                 es: "Dilema ético",                              example: "Gene editing in embryos poses an ethical dilemma that scientists cannot ignore." },
+        { en: "To carry out research",           es: "Llevar a cabo una investigación",           example: "The team has been carrying out research on artificial intelligence for over a decade." },
+        { en: "Empirical data",                  es: "Datos empíricos",                           example: "Any scientific theory must ultimately rest on solid empirical data, not speculation." },
+        { en: "Peer-reviewed",                   es: "Revisado por pares",                        example: "Only peer-reviewed studies are considered reliable sources in academic circles." },
+        { en: "To debunk a myth",                es: "Desmentir un mito",                         example: "The documentary set out to debunk the myth that vaccines cause more harm than good." },
+        { en: "Flawed methodology",              es: "Metodología defectuosa",                    example: "Critics dismissed the report on the grounds of its deeply flawed methodology." },
+        { en: "Genetically modified organisms",  es: "Organismos modificados genéticamente",      example: "The debate over genetically modified organisms remains as polarised as ever in Europe." },
+        { en: "Surgical precision",              es: "Precisión quirúrgica",                      example: "The new laser performs the operation with almost unimaginable surgical precision." },
+        { en: "To spark controversy",            es: "Desencadenar polémica",                     example: "Her findings sparked controversy among scientists who had long defended the old theory." },
+        { en: "To reach a deadlock",             es: "Llegar a un callejón sin salida",           example: "Negotiations between research teams reached a deadlock over data sharing rights." },
+        { en: "Pioneering study",                es: "Estudio pionero",                           example: "A pioneering study at MIT has shed new light on how memories are stored." },
+        { en: "Adverse reactions",               es: "Reacciones adversas",                       example: "A small percentage of patients reported adverse reactions to the experimental drug." },
+        { en: "To gather intelligence",          es: "Recopilar información",                     example: "Marine biologists are gathering intelligence on coral reefs to track climate damage." },
+        { en: "Plagiarism",                      es: "Plagio",                                    example: "The researcher was stripped of his title after evidence of plagiarism surfaced." },
+        { en: "To test a hypothesis",            es: "Someter a prueba una hipótesis",            example: "Scientists designed a series of experiments to test the hypothesis under controlled conditions." },
+        { en: "Technological leap",              es: "Salto tecnológico",                         example: "The invention of the transistor represented a technological leap of the highest order." },
+        { en: "To stem from",                    es: "Derivar de / Tener su origen en",           example: "Many modern infectious diseases stem from prolonged contact with wild animal populations." },
+        { en: "Unforeseen consequences",         es: "Consecuencias imprevistas",                 example: "Releasing the species had unforeseen consequences for the local ecosystem within months." },
+      ],
+      C2: [],
+    },
   },
   nature: {
     name: "Nature & Nurture",
     icon: "🌱",
     color: "#9B59B6",
-    levels: { B1: [], B2: [], C1: [], C2: [] },
+    levels: {
+      B1: [],
+      B2: [],
+      C1: [
+        { en: "Biodiversity loss",              es: "Pérdida de biodiversidad",                       example: "Biodiversity loss is accelerating faster than at any other point in recorded history." },
+        { en: "Environmental awareness",        es: "Conciencia medioambiental",                      example: "Schools have a crucial role to play in raising environmental awareness from an early age." },
+        { en: "To nurture talent",              es: "Nutrir / Fomentar el talento",                   example: "The foundation was created to nurture talent among young musicians from low-income families." },
+        { en: "Hereditary traits",              es: "Rasgos hereditarios",                            example: "Studies show that certain hereditary traits skip generations before resurfacing unexpectedly." },
+        { en: "Ecological disaster",            es: "Desastre ecológico",                             example: "The oil spill turned out to be one of the worst ecological disasters of the decade." },
+        { en: "Nature vs Nurture debate",       es: "Debate entre lo innato y lo adquirido",          example: "The Nature vs Nurture debate continues to divide psychologists despite mountains of research." },
+        { en: "Depletion of natural resources", es: "Agotamiento de los recursos naturales",          example: "The depletion of natural resources threatens to undermine economic growth in many regions." },
+        { en: "Sustainable development",        es: "Desarrollo sostenible",                          example: "Sustainable development requires balancing economic ambitions with the wellbeing of future generations." },
+        { en: "Predisposed to",                 es: "Predispuesto a",                                 example: "Children of asthma sufferers are statistically predisposed to developing respiratory conditions themselves." },
+        { en: "Greenwashing",                   es: "Lavado de imagen verde",                         example: "Consumers are growing weary of greenwashing tactics by corporations claiming to be eco-friendly." },
+        { en: "Behavioral genetics",            es: "Genética conductual",                            example: "Behavioral genetics seeks to determine how much of personality is inherited from our parents." },
+        { en: "Maternal instinct",              es: "Instinto maternal",                              example: "Whether maternal instinct is biological or socially constructed remains hotly contested by researchers." },
+        { en: "Environmental footprint",        es: "Huella medioambiental",                          example: "Every flight you take leaves an environmental footprint that takes decades to offset." },
+        { en: "To poach",                       es: "Cazar furtivamente",                             example: "Poaching elephants for their ivory has pushed the species to the brink of extinction." },
+        { en: "To offset carbon emissions",     es: "Compensar las emisiones de carbono",             example: "The company plants thousands of trees each year to offset its carbon emissions." },
+        { en: "Cognitive development",          es: "Desarrollo cognitivo",                           example: "Early exposure to language plays a fundamental role in a child's cognitive development." },
+        { en: "Social conditioning",            es: "Condicionamiento social",                        example: "Much of what we call common sense is in fact the product of social conditioning." },
+        { en: "Renewable resources",            es: "Recursos renovables",                            example: "Investment in renewable resources has grown sharply since the climate accords were signed." },
+        { en: "To adapt to the surroundings",   es: "Adaptarse al entorno",                           example: "Polar bears have adapted to their surroundings over thousands of years of harsh evolution." },
+        { en: "Environmental degradation",      es: "Degradación ambiental",                          example: "Decades of environmental degradation have left the river ecosystem on the verge of collapse." },
+      ],
+      C2: [],
+    },
   },
   health: {
     name: "Health & Illness",
     icon: "🏥",
     color: "#9B59B6",
-    levels: { B1: [], B2: [], C1: [], C2: [] },
+    levels: {
+      B1: [],
+      B2: [],
+      C1: [
+        { en: "Burnout syndrome",                 es: "Síndrome de estar quemado",                        example: "Long working hours have contributed to a sharp rise in burnout syndrome among professionals." },
+        { en: "Chronic ailment",                  es: "Dolencia crónica",                                 example: "She has been battling a chronic ailment that has gradually limited her mobility over the years." },
+        { en: "Healthcare system",                es: "Sistema sanitario",                                example: "Critics argue that the healthcare system can no longer cope with an ageing population." },
+        { en: "Mental well-being",                es: "Bienestar mental",                                 example: "Employers are starting to take mental well-being as seriously as physical health." },
+        { en: "Under the weather",                es: "Sentirse indispuesto",                             example: "She's been feeling rather under the weather since coming back from her business trip." },
+        { en: "To alleviate pain",                es: "Aliviar el dolor",                                 example: "Doctors prescribed mild medication to alleviate the pain without causing drowsiness." },
+        { en: "Medical breakthrough",             es: "Avance médico revolucionario",                     example: "A genuine medical breakthrough could transform the lives of millions of patients with Alzheimer's." },
+        { en: "Preventive medicine",              es: "Medicina preventiva",                              example: "Investing in preventive medicine ultimately saves the healthcare system enormous amounts of money." },
+        { en: "To contract a disease",            es: "Contraer una enfermedad",                          example: "Travellers are advised to take precautions to avoid contracting tropical diseases abroad." },
+        { en: "To take a heavy toll on health",   es: "Pasar factura a la salud",                         example: "The relentless pressure of the job had taken a heavy toll on her health over time." },
+        { en: "Psychosomatic illness",            es: "Enfermedad psicosomática",                         example: "Doctors increasingly recognise that stress can trigger genuine psychosomatic illness in vulnerable patients." },
+        { en: "To trigger an allergic reaction",  es: "Desencadenar una reacción alérgica",               example: "Even trace amounts of peanut can trigger a severe allergic reaction in some children." },
+        { en: "Malnutrition",                     es: "Malnutrición",                                     example: "Despite the country's economic growth, malnutrition still affects nearly a quarter of children." },
+        { en: "Splitting headache",               es: "Dolor de cabeza insoportable",                     example: "She woke up with a splitting headache that no amount of painkillers could shift." },
+        { en: "As fit as a fiddle",               es: "En perfecta forma física",                         example: "At eighty-five, my grandfather is still as fit as a fiddle and runs every morning." },
+        { en: "To administer first aid",          es: "Administrar primeros auxilios",                    example: "Bystanders managed to administer first aid before the ambulance arrived at the scene." },
+        { en: "Sedentary toll",                   es: "Coste del sedentarismo",                           example: "The sedentary toll of office work is becoming a major concern for occupational health experts." },
+        { en: "To come down with",                es: "Caer enfermo de",                                  example: "Half the office came down with the flu just before the Christmas holidays began." },
+        { en: "Inpatient / Outpatient",           es: "Paciente ingresado / Paciente ambulatorio",        example: "The procedure can be performed on either an inpatient or outpatient basis, depending on circumstances." },
+        { en: "To build up resistance",           es: "Desarrollar resistencia",                          example: "Overuse of antibiotics allows bacteria to build up resistance to the drugs we depend on." },
+      ],
+      C2: [],
+    },
   },
 
   // ──────────────────────────────────────────────────────────────────
