@@ -1,10 +1,10 @@
 // Vocabulary data — EOI exam preparation, organised by theme and level.
 //
-// 620 words across 4 thematic blocks (as of r23). Block 1 (Daily Life) has
+// 700 words across 4 thematic blocks (as of r24). Block 1 (Daily Life) has
 // 300 words at B1/B2/C1. Block 2 (Identity & Science) has 240 words at
-// B1/B2/C1. Block 3 (Politics & History) has 80 words at C1 (NEW in r23).
-// B2 and B1 of Block 3, C2 of Block 2, and all of Block 4 land in future
-// rounds.
+// B1/B2/C1. Block 3 (Politics & History) has 160 words at B2 (NEW in r24)
+// and C1. B1 of Block 3, C2 of Blocks 2 and 3, and all of Block 4 land
+// in future rounds.
 //
 // ⚠️  CONTENT DISCLAIMER:
 //   • Block 1 (Daily Life): standard CEFR-aligned vocabulary, short
@@ -15,12 +15,11 @@
 //     B2 exam (ordinaria 2024/2025, lifestyle-journalism register).
 //   • Block 2 C1: examples crafted in the style of real EOI Andalucía
 //     C1 exam (extraordinaria 2024/2025, editorial-journalism register).
+//   • Block 3 B2 (Politics & History): assistant-generated B2 vocabulary
+//     aligned to themes (Politics, Conflict, History, News). Same
+//     lifestyle-journalism register as Block 2 B2.
 //   • Block 3 C1 (Politics & History): assistant-generated C1 vocabulary
-//     aligned to themes (Politics, Conflict & Resolution, History, News
-//     & the Media). Same editorial-journalism register as Block 2 C1,
-//     drawing on the kind of language found in real EOI C1 reading
-//     passages on political and historical topics. NOT based on a
-//     specific EOI exam paper for Block 3.
+//     aligned to themes. Same editorial-journalism register as Block 2 C1.
 //
 //   ALL content should be reviewed by a certified EOI teacher before being
 //   used as preparation for the official exam.
@@ -36,7 +35,8 @@
 //                Block 2 B1  ≈ 6-12 words, simple everyday register
 //                Block 2 B2  ≈ 8-15 words, EOI lifestyle-journalism style
 //                Block 2 C1  ≈ 12-20 words, EOI editorial-journalism style
-//                Block 3 C1  ≈ 12-20 words, EOI editorial-journalism style)
+//                Block 3 B2  ≈ 8-15 words, lifestyle-journalism register
+//                Block 3 C1  ≈ 12-20 words, editorial-journalism register)
 
 // ────────────────────────────────────────────────────────────────────
 // Thematic blocks — group related themes for the BlockSelector UI.
@@ -785,7 +785,28 @@ export const VOCAB_THEMES = {
     color: "#C0392B",
     levels: {
       B1: [],
-      B2: [],
+      B2: [
+        { en: "Political party",         es: "Partido político",                example: "Most political parties published their manifestos a few weeks before the election." },
+        { en: "Prime Minister",          es: "Primer Ministro",                 example: "The Prime Minister gave a speech about the new education plan yesterday." },
+        { en: "To vote",                 es: "Votar",                           example: "Young people are voting in greater numbers than ten years ago." },
+        { en: "Election campaign",       es: "Campaña electoral",               example: "The election campaign focused mainly on housing and the cost of living." },
+        { en: "Government",              es: "Gobierno",                        example: "The government has announced new measures to support small businesses." },
+        { en: "Politician",              es: "Político",                        example: "Many politicians have promised to take climate change more seriously." },
+        { en: "To make a promise",       es: "Hacer una promesa",               example: "Candidates often make promises that are difficult to keep once in office." },
+        { en: "Public services",         es: "Servicios públicos",              example: "Investment in public services has been a key topic in the debate." },
+        { en: "To raise taxes",          es: "Subir los impuestos",             example: "The new minister has decided to raise taxes on luxury goods." },
+        { en: "Citizens' rights",        es: "Derechos de los ciudadanos",      example: "The law aims to protect citizens' rights to free expression online." },
+        { en: "Polling station",         es: "Colegio electoral",               example: "Long queues were reported at polling stations across the country." },
+        { en: "Spokesperson",            es: "Portavoz",                        example: "The party spokesperson denied any involvement in the scandal." },
+        { en: "Town hall",               es: "Ayuntamiento",                    example: "The town hall has organised a series of meetings to listen to residents." },
+        { en: "To run for office",       es: "Presentarse a un cargo",          example: "She announced last week that she will run for office at the next election." },
+        { en: "Left-wing / Right-wing",  es: "De izquierdas / De derechas",     example: "The country has shifted between left-wing and right-wing governments for decades." },
+        { en: "Minister",                es: "Ministro",                        example: "The new education minister visited several schools during her first week." },
+        { en: "Public opinion",          es: "Opinión pública",                 example: "Public opinion has slowly turned against the controversial reform." },
+        { en: "To pass a law",           es: "Aprobar una ley",                 example: "Parliament finally passed a law to ban single-use plastics last spring." },
+        { en: "Equal rights",            es: "Derechos iguales",                example: "Many countries have made progress on equal rights over the past twenty years." },
+        { en: "To debate",               es: "Debatir",                         example: "Members of parliament debated the proposal for over six hours yesterday." },
+      ],
       C1: [
         { en: "To pass legislation",        es: "Aprobar legislación",                      example: "The government managed to pass legislation despite fierce opposition from rival parties." },
         { en: "Civil liberties",            es: "Libertades civiles",                       example: "Campaigners warn that the new surveillance law could undermine fundamental civil liberties." },
@@ -817,7 +838,28 @@ export const VOCAB_THEMES = {
     color: "#C0392B",
     levels: {
       B1: [],
-      B2: [],
+      B2: [
+        { en: "War",                     es: "Guerra",                          example: "Many families had to leave their homes because of the war." },
+        { en: "Peace",                   es: "Paz",                             example: "After years of fighting, both countries finally agreed to make peace." },
+        { en: "Soldier",                 es: "Soldado",                         example: "The soldiers were welcomed home by their families and friends." },
+        { en: "Refugee",                 es: "Refugiado",                       example: "Many refugees have been arriving in Europe over the past few months." },
+        { en: "To fight for",            es: "Luchar por",                      example: "Activists continue to fight for human rights all over the world." },
+        { en: "Demonstration",           es: "Manifestación",                   example: "A peaceful demonstration was held in front of the parliament yesterday." },
+        { en: "To protest against",      es: "Protestar contra",                example: "Thousands of people gathered to protest against the rise in fuel prices." },
+        { en: "Border",                  es: "Frontera",                        example: "Many families were separated when the new border was drawn." },
+        { en: "To reach an agreement",   es: "Llegar a un acuerdo",             example: "After long talks, the two countries finally reached an agreement on trade." },
+        { en: "Disagreement",            es: "Desacuerdo",                      example: "There was a serious disagreement between the leaders during the meeting." },
+        { en: "Argument",                es: "Discusión / Argumento",           example: "They had a small argument about who should pay the bill." },
+        { en: "To make peace",           es: "Hacer las paces",                 example: "After years of silence, the two brothers finally made peace." },
+        { en: "Threat",                  es: "Amenaza",                         example: "Climate change is now seen as the biggest threat to our future." },
+        { en: "Solution",                es: "Solución",                        example: "We need to find a solution to this problem as soon as possible." },
+        { en: "To negotiate",            es: "Negociar",                        example: "The unions are still negotiating with the company about salaries." },
+        { en: "Tension",                 es: "Tensión",                         example: "There has been tension between the two countries for several months." },
+        { en: "Aid worker",              es: "Trabajador humanitario",          example: "Aid workers are doing an amazing job in difficult conditions." },
+        { en: "To stand up for",         es: "Defender",                        example: "She has always stood up for what she believes in." },
+        { en: "Violence",                es: "Violencia",                       example: "The protest started peacefully but ended in violence between police and protesters." },
+        { en: "Human rights",            es: "Derechos humanos",                example: "Human rights organisations have published a worrying report this month." },
+      ],
       C1: [
         { en: "Armed conflict",             es: "Conflicto armado",                          example: "The region has been ravaged by armed conflict for the better part of a decade." },
         { en: "Ceasefire agreement",        es: "Acuerdo de alto el fuego",                  example: "Both sides have signed a fragile ceasefire agreement that few believe will hold for long." },
@@ -849,7 +891,28 @@ export const VOCAB_THEMES = {
     color: "#C0392B",
     levels: {
       B1: [],
-      B2: [],
+      B2: [
+        { en: "Historical event",        es: "Hecho histórico",                 example: "The fall of the Berlin Wall was an important historical event of the 20th century." },
+        { en: "Ancient civilisation",    es: "Civilización antigua",            example: "Tourists come to Egypt to discover one of the world's most ancient civilisations." },
+        { en: "King / Queen",            es: "Rey / Reina",                     example: "The king and queen visited a small village in the north of the country." },
+        { en: "Battle",                  es: "Batalla",                         example: "The battle lasted three days and changed the course of the war." },
+        { en: "To win independence",     es: "Conseguir la independencia",      example: "Several African countries won their independence during the 1960s." },
+        { en: "Empire",                  es: "Imperio",                         example: "The Roman Empire ruled most of Europe for several centuries." },
+        { en: "Museum",                  es: "Museo",                           example: "The museum has a large collection of art from the Middle Ages." },
+        { en: "Castle",                  es: "Castillo",                        example: "The old castle on the hill is one of the most visited places in the area." },
+        { en: "To discover",             es: "Descubrir",                       example: "Archaeologists have discovered the remains of an old Roman villa." },
+        { en: "Monument",                es: "Monumento",                       example: "A new monument was built in the square to remember the war victims." },
+        { en: "Century",                 es: "Siglo",                           example: "Most of the buildings in this street date from the 19th century." },
+        { en: "To found a city",         es: "Fundar una ciudad",               example: "Legend says the city was founded by two brothers thousands of years ago." },
+        { en: "Slavery",                 es: "Esclavitud",                      example: "The abolition of slavery was a key moment in modern history." },
+        { en: "Famous figure",           es: "Personaje famoso",                example: "Cleopatra remains one of the most famous figures of the ancient world." },
+        { en: "Period",                  es: "Período / Época",                example: "The Victorian period was a time of huge social change in Britain." },
+        { en: "Tradition",               es: "Tradición",                       example: "Many local traditions have been kept alive for hundreds of years." },
+        { en: "To bring down a regime",  es: "Derribar un régimen",             example: "The protests eventually brought down the regime after weeks of strikes." },
+        { en: "Independence",            es: "Independencia",                   example: "The country celebrates its independence every year on March 25th." },
+        { en: "Revolution",              es: "Revolución",                      example: "The Industrial Revolution completely changed daily life in Europe." },
+        { en: "Heritage site",           es: "Sitio patrimonial",               example: "Granada has several heritage sites that attract millions of tourists." },
+      ],
       C1: [
         { en: "To shape the course of",     es: "Determinar el curso de",                   example: "Few events have shaped the course of modern Europe as decisively as the fall of the Berlin Wall." },
         { en: "Watershed moment",           es: "Momento decisivo / Hito",                  example: "Historians widely regard 1989 as a watershed moment in twentieth-century politics." },
@@ -881,7 +944,28 @@ export const VOCAB_THEMES = {
     color: "#C0392B",
     levels: {
       B1: [],
-      B2: [],
+      B2: [
+        { en: "Journalist",              es: "Periodista",                      example: "She has worked as a journalist for over twenty years." },
+        { en: "Newspaper",               es: "Periódico",                       example: "He reads the newspaper online during his morning coffee." },
+        { en: "Headline",                es: "Titular",                         example: "The story made the front page headline of every major newspaper." },
+        { en: "TV channel",              es: "Canal de televisión",             example: "This TV channel produces some of the best documentaries in the country." },
+        { en: "Article",                 es: "Artículo",                        example: "I read a really interesting article about new ways of working." },
+        { en: "Social network",          es: "Red social",                      example: "Many teenagers spend several hours a day on social networks." },
+        { en: "To post a comment",       es: "Publicar un comentario",          example: "Be careful what you post as a comment online — it can stay forever." },
+        { en: "To follow the news",      es: "Seguir las noticias",             example: "I try to follow the news every morning before going to work." },
+        { en: "Report",                  es: "Reportaje / Informe",             example: "The BBC has just published a long report on the housing crisis." },
+        { en: "Live broadcast",          es: "Emisión en directo",              example: "The interview was a live broadcast and millions of people watched it." },
+        { en: "To share information",    es: "Compartir información",           example: "Social media makes it very easy to share information with friends." },
+        { en: "Public figure",           es: "Figura pública",                  example: "Public figures are often photographed even during their holidays." },
+        { en: "Press conference",        es: "Rueda de prensa",                 example: "The minister gave a press conference to explain the new measures." },
+        { en: "Local news",              es: "Noticias locales",                example: "The local news is a great way to find out what is happening in your area." },
+        { en: "To spread rumours",       es: "Difundir rumores",                example: "Some websites spread rumours that are very hard to stop." },
+        { en: "Front page",              es: "Portada",                         example: "The accident appeared on the front page of every newspaper that morning." },
+        { en: "Reliable source",         es: "Fuente fiable",                   example: "Always check that you are reading a reliable source before sharing news." },
+        { en: "Influencer",              es: "Influencer",                      example: "Some influencers have more followers than national newspapers." },
+        { en: "Censorship",              es: "Censura",                         example: "Censorship is still a serious problem in many parts of the world." },
+        { en: "To express an opinion",   es: "Expresar una opinión",            example: "In a democracy, everyone should be able to express an opinion freely." },
+      ],
       C1: [
         { en: "Breaking news",              es: "Noticia de última hora",                   example: "Networks interrupted regular programming to bring breaking news from the parliamentary chamber." },
         { en: "Investigative journalism",   es: "Periodismo de investigación",              example: "Months of investigative journalism uncovered a network of offshore accounts linked to senior officials." },
