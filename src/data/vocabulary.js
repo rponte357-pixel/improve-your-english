@@ -1,25 +1,22 @@
 // Vocabulary data — EOI exam preparation, organised by theme and level.
 //
-// 700 words across 4 thematic blocks (as of r24). Block 1 (Daily Life) has
+// 780 words across 4 thematic blocks (as of r25). Block 1 (Daily Life) has
 // 300 words at B1/B2/C1. Block 2 (Identity & Science) has 240 words at
-// B1/B2/C1. Block 3 (Politics & History) has 160 words at B2 (NEW in r24)
-// and C1. B1 of Block 3, C2 of Blocks 2 and 3, and all of Block 4 land
-// in future rounds.
+// B1/B2/C1. Block 3 (Politics & History) has 240 words at B1/B2/C1
+// (B1 NEW in r25). C2 of Blocks 2 and 3 deferred. Block 4 still pending.
 //
 // ⚠️  CONTENT DISCLAIMER:
-//   • Block 1 (Daily Life): standard CEFR-aligned vocabulary, short
-//     didactic examples.
-//   • Block 2 B1: assistant-generated B1 vocabulary aligned to themes
-//     (no B1 EOI papers available at time of writing).
-//   • Block 2 B2: examples crafted in the style of real EOI Andalucía
-//     B2 exam (ordinaria 2024/2025, lifestyle-journalism register).
-//   • Block 2 C1: examples crafted in the style of real EOI Andalucía
-//     C1 exam (extraordinaria 2024/2025, editorial-journalism register).
-//   • Block 3 B2 (Politics & History): assistant-generated B2 vocabulary
-//     aligned to themes (Politics, Conflict, History, News). Same
-//     lifestyle-journalism register as Block 2 B2.
-//   • Block 3 C1 (Politics & History): assistant-generated C1 vocabulary
-//     aligned to themes. Same editorial-journalism register as Block 2 C1.
+//   • Block 1 (Daily Life): standard CEFR-aligned vocabulary.
+//   • Block 2 B1: assistant-generated B1 vocabulary aligned to themes.
+//   • Block 2 B2: examples crafted in EOI Andalucía B2 style.
+//   • Block 2 C1: examples crafted in EOI Andalucía C1 style.
+//   • Block 3 B1: assistant-generated B1 vocabulary aligned to themes
+//     (Politics, Conflict, History, News). Simple everyday register.
+//     NOT based on a specific EOI exam paper for this block.
+//   • Block 3 B2: assistant-generated B2 vocabulary, lifestyle-journalism
+//     register matching Block 2 B2.
+//   • Block 3 C1: assistant-generated C1 vocabulary, editorial-journalism
+//     register matching Block 2 C1.
 //
 //   ALL content should be reviewed by a certified EOI teacher before being
 //   used as preparation for the official exam.
@@ -35,6 +32,7 @@
 //                Block 2 B1  ≈ 6-12 words, simple everyday register
 //                Block 2 B2  ≈ 8-15 words, EOI lifestyle-journalism style
 //                Block 2 C1  ≈ 12-20 words, EOI editorial-journalism style
+//                Block 3 B1  ≈ 6-12 words, simple everyday register
 //                Block 3 B2  ≈ 8-15 words, lifestyle-journalism register
 //                Block 3 C1  ≈ 12-20 words, editorial-journalism register)
 
@@ -784,7 +782,28 @@ export const VOCAB_THEMES = {
     icon: "🏛️",
     color: "#C0392B",
     levels: {
-      B1: [],
+      B1: [
+        { en: "President",            es: "Presidente",                    example: "The president lives in the white house in Washington." },
+        { en: "King",                 es: "Rey",                           example: "The king visited a school in the south of the country." },
+        { en: "Queen",                es: "Reina",                         example: "The queen gives a speech every year on television." },
+        { en: "Law",                  es: "Ley",                           example: "There is a new law about smoking in public places." },
+        { en: "Country",              es: "País",                          example: "Spain is a country in the south of Europe." },
+        { en: "City",                 es: "Ciudad",                        example: "Madrid is the biggest city in Spain." },
+        { en: "Capital",              es: "Capital",                       example: "Paris is the capital of France." },
+        { en: "Flag",                 es: "Bandera",                       example: "The Spanish flag has red and yellow colours." },
+        { en: "Election",             es: "Elección",                      example: "There will be a general election next year." },
+        { en: "Free",                 es: "Libre / Gratis",                example: "People should be free to choose their own leaders." },
+        { en: "Mayor",                es: "Alcalde",                       example: "The new mayor wants more parks for children." },
+        { en: "Rule",                 es: "Norma / Regla",                example: "Every school has its own rules for students." },
+        { en: "To agree",             es: "Estar de acuerdo",              example: "I agree with you about the new park." },
+        { en: "To disagree",          es: "No estar de acuerdo",           example: "My brother and I often disagree about politics." },
+        { en: "Speech",               es: "Discurso",                      example: "The minister gave a short speech this morning." },
+        { en: "Society",              es: "Sociedad",                      example: "Modern society is changing very quickly." },
+        { en: "Power",                es: "Poder",                         example: "A good leader must use power carefully." },
+        { en: "Office",               es: "Oficina / Cargo",               example: "The president's office is in the centre of the city." },
+        { en: "Equal",                es: "Igual",                         example: "Men and women should have equal opportunities." },
+        { en: "Important decision",   es: "Decisión importante",           example: "The mayor has to take an important decision next week." },
+      ],
       B2: [
         { en: "Political party",         es: "Partido político",                example: "Most political parties published their manifestos a few weeks before the election." },
         { en: "Prime Minister",          es: "Primer Ministro",                 example: "The Prime Minister gave a speech about the new education plan yesterday." },
@@ -837,7 +856,28 @@ export const VOCAB_THEMES = {
     icon: "⚔️",
     color: "#C0392B",
     levels: {
-      B1: [],
+      B1: [
+        { en: "Friend",               es: "Amigo",                         example: "She has been my best friend since primary school." },
+        { en: "Enemy",                es: "Enemigo",                       example: "The two boys used to be enemies, but now they are friends." },
+        { en: "Fight",                es: "Pelea",                         example: "They had a small fight about a video game." },
+        { en: "To shout",             es: "Gritar",                        example: "Please don't shout at your brother." },
+        { en: "Angry",                es: "Enfadado",                      example: "My father gets angry when we are late for dinner." },
+        { en: "To apologise",         es: "Disculparse / Pedir perdón",    example: "He apologised for arriving late to the meeting." },
+        { en: "Sorry",                es: "Lo siento",                     example: "I'm really sorry for what I said yesterday." },
+        { en: "Problem",              es: "Problema",                      example: "We have a small problem with the new project." },
+        { en: "Help",                 es: "Ayuda",                         example: "Can you help me with my English homework?" },
+        { en: "To talk",              es: "Hablar",                        example: "We need to talk about this calmly." },
+        { en: "To listen to",         es: "Escuchar a",                    example: "It's important to listen to other people's opinions." },
+        { en: "Calm",                 es: "Tranquilo / Calmado",           example: "Try to stay calm during the meeting." },
+        { en: "Misunderstanding",     es: "Malentendido",                  example: "It was just a misunderstanding between two old friends." },
+        { en: "To make friends",      es: "Hacer amigos",                  example: "She made lots of friends during her year in London." },
+        { en: "Kind",                 es: "Amable",                        example: "Everyone says he is a really kind person." },
+        { en: "Rude",                 es: "Maleducado / Grosero",          example: "It's rude to interrupt people when they are talking." },
+        { en: "Help others",          es: "Ayudar a otros",                example: "She likes to help others whenever she can." },
+        { en: "Group of people",      es: "Grupo de personas",             example: "A small group of people is waiting outside the building." },
+        { en: "Difficult situation",  es: "Situación difícil",             example: "He handled the difficult situation very well." },
+        { en: "To make a decision",   es: "Tomar una decisión",            example: "We need to make a decision before tomorrow." },
+      ],
       B2: [
         { en: "War",                     es: "Guerra",                          example: "Many families had to leave their homes because of the war." },
         { en: "Peace",                   es: "Paz",                             example: "After years of fighting, both countries finally agreed to make peace." },
@@ -890,7 +930,28 @@ export const VOCAB_THEMES = {
     icon: "📜",
     color: "#C0392B",
     levels: {
-      B1: [],
+      B1: [
+        { en: "History",              es: "Historia",                      example: "History is my favourite subject at school." },
+        { en: "Old",                  es: "Antiguo / Viejo",               example: "My grandmother has an old photograph of the village." },
+        { en: "Year",                 es: "Año",                           example: "The Roman Empire ended many years ago." },
+        { en: "Past",                 es: "Pasado",                        example: "Children like to hear stories about the past." },
+        { en: "Famous",               es: "Famoso",                        example: "Cleopatra is a famous queen from ancient Egypt." },
+        { en: "Story",                es: "Historia / Relato",             example: "My grandfather always tells us interesting stories." },
+        { en: "Important date",       es: "Fecha importante",              example: "My birthday is an important date for my family." },
+        { en: "To remember",          es: "Recordar",                      example: "I can't remember the name of that book." },
+        { en: "Long ago",             es: "Hace mucho tiempo",             example: "Long ago, there were no cars or planes." },
+        { en: "To learn about",       es: "Aprender sobre",                example: "We learn about Roman history in our classes." },
+        { en: "Old building",         es: "Edificio antiguo",              example: "There are many old buildings in the city centre." },
+        { en: "Museum",               es: "Museo",                         example: "On Saturday, we visited a really interesting museum." },
+        { en: "Painting",             es: "Pintura / Cuadro",              example: "The Mona Lisa is one of the most famous paintings in the world." },
+        { en: "Book",                 es: "Libro",                         example: "I read a book about the Romans last summer." },
+        { en: "Discovery",            es: "Descubrimiento",                example: "The discovery of America changed the world." },
+        { en: "King's palace",        es: "Palacio del rey",               example: "The king's palace is open to visitors on Sundays." },
+        { en: "Old map",              es: "Mapa antiguo",                  example: "The teacher showed us an old map of Europe." },
+        { en: "Time",                 es: "Tiempo / Época",                example: "Life was very different in those times." },
+        { en: "Change",               es: "Cambio",                        example: "There have been big changes in technology recently." },
+        { en: "Important person",     es: "Persona importante",            example: "Gandhi was a very important person in modern history." },
+      ],
       B2: [
         { en: "Historical event",        es: "Hecho histórico",                 example: "The fall of the Berlin Wall was an important historical event of the 20th century." },
         { en: "Ancient civilisation",    es: "Civilización antigua",            example: "Tourists come to Egypt to discover one of the world's most ancient civilisations." },
@@ -943,7 +1004,28 @@ export const VOCAB_THEMES = {
     icon: "📰",
     color: "#C0392B",
     levels: {
-      B1: [],
+      B1: [
+        { en: "News",                 es: "Noticias",                      example: "I watch the news every evening with my parents." },
+        { en: "TV",                   es: "Televisión",                    example: "We have a big TV in the living room." },
+        { en: "Radio",                es: "Radio",                         example: "He listens to the radio while he drives to work." },
+        { en: "Magazine",             es: "Revista",                       example: "She buys a fashion magazine every month." },
+        { en: "Photo",                es: "Foto",                          example: "I posted a photo of my new dog online." },
+        { en: "Video",                es: "Vídeo",                         example: "Have you seen the funny video about cats?" },
+        { en: "Internet",             es: "Internet",                      example: "I read the news on the internet every morning." },
+        { en: "Website",              es: "Página web",                    example: "This website has lots of free English exercises." },
+        { en: "To read",              es: "Leer",                          example: "She reads the newspaper while having breakfast." },
+        { en: "To watch",             es: "Ver / Mirar",                   example: "Let's watch the football match together." },
+        { en: "Story",                es: "Historia / Reportaje",          example: "The story about the lost dog is very sweet." },
+        { en: "Information",          es: "Información",                   example: "You can find a lot of information online." },
+        { en: "Channel",              es: "Canal",                         example: "Which channel is the football match on?" },
+        { en: "Famous person",        es: "Persona famosa",                example: "A famous singer is coming to our city next month." },
+        { en: "Interview",            es: "Entrevista",                    example: "I saw a great interview with my favourite actor." },
+        { en: "True",                 es: "Verdadero",                     example: "It's hard to know what is true on social media." },
+        { en: "False",                es: "Falso",                         example: "Some news on social media is completely false." },
+        { en: "Programme",            es: "Programa",                      example: "My favourite TV programme is about cooking." },
+        { en: "To share",             es: "Compartir",                     example: "I shared the article with all my friends." },
+        { en: "Sports news",          es: "Noticias deportivas",           example: "He always reads the sports news before the rest of the paper." },
+      ],
       B2: [
         { en: "Journalist",              es: "Periodista",                      example: "She has worked as a journalist for over twenty years." },
         { en: "Newspaper",               es: "Periódico",                       example: "He reads the newspaper online during his morning coffee." },
