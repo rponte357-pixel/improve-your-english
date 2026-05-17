@@ -1,22 +1,25 @@
 // Vocabulary data — EOI exam preparation, organised by theme and level.
 //
-// 780 words across 4 thematic blocks (as of r25). Block 1 (Daily Life) has
+// 840 words across 4 thematic blocks (as of r26). Block 1 (Daily Life) has
 // 300 words at B1/B2/C1. Block 2 (Identity & Science) has 240 words at
-// B1/B2/C1. Block 3 (Politics & History) has 240 words at B1/B2/C1
-// (B1 NEW in r25). C2 of Blocks 2 and 3 deferred. Block 4 still pending.
+// B1/B2/C1. Block 3 (Politics & History) has 240 words at B1/B2/C1.
+// Block 4 (Economy & Challenges) has 60 words at C1 only (NEW in r26).
+// B1, B2 of Block 4 plus C2 of all blocks land in future rounds.
 //
 // ⚠️  CONTENT DISCLAIMER:
 //   • Block 1 (Daily Life): standard CEFR-aligned vocabulary.
 //   • Block 2 B1: assistant-generated B1 vocabulary aligned to themes.
 //   • Block 2 B2: examples crafted in EOI Andalucía B2 style.
 //   • Block 2 C1: examples crafted in EOI Andalucía C1 style.
-//   • Block 3 B1: assistant-generated B1 vocabulary aligned to themes
-//     (Politics, Conflict, History, News). Simple everyday register.
-//     NOT based on a specific EOI exam paper for this block.
-//   • Block 3 B2: assistant-generated B2 vocabulary, lifestyle-journalism
-//     register matching Block 2 B2.
-//   • Block 3 C1: assistant-generated C1 vocabulary, editorial-journalism
-//     register matching Block 2 C1.
+//   • Block 3 B1: assistant-generated B1, simple everyday register.
+//   • Block 3 B2: assistant-generated B2, lifestyle-journalism register.
+//   • Block 3 C1: assistant-generated C1, editorial-journalism register.
+//   • Block 4 C1 (Economy & Challenges): assistant-generated C1
+//     vocabulary aligned to themes (Work, Business & Economics,
+//     Danger & Risk). Editorial-journalism register matching Block 2
+//     and Block 3 C1. NOT based on a specific EOI exam paper for
+//     Block 4. Note: Block 4 has only 3 themes (no fourth theme),
+//     so each level holds 60 words instead of 80.
 //
 //   ALL content should be reviewed by a certified EOI teacher before being
 //   used as preparation for the official exam.
@@ -34,7 +37,8 @@
 //                Block 2 C1  ≈ 12-20 words, EOI editorial-journalism style
 //                Block 3 B1  ≈ 6-12 words, simple everyday register
 //                Block 3 B2  ≈ 8-15 words, lifestyle-journalism register
-//                Block 3 C1  ≈ 12-20 words, editorial-journalism register)
+//                Block 3 C1  ≈ 12-20 words, editorial-journalism register
+//                Block 4 C1  ≈ 12-20 words, editorial-journalism register)
 
 // ────────────────────────────────────────────────────────────────────
 // Thematic blocks — group related themes for the BlockSelector UI.
@@ -1081,19 +1085,97 @@ export const VOCAB_THEMES = {
     name: "Work",
     icon: "🛠️",
     color: "#F39C12",
-    levels: { B1: [], B2: [], C1: [], C2: [] },
+    levels: {
+      B1: [],
+      B2: [],
+      C1: [
+        { en: "To climb the corporate ladder",  es: "Ascender en la jerarquía empresarial",       example: "She has climbed the corporate ladder remarkably fast given her relatively brief tenure at the firm." },
+        { en: "Workplace harassment",           es: "Acoso laboral",                              example: "New protocols have been introduced to tackle workplace harassment across the public sector." },
+        { en: "To headhunt",                    es: "Reclutar talento",                           example: "The company headhunted her from a rival firm with an offer she simply could not refuse." },
+        { en: "Burnout",                        es: "Agotamiento profesional",                    example: "Cases of burnout have soared since remote working blurred the line between work and home." },
+        { en: "To be made redundant",           es: "Ser despedido por reducción de plantilla",   example: "Hundreds of staff were made redundant when the factory abruptly closed last spring." },
+        { en: "Glass ceiling",                  es: "Techo de cristal",                           example: "The glass ceiling for women in senior management remains stubbornly difficult to break through." },
+        { en: "To negotiate a pay rise",        es: "Negociar un aumento de sueldo",              example: "She managed to negotiate a substantial pay rise after threatening to leave for a competitor." },
+        { en: "Cut-throat industry",            es: "Industria muy competitiva",                  example: "Advertising is a cut-throat industry where reputations can be made or destroyed overnight." },
+        { en: "To meet a deadline",             es: "Cumplir un plazo",                           example: "He often works late into the night just to meet impossible deadlines set by clients." },
+        { en: "To outsource",                   es: "Externalizar",                               example: "Critics argue that outsourcing customer service has eroded the quality of the experience." },
+        { en: "Job satisfaction",               es: "Satisfacción laboral",                       example: "Recent surveys suggest that job satisfaction matters more to graduates than starting salary." },
+        { en: "To pull one's weight",           es: "Hacer su parte del trabajo",                 example: "Everyone on the team is expected to pull their weight during the busy season." },
+        { en: "Gig economy",                    es: "Economía colaborativa / Trabajo esporádico", example: "The gig economy has given workers flexibility but stripped them of traditional protections." },
+        { en: "To take on responsibility",      es: "Asumir responsabilidad",                     example: "She gladly took on additional responsibility when her colleague went on maternity leave." },
+        { en: "Demanding boss",                 es: "Jefe exigente",                              example: "Working for such a demanding boss has tested her patience to its absolute limit." },
+        { en: "To put in long hours",           es: "Trabajar largas jornadas",                   example: "Junior lawyers are routinely expected to put in long hours during their first years." },
+        { en: "Work-life balance",              es: "Equilibrio entre trabajo y vida personal",   example: "Achieving a healthy work-life balance has become the holy grail of the modern professional." },
+        { en: "To climb the ranks",             es: "Subir en el escalafón",                      example: "He climbed the ranks of the diplomatic service with quiet determination and skill." },
+        { en: "Probationary period",            es: "Período de prueba",                          example: "Many companies extend the probationary period if early performance falls short of expectations." },
+        { en: "To pull strings",                es: "Mover hilos / Utilizar influencias",         example: "Some critics suggested she had pulled strings to secure such a high-profile position." },
+      ],
+      C2: [],
+    },
   },
   business: {
     name: "Business & Economics",
     icon: "📊",
     color: "#F39C12",
-    levels: { B1: [], B2: [], C1: [], C2: [] },
+    levels: {
+      B1: [],
+      B2: [],
+      C1: [
+        { en: "Recession",                    es: "Recesión",                                  example: "Most economists agree that the country is now sliding into a prolonged recession." },
+        { en: "Stock market crash",           es: "Caída de la bolsa",                         example: "The stock market crash wiped billions off the value of leading European companies." },
+        { en: "To go bankrupt",               es: "Quebrar",                                   example: "The chain went bankrupt after failing to adapt to changing consumer habits online." },
+        { en: "Merger and acquisition",       es: "Fusión y adquisición",                      example: "The merger and acquisition of the two banks created the largest financial group in the region." },
+        { en: "Inflation rate",               es: "Tasa de inflación",                         example: "The inflation rate has reached a level not seen in this country for over forty years." },
+        { en: "To corner the market",         es: "Acaparar el mercado",                       example: "A handful of tech giants have effectively cornered the market for cloud services." },
+        { en: "Bailout",                      es: "Rescate financiero",                        example: "Taxpayers shouldered the cost of the bailout while executives walked away largely unscathed." },
+        { en: "Trade deficit",                es: "Déficit comercial",                         example: "The country's chronic trade deficit has long worried economists across the political spectrum." },
+        { en: "To diversify a portfolio",     es: "Diversificar una cartera",                  example: "Financial advisers routinely recommend diversifying your portfolio to weather market volatility." },
+        { en: "Boom-and-bust cycle",          es: "Ciclo de auge y caída",                     example: "The construction industry remains particularly vulnerable to the country's well-known boom-and-bust cycle." },
+        { en: "To break even",                es: "Alcanzar el punto de equilibrio",           example: "The start-up is finally expected to break even by the end of the third quarter." },
+        { en: "Cash flow",                    es: "Flujo de caja",                             example: "Maintaining a healthy cash flow remains the single biggest challenge for small businesses." },
+        { en: "Tax haven",                    es: "Paraíso fiscal",                            example: "Recent investigations exposed how multinationals route profits through obscure tax havens worldwide." },
+        { en: "To prop up an industry",       es: "Sostener una industria",                    example: "The government has spent billions propping up an industry many believe is beyond saving." },
+        { en: "Profit margins",               es: "Márgenes de beneficio",                     example: "Razor-thin profit margins have forced retailers to slash staff numbers across the country." },
+        { en: "Speculation",                  es: "Especulación",                              example: "Wild speculation about a possible takeover sent share prices into a brief but dramatic rally." },
+        { en: "To weather an economic storm", es: "Capear un temporal económico",              example: "Family-owned firms have so far weathered the economic storm better than their larger rivals." },
+        { en: "Quantitative easing",          es: "Flexibilización cuantitativa",              example: "Central banks resorted to quantitative easing on a scale unimaginable just a decade earlier." },
+        { en: "To slash costs",               es: "Recortar costes drásticamente",             example: "The airline has been forced to slash costs ruthlessly in order to remain solvent." },
+        { en: "Sovereign debt",               es: "Deuda soberana",                            example: "Concerns about sovereign debt have weighed heavily on the European single currency for years." },
+      ],
+      C2: [],
+    },
   },
   danger: {
     name: "Danger & Risk",
     icon: "⚠️",
     color: "#F39C12",
-    levels: { B1: [], B2: [], C1: [], C2: [] },
+    levels: {
+      B1: [],
+      B2: [],
+      C1: [
+        { en: "Natural disaster",             es: "Desastre natural",                          example: "Several Caribbean islands have been ravaged by natural disasters of unprecedented intensity this decade." },
+        { en: "To pose a threat",             es: "Suponer una amenaza",                       example: "Rising sea levels pose a serious threat to coastal communities across the Mediterranean." },
+        { en: "Catastrophic consequences",    es: "Consecuencias catastróficas",               example: "Scientists warn that inaction could have catastrophic consequences for future generations." },
+        { en: "To brace oneself for",         es: "Prepararse para",                           example: "Residents have been told to brace themselves for the worst storm in living memory." },
+        { en: "At risk of",                   es: "En riesgo de",                              example: "Thousands of homes are now at serious risk of being lost to coastal erosion." },
+        { en: "To wreak havoc",               es: "Causar estragos",                           example: "The cyber-attack wreaked havoc on hospital systems across the entire country." },
+        { en: "Evacuation plan",              es: "Plan de evacuación",                        example: "Every coastal town in the region now has a detailed evacuation plan in place." },
+        { en: "Imminent danger",              es: "Peligro inminente",                         example: "Authorities insisted the local population was in no imminent danger from the chemical leak." },
+        { en: "To curb a crisis",             es: "Contener una crisis",                       example: "Emergency measures were introduced in a desperate attempt to curb the housing crisis." },
+        { en: "Death toll",                   es: "Número de víctimas mortales",               example: "The death toll continues to rise as rescuers reach previously inaccessible mountain villages." },
+        { en: "To trigger a chain reaction",  es: "Desencadenar una reacción en cadena",       example: "A single faulty valve triggered a chain reaction that nearly destroyed the entire plant." },
+        { en: "Outbreak",                     es: "Brote",                                     example: "The outbreak spread rapidly through several densely populated districts before being contained." },
+        { en: "Lurking danger",               es: "Peligro al acecho",                         example: "Climate experts warn of lurking dangers that current policy frameworks are ill-equipped to handle." },
+        { en: "To take precautions",          es: "Tomar precauciones",                        example: "Travellers are strongly advised to take precautions against mosquito-borne diseases in tropical regions." },
+        { en: "Crisis management",            es: "Gestión de crisis",                         example: "The minister's crisis management skills were sorely tested during the unprecedented heatwave." },
+        { en: "Climate refugees",             es: "Refugiados climáticos",                     example: "The United Nations estimates that climate refugees could number in the hundreds of millions." },
+        { en: "To avert a tragedy",           es: "Evitar una tragedia",                       example: "Quick thinking by paramedics narrowly averted a tragedy that could have shocked the nation." },
+        { en: "Endangered livelihoods",       es: "Medios de vida en peligro",                 example: "Whole communities now face endangered livelihoods as the fishing grounds become increasingly depleted." },
+        { en: "To grapple with a problem",    es: "Enfrentarse a un problema",                 example: "Coastal cities are grappling with problems that previous generations never had to contemplate." },
+        { en: "Tipping point",                es: "Punto de inflexión",                        example: "Many climate scientists now believe we have already passed several critical tipping points." },
+      ],
+      C2: [],
+    },
   },
 };
 
