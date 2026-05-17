@@ -1,27 +1,36 @@
 // Vocabulary data — EOI exam preparation, organised by theme and level.
 //
-// 900 words across 4 thematic blocks (as of r27). Block 1 (Daily Life) has
-// 300 words at B1/B2/C1. Block 2 (Identity & Science) has 240 words at
-// B1/B2/C1. Block 3 (Politics & History) has 240 words at B1/B2/C1.
-// Block 4 (Economy & Challenges) has 120 words at B2 (NEW in r27) and C1.
-// B1 of Block 4 plus all C2 levels land in future rounds.
+// 960 words across 4 thematic blocks (FINAL STATE — MVP complete as of r28).
+// All 16 themes have 60 words (B1=20, B2=20, C1=20). C2 deferred for
+// later work — each theme has an empty C2 array ready to be populated
+// when EOI C2 papers become available.
+//
+//   Block 1 (Daily Life):           5 themes × 60 words = 300
+//   Block 2 (Identity & Science):   4 themes × 60 words = 240
+//   Block 3 (Politics & History):   4 themes × 60 words = 240
+//   Block 4 (Economy & Challenges): 3 themes × 60 words = 180
+//                                              TOTAL    = 960
 //
 // ⚠️  CONTENT DISCLAIMER:
-//   • Block 1 (Daily Life): standard CEFR-aligned vocabulary.
-//   • Block 2 B1: assistant-generated B1, simple everyday register.
-//   • Block 2 B2: examples crafted in EOI Andalucía B2 style.
-//   • Block 2 C1: examples crafted in EOI Andalucía C1 style.
-//   • Block 3 B1: assistant-generated B1, simple everyday register.
-//   • Block 3 B2: assistant-generated B2, lifestyle-journalism register.
-//   • Block 3 C1: assistant-generated C1, editorial-journalism register.
-//   • Block 4 B2 (Economy & Challenges): assistant-generated B2
-//     vocabulary aligned to themes (Work, Business & Economics,
-//     Danger & Risk). Lifestyle-journalism register matching Block 2 B2.
-//   • Block 4 C1 (Economy & Challenges): assistant-generated C1,
-//     editorial-journalism register matching Block 2 C1.
+//   • Block 1 (Daily Life): standard CEFR-aligned vocabulary, short
+//     didactic examples (rounds 16-17).
+//   • Block 2 B1: assistant-generated B1, simple everyday register (r22).
+//   • Block 2 B2: examples crafted in EOI Andalucía B2 style — based on
+//     real EOI exam papers (ordinaria 2024/2025, r21).
+//   • Block 2 C1: examples crafted in EOI Andalucía C1 style — based on
+//     real EOI exam papers (extraordinaria 2024/2025, r20).
+//   • Block 3 B1: assistant-generated B1, simple everyday register (r25).
+//   • Block 3 B2: assistant-generated B2, lifestyle-journalism (r24).
+//   • Block 3 C1: assistant-generated C1, editorial-journalism (r23).
+//   • Block 4 B1: assistant-generated B1, simple everyday register (r28).
+//   • Block 4 B2: assistant-generated B2, lifestyle-journalism (r27).
+//   • Block 4 C1: assistant-generated C1, editorial-journalism (r26).
 //
 //   ALL content should be reviewed by a certified EOI teacher before being
-//   used as preparation for the official exam.
+//   used as preparation for the official exam. Examples in Blocks 3 and 4,
+//   plus Block 2 B1, were not based on specific EOI exam papers — they
+//   follow the same style and register patterns as the EOI-inspired
+//   examples in Block 2 B2 and C1 (the only ones based on real exams).
 //
 // To edit an item: find it below by its English word and update the
 // `en`, `es`, or `example` fields. The UI picks up changes automatically.
@@ -29,16 +38,12 @@
 // Format of each item:
 //   en       — English word or expression (the headword)
 //   es       — Spanish translation
-//   example  — One example sentence in English (varies by level/block:
-//                Block 1     ≈ 6-10 words
-//                Block 2 B1  ≈ 6-12 words, simple everyday register
-//                Block 2 B2  ≈ 8-15 words, EOI lifestyle-journalism style
-//                Block 2 C1  ≈ 12-20 words, EOI editorial-journalism style
-//                Block 3 B1  ≈ 6-12 words, simple everyday register
-//                Block 3 B2  ≈ 8-15 words, lifestyle-journalism register
-//                Block 3 C1  ≈ 12-20 words, editorial-journalism register
-//                Block 4 B2  ≈ 8-15 words, lifestyle-journalism register
-//                Block 4 C1  ≈ 12-20 words, editorial-journalism register)
+//   example  — One example sentence in English. Length and register
+//              progress by level:
+//                B1  ≈ 6-12 words, simple everyday register
+//                B2  ≈ 8-15 words, lifestyle-journalism register
+//                C1  ≈ 12-20 words, editorial-journalism register
+//                C2  (reserved for future content rounds)
 
 // ────────────────────────────────────────────────────────────────────
 // Thematic blocks — group related themes for the BlockSelector UI.
@@ -1086,7 +1091,28 @@ export const VOCAB_THEMES = {
     icon: "🛠️",
     color: "#F39C12",
     levels: {
-      B1: [],
+      B1: [
+        { en: "Job",                   es: "Trabajo",                       example: "She has a new job at the local bakery." },
+        { en: "Office",                es: "Oficina",                       example: "His office is on the fifth floor of the building." },
+        { en: "Money",                 es: "Dinero",                        example: "I save a little money every month for my holidays." },
+        { en: "To work",               es: "Trabajar",                      example: "My father works in a hospital in the city." },
+        { en: "Manager",               es: "Gerente / Encargado",           example: "The manager always arrives at work very early." },
+        { en: "Employee",              es: "Empleado",                      example: "The company has more than fifty employees." },
+        { en: "Schedule",              es: "Horario",                       example: "I prefer a flexible schedule when I'm at work." },
+        { en: "Free time",             es: "Tiempo libre",                  example: "She uses her free time to learn Italian." },
+        { en: "To get a job",          es: "Conseguir trabajo",             example: "He got a new job at a marketing company last week." },
+        { en: "Easy",                  es: "Fácil",                         example: "The task was very easy for an experienced worker." },
+        { en: "Hard",                  es: "Difícil",                       example: "It can be hard to find a good job these days." },
+        { en: "To enjoy",              es: "Disfrutar",                     example: "I really enjoy my job as a teacher." },
+        { en: "Day off",               es: "Día libre",                     example: "Tomorrow is my day off, so we can meet for coffee." },
+        { en: "Tired",                 es: "Cansado",                       example: "She's always tired on Friday after a busy week." },
+        { en: "Lunch break",           es: "Pausa para comer",              example: "We usually take our lunch break at 2 p.m." },
+        { en: "Holiday",               es: "Vacaciones",                    example: "I have three weeks of holiday in August." },
+        { en: "Tasks",                 es: "Tareas",                        example: "My main tasks are checking emails and writing reports." },
+        { en: "Meeting",               es: "Reunión",                       example: "We have a short meeting every Monday morning." },
+        { en: "To start work",         es: "Empezar a trabajar",            example: "I start work at 8 a.m. every day." },
+        { en: "Uniform",               es: "Uniforme",                      example: "Everyone in the shop wears a green uniform." },
+      ],
       B2: [
         { en: "Job interview",            es: "Entrevista de trabajo",            example: "She felt nervous before her first job interview at the bank." },
         { en: "Salary",                   es: "Salario",                          example: "Most workers expect a higher salary after several years in the company." },
@@ -1139,7 +1165,28 @@ export const VOCAB_THEMES = {
     icon: "📊",
     color: "#F39C12",
     levels: {
-      B1: [],
+      B1: [
+        { en: "Shop",                  es: "Tienda",                        example: "There is a new shop in the centre of town." },
+        { en: "Price",                 es: "Precio",                        example: "The price of bread has gone up this year." },
+        { en: "To buy",                es: "Comprar",                       example: "I want to buy a new bike for my son." },
+        { en: "To sell",               es: "Vender",                        example: "They sell beautiful flowers in this small shop." },
+        { en: "To pay",                es: "Pagar",                         example: "Can I pay with my credit card here?" },
+        { en: "Cheap",                 es: "Barato",                        example: "I found a cheap hotel near the beach." },
+        { en: "Expensive",             es: "Caro",                          example: "That restaurant is too expensive for a normal dinner." },
+        { en: "To spend money",        es: "Gastar dinero",                 example: "I don't like to spend money on clothes." },
+        { en: "Cash",                  es: "Efectivo",                      example: "I prefer to pay in cash at the local market." },
+        { en: "Card",                  es: "Tarjeta",                       example: "Most shops accept credit cards these days." },
+        { en: "To open a business",    es: "Abrir un negocio",              example: "My uncle opened a business near the train station." },
+        { en: "Owner",                 es: "Dueño / Propietario",           example: "The owner of the café is very friendly with customers." },
+        { en: "Bill",                  es: "Cuenta / Factura",              example: "Could we have the bill, please?" },
+        { en: "Receipt",               es: "Recibo",                        example: "Always keep your receipt in case you want to return something." },
+        { en: "Sale",                  es: "Rebajas / Venta",               example: "I bought this jacket on sale last winter." },
+        { en: "Customer service",      es: "Servicio al cliente",           example: "The customer service in this hotel is excellent." },
+        { en: "To order",              es: "Pedir",                         example: "We ordered pizza for dinner last night." },
+        { en: "Delivery",              es: "Entrega",                       example: "Free delivery for orders over 30 euros." },
+        { en: "Bank",                  es: "Banco",                         example: "I need to go to the bank to take out some money." },
+        { en: "Money saving",          es: "Ahorro",                        example: "Cooking at home is a great way of money saving." },
+      ],
       B2: [
         { en: "Company",                  es: "Empresa",                          example: "The company employs over five hundred people across Europe." },
         { en: "Customer",                 es: "Cliente",                          example: "Good customer service can make a real difference for any business." },
@@ -1192,7 +1239,28 @@ export const VOCAB_THEMES = {
     icon: "⚠️",
     color: "#F39C12",
     levels: {
-      B1: [],
+      B1: [
+        { en: "Dangerous",             es: "Peligroso",                     example: "It's dangerous to cross the road without looking." },
+        { en: "Safe",                  es: "Seguro",                        example: "Are you safe at home now?" },
+        { en: "Police",                es: "Policía",                       example: "The police arrived very quickly after the call." },
+        { en: "Ambulance",             es: "Ambulancia",                    example: "The ambulance took the patient to the hospital." },
+        { en: "To call for help",      es: "Pedir ayuda",                   example: "Call for help if you see something dangerous on the street." },
+        { en: "Hot",                   es: "Caliente",                      example: "Be careful, the soup is very hot." },
+        { en: "Cold",                  es: "Frío",                          example: "Don't go out without a coat when it's cold." },
+        { en: "Snow",                  es: "Nieve",                         example: "The snow made the roads very slippery this morning." },
+        { en: "Rain",                  es: "Lluvia",                        example: "The rain caused problems in many small streets." },
+        { en: "Wind",                  es: "Viento",                        example: "The wind was so strong that we couldn't open the door." },
+        { en: "To hurt",               es: "Hacer daño / Lastimar",         example: "He hurt his leg while he was playing football." },
+        { en: "Bandage",               es: "Venda",                         example: "She put a bandage on her knee after the small fall." },
+        { en: "Sick",                  es: "Enfermo",                       example: "I felt sick after eating too much chocolate." },
+        { en: "Pain",                  es: "Dolor",                         example: "I have a strong pain in my back today." },
+        { en: "Doctor",                es: "Médico",                        example: "You should see a doctor if you don't feel better soon." },
+        { en: "To fall down",          es: "Caerse",                        example: "Be careful or you will fall down the stairs." },
+        { en: "To break",              es: "Romper",                        example: "She broke her arm while she was playing tennis." },
+        { en: "Sun",                   es: "Sol",                           example: "Don't stay in the sun for too long in summer." },
+        { en: "Insect",                es: "Insecto",                       example: "There are many insects in the garden in summer." },
+        { en: "To save",               es: "Salvar",                        example: "The lifeguard saved the boy from the rough sea." },
+      ],
       B2: [
         { en: "Accident",                 es: "Accidente",                        example: "There was a serious accident on the motorway this morning." },
         { en: "Emergency",                es: "Emergencia",                       example: "Call 112 if you need to report an emergency." },
