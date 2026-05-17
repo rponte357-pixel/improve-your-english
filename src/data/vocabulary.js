@@ -1,25 +1,24 @@
 // Vocabulary data — EOI exam preparation, organised by theme and level.
 //
-// 840 words across 4 thematic blocks (as of r26). Block 1 (Daily Life) has
+// 900 words across 4 thematic blocks (as of r27). Block 1 (Daily Life) has
 // 300 words at B1/B2/C1. Block 2 (Identity & Science) has 240 words at
 // B1/B2/C1. Block 3 (Politics & History) has 240 words at B1/B2/C1.
-// Block 4 (Economy & Challenges) has 60 words at C1 only (NEW in r26).
-// B1, B2 of Block 4 plus C2 of all blocks land in future rounds.
+// Block 4 (Economy & Challenges) has 120 words at B2 (NEW in r27) and C1.
+// B1 of Block 4 plus all C2 levels land in future rounds.
 //
 // ⚠️  CONTENT DISCLAIMER:
 //   • Block 1 (Daily Life): standard CEFR-aligned vocabulary.
-//   • Block 2 B1: assistant-generated B1 vocabulary aligned to themes.
+//   • Block 2 B1: assistant-generated B1, simple everyday register.
 //   • Block 2 B2: examples crafted in EOI Andalucía B2 style.
 //   • Block 2 C1: examples crafted in EOI Andalucía C1 style.
 //   • Block 3 B1: assistant-generated B1, simple everyday register.
 //   • Block 3 B2: assistant-generated B2, lifestyle-journalism register.
 //   • Block 3 C1: assistant-generated C1, editorial-journalism register.
-//   • Block 4 C1 (Economy & Challenges): assistant-generated C1
+//   • Block 4 B2 (Economy & Challenges): assistant-generated B2
 //     vocabulary aligned to themes (Work, Business & Economics,
-//     Danger & Risk). Editorial-journalism register matching Block 2
-//     and Block 3 C1. NOT based on a specific EOI exam paper for
-//     Block 4. Note: Block 4 has only 3 themes (no fourth theme),
-//     so each level holds 60 words instead of 80.
+//     Danger & Risk). Lifestyle-journalism register matching Block 2 B2.
+//   • Block 4 C1 (Economy & Challenges): assistant-generated C1,
+//     editorial-journalism register matching Block 2 C1.
 //
 //   ALL content should be reviewed by a certified EOI teacher before being
 //   used as preparation for the official exam.
@@ -38,6 +37,7 @@
 //                Block 3 B1  ≈ 6-12 words, simple everyday register
 //                Block 3 B2  ≈ 8-15 words, lifestyle-journalism register
 //                Block 3 C1  ≈ 12-20 words, editorial-journalism register
+//                Block 4 B2  ≈ 8-15 words, lifestyle-journalism register
 //                Block 4 C1  ≈ 12-20 words, editorial-journalism register)
 
 // ────────────────────────────────────────────────────────────────────
@@ -1087,7 +1087,28 @@ export const VOCAB_THEMES = {
     color: "#F39C12",
     levels: {
       B1: [],
-      B2: [],
+      B2: [
+        { en: "Job interview",            es: "Entrevista de trabajo",            example: "She felt nervous before her first job interview at the bank." },
+        { en: "Salary",                   es: "Salario",                          example: "Most workers expect a higher salary after several years in the company." },
+        { en: "To apply for a job",       es: "Solicitar un trabajo",             example: "He applied for a job in marketing last month." },
+        { en: "Working from home",        es: "Trabajo desde casa",               example: "Working from home has become more popular since the pandemic." },
+        { en: "Colleague",                es: "Compañero de trabajo",             example: "I get on really well with most of my colleagues." },
+        { en: "To get promoted",          es: "Ser ascendido",                    example: "She got promoted to manager just two years after joining the firm." },
+        { en: "Overtime",                 es: "Horas extra",                      example: "Many employees do overtime during busy weeks before Christmas." },
+        { en: "Career path",              es: "Trayectoria profesional",          example: "Teaching has been a rewarding career path for her." },
+        { en: "Work pressure",            es: "Presión laboral",                  example: "Work pressure can seriously affect both physical and mental health." },
+        { en: "To meet expectations",     es: "Cumplir con las expectativas",     example: "The new employee has clearly met all expectations during her first month." },
+        { en: "Skills",                   es: "Habilidades",                      example: "Good communication skills are essential in almost every modern job." },
+        { en: "Boss",                     es: "Jefe / Jefa",                      example: "Her boss is very understanding when family problems come up." },
+        { en: "Office work",              es: "Trabajo de oficina",               example: "Office work often involves spending long hours at a desk." },
+        { en: "Self-employed",            es: "Autónomo",                         example: "Many graphic designers prefer being self-employed to working for a company." },
+        { en: "To work overtime",         es: "Trabajar horas extra",             example: "She has been working overtime almost every day this month." },
+        { en: "Pay rise",                 es: "Aumento de sueldo",                example: "After excellent results, the team received a small pay rise." },
+        { en: "Flexible hours",           es: "Horario flexible",                 example: "Flexible hours make it easier to balance work and family life." },
+        { en: "Workplace",                es: "Lugar de trabajo",                 example: "Many workplaces now have areas where employees can relax during breaks." },
+        { en: "To quit a job",            es: "Dejar un trabajo",                 example: "He decided to quit his job and travel around the world for a year." },
+        { en: "To deal with stress",      es: "Afrontar el estrés",               example: "Yoga helps her deal with stress after a long day at work." },
+      ],
       C1: [
         { en: "To climb the corporate ladder",  es: "Ascender en la jerarquía empresarial",       example: "She has climbed the corporate ladder remarkably fast given her relatively brief tenure at the firm." },
         { en: "Workplace harassment",           es: "Acoso laboral",                              example: "New protocols have been introduced to tackle workplace harassment across the public sector." },
@@ -1119,7 +1140,28 @@ export const VOCAB_THEMES = {
     color: "#F39C12",
     levels: {
       B1: [],
-      B2: [],
+      B2: [
+        { en: "Company",                  es: "Empresa",                          example: "The company employs over five hundred people across Europe." },
+        { en: "Customer",                 es: "Cliente",                          example: "Good customer service can make a real difference for any business." },
+        { en: "Product",                  es: "Producto",                         example: "Their new product is already selling really well online." },
+        { en: "To start a business",      es: "Montar un negocio",                example: "She decided to start a business with her best friend from university." },
+        { en: "Market",                   es: "Mercado",                          example: "Electric cars are becoming a bigger part of the European market." },
+        { en: "Profit",                   es: "Beneficio",                        example: "The bakery made a small profit during its first year of operation." },
+        { en: "Loss",                     es: "Pérdida",                          example: "After several losses, the manager had to rethink the strategy." },
+        { en: "To invest in",             es: "Invertir en",                      example: "Many young people are investing in renewable energy companies." },
+        { en: "Loan",                     es: "Préstamo",                         example: "They took out a small loan to open their new café." },
+        { en: "Online shopping",          es: "Compras por internet",             example: "Online shopping has changed the way most families do their weekly groceries." },
+        { en: "Brand",                    es: "Marca",                            example: "This brand is famous for its high-quality coffee." },
+        { en: "Economy",                  es: "Economía",                         example: "The economy has been growing slowly over the past two years." },
+        { en: "Cost of living",           es: "Coste de la vida",                 example: "The cost of living has gone up significantly in most big cities." },
+        { en: "Bank account",             es: "Cuenta bancaria",                  example: "He opened a new bank account when he moved to Madrid." },
+        { en: "Discount",                 es: "Descuento",                        example: "The shop is offering a 30% discount on all winter clothes." },
+        { en: "To save money",            es: "Ahorrar dinero",                   example: "We try to save money every month for our summer holiday." },
+        { en: "Wages",                    es: "Sueldo / Salario",                 example: "Many workers feel their wages don't match the cost of living." },
+        { en: "To go on sale",            es: "Estar de oferta",                  example: "The new phones go on sale next Friday at all major stores." },
+        { en: "Currency",                 es: "Moneda",                           example: "The euro is the currency used in most European countries." },
+        { en: "Small business",           es: "Pequeño negocio",                  example: "Small businesses have been the most affected by recent economic changes." },
+      ],
       C1: [
         { en: "Recession",                    es: "Recesión",                                  example: "Most economists agree that the country is now sliding into a prolonged recession." },
         { en: "Stock market crash",           es: "Caída de la bolsa",                         example: "The stock market crash wiped billions off the value of leading European companies." },
@@ -1151,7 +1193,28 @@ export const VOCAB_THEMES = {
     color: "#F39C12",
     levels: {
       B1: [],
-      B2: [],
+      B2: [
+        { en: "Accident",                 es: "Accidente",                        example: "There was a serious accident on the motorway this morning." },
+        { en: "Emergency",                es: "Emergencia",                       example: "Call 112 if you need to report an emergency." },
+        { en: "Fire",                     es: "Incendio / Fuego",                 example: "A small fire broke out in the kitchen yesterday evening." },
+        { en: "Earthquake",               es: "Terremoto",                        example: "A strong earthquake hit the south of the country last week." },
+        { en: "Flood",                    es: "Inundación",                       example: "Heavy rain caused serious flooding in several villages." },
+        { en: "Risk",                     es: "Riesgo",                           example: "Smoking increases the risk of many serious illnesses." },
+        { en: "Safety measures",          es: "Medidas de seguridad",             example: "The school has introduced new safety measures for school trips." },
+        { en: "Warning",                  es: "Advertencia",                      example: "The weather service has issued a warning about strong winds." },
+        { en: "To avoid danger",          es: "Evitar el peligro",                example: "Tourists are advised to avoid danger by following the marked paths." },
+        { en: "Storm",                    es: "Tormenta",                         example: "The storm caused power cuts in many parts of the region." },
+        { en: "To be careful",            es: "Tener cuidado",                    example: "Please be careful with the wet floor in the kitchen." },
+        { en: "Smoke alarm",              es: "Alarma de humo",                   example: "Every home should have a working smoke alarm in the kitchen." },
+        { en: "Climate crisis",           es: "Crisis climática",                 example: "The climate crisis is the biggest challenge of our generation." },
+        { en: "To rescue",                es: "Rescatar",                         example: "Firefighters rescued a family from the flooded house." },
+        { en: "Heatwave",                 es: "Ola de calor",                     example: "The heatwave forced many schools to close earlier this summer." },
+        { en: "First aid",                es: "Primeros auxilios",                example: "She did a basic first aid course at work last spring." },
+        { en: "To get injured",           es: "Resultar herido",                  example: "Two people got injured in the accident, but neither was seriously hurt." },
+        { en: "Safety belt",              es: "Cinturón de seguridad",            example: "Always remember to fasten your safety belt before driving." },
+        { en: "To prevent",               es: "Prevenir",                         example: "Regular check-ups can prevent many serious diseases." },
+        { en: "Witness",                  es: "Testigo",                          example: "Several witnesses saw the accident and helped the victims." },
+      ],
       C1: [
         { en: "Natural disaster",             es: "Desastre natural",                          example: "Several Caribbean islands have been ravaged by natural disasters of unprecedented intensity this decade." },
         { en: "To pose a threat",             es: "Suponer una amenaza",                       example: "Rising sea levels pose a serious threat to coastal communities across the Mediterranean." },
