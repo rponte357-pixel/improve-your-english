@@ -30,6 +30,7 @@ import {
   getTotalWordCount,
 } from "../data/vocabulary";
 import MyListsView from "../components/MyListsView";
+import ListEditor from "../components/ListEditor";
 import "../styles/vocabulary.css";
 
 // ─────────────────────────────────────────────────────────────────────
@@ -127,6 +128,12 @@ export default function Vocabulary() {
   // null = show the BlockSelector. Otherwise it's a block id from BLOCKS
   // or the CUSTOM_BLOCK_ID for the user's custom lists.
   const [selectedBlock, setSelectedBlock] = useState(null);
+
+  // When non-null and we're inside the custom block, show the ListEditor
+  // for that specific list instead of MyListsView. Kept as plain
+  // component state — no React Router change needed.
+  const [selectedListId, setSelectedListId] = useState(null);
+
   const { progress, markLearned, isLearned, totalLearned } = useProgress();
   const totalWords = getTotalWordCount();
 
@@ -141,6 +148,13 @@ export default function Vocabulary() {
       : null;
 
   const isCustom = block && block.id === CUSTOM_BLOCK_ID;
+
+  // Reset the list-detail state whenever we leave the custom block —
+  // prevents a stale `selectedListId` from rendering ListEditor after
+  // the user navigates away and comes back.
+  useEffect(() => {
+    if (!isCustom && selectedListId) setSelectedListId(null);
+  }, [isCustom, selectedListId]);
 
   return (
     <section className="vocab">
@@ -160,20 +174,17 @@ export default function Vocabulary() {
         <BlockSelector onPick={(id) => setSelectedBlock(id)} />
       )}
 
-      {block && isCustom && (
+      {block && isCustom && !selectedListId && (
         <MyListsView
           onBack={() => setSelectedBlock(null)}
-          onOpenList={(_listId) => {
-            // The actual editor / study view for a specific custom list
-            // is implemented in Round A3 (editor) and A4 (modes).
-            // For now, surface a friendly notice rather than navigate
-            // nowhere — keeps the prototype honest.
-            // eslint-disable-next-line no-alert
-            window.alert(
-              "Opening individual lists arrives in the next round (A3).\n\n" +
-              "For now you can create, see and delete lists here."
-            );
-          }}
+          onOpenList={(listId) => setSelectedListId(listId)}
+        />
+      )}
+
+      {block && isCustom && selectedListId && (
+        <ListEditor
+          listId={selectedListId}
+          onBack={() => setSelectedListId(null)}
         />
       )}
 
