@@ -48,12 +48,20 @@ const CUSTOM_BLOCK_ID = "custom";
 const CUSTOM_BLOCK = {
   id: CUSTOM_BLOCK_ID,
   name: "My Vocabulary",
-  icon: "⭐",
-  // Amber gold gradient — sits well next to the existing teal/purple/
-  // red/dark-amber palette without clashing, and reads as "your stuff".
-  gradientFrom: "#F7B538",
-  gradientTo:   "#C77800",
-  particleColors: ["#F7B538", "#C77800", "#FFE5A0", "#E69A1F"],
+  // The eyebrow "🗂️" is rendered by CSS on .vocab-block-custom::before
+  // (so the static bubble matches the Phrases-card layout). This icon
+  // is the one shown during the crash overlay, where the ::before is
+  // disabled by the [data-block-id="custom"] rules — keep them in sync.
+  icon: "🗂️",
+  // The bubble itself is flat cream + terracotta border (Phrases-card
+  // style) via CSS. These gradient stops are still used by the crash
+  // animation overlay, which reuses the same .vocab-block visuals.
+  gradientFrom: "#F8F4EE",
+  gradientTo:   "#EDE7DB",
+  // Particles when the bubble bursts: warm beiges + terracotta accent.
+  // Stays in palette with the new bubble look so the transition feels
+  // intentional rather than a colour clash.
+  particleColors: ["#B5451B", "#D8A88A", "#EDE7DB", "#C9963A"],
   themeIds: [],
   levels: [],
 };
@@ -417,6 +425,7 @@ function BubbleCrash({ block, onEnd }) {
     <div className="vocab-crash-overlay">
       <div
         className={`vocab-crash-bubble ${phase === "shake" ? "vocab-crash-shake" : "vocab-crash-burst"}`}
+        data-block-id={block.id}
         style={{
           "--block-from": block.gradientFrom,
           "--block-to":   block.gradientTo,

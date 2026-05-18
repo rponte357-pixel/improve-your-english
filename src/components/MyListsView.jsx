@@ -104,7 +104,7 @@ export default function MyListsView({ onBack, onOpenList }) {
           ← Back to blocks
         </button>
         <div className="vocab-blocknav-title">
-          <span className="vocab-blocknav-icon">⭐</span>
+          <span className="vocab-blocknav-icon vocab-blocknav-icon-custom">🗂️</span>
           <span>My Vocabulary</span>
         </div>
         <div className="vocab-blocknav-spacer" />
@@ -128,7 +128,7 @@ export default function MyListsView({ onBack, onOpenList }) {
       {/* ─── Empty state ─── */}
       {totalLists === 0 && !creating && (
         <div className="vocab-cl-empty">
-          <div className="vocab-cl-empty-icon">⭐</div>
+          <div className="vocab-cl-empty-icon">🗂️</div>
           <div className="vocab-cl-empty-title">
             You haven't created any lists yet
           </div>

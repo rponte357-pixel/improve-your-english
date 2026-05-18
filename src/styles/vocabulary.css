@@ -1040,19 +1040,41 @@
 }
 
 /* =====================================================================
-   Custom Vocabulary (r30 / A2) — 5th bubble + "My Lists" view.
+   Custom Vocabulary (r30 / A2, restyled r31) — 5th bubble + "My Lists" view.
 
-   Visual conventions:
-     • amber gold gradient (#F7B538 → #C77800) for the bubble
-     • cards use the same translucent surface (--v-card / --v-border)
-       as the rest of Vocabulary so it reads as part of the section
-     • all interactive feedback follows the existing 0.18s easing
+   The 5th bubble adopts the Phrases-card aesthetic to set the personal
+   section visually apart from the 4 EOI gradient bubbles:
+     • cream surface, terracotta hairline border, black serif title
+     • small "✦ YOURS" eyebrow label in terracotta
+     • two big decorative quotes in soft warm beige
+
+   Inside My Lists we keep the dark navy Vocabulary background but swap
+   the accent colour from amber to terracotta so the visual identity of
+   the personal section flows through.
+
+   Tokens come from the same palette used by Phrases:
+     --ph-cream:  #F8F4EE
+     --ph-warm:   #EDE7DB
+     --ph-ink:    #1A1714
+     --ph-muted:  #7A7065
+     --ph-accent: #B5451B
+     --ph-border: #D8D0C4
 ===================================================================== */
 
-/* 5-bubble layout. When the 5th (custom) bubble is present we move to
-   a 3-column grid; the custom bubble spans the full row underneath the
-   4 EOI bubbles, centred by `justify-self: center`. This keeps the
-   visual hierarchy (EOI content first, your stuff after) clear. */
+/* Local aliases so we don't depend on phrases.css load order. */
+:root {
+  --v-custom-cream:  #F8F4EE;
+  --v-custom-warm:   #EDE7DB;
+  --v-custom-ink:    #1A1714;
+  --v-custom-muted:  #7A7065;
+  --v-custom-accent: #B5451B;
+  --v-custom-border: #D8D0C4;
+}
+
+/* 5-bubble layout. When the 5th (custom) bubble is present we stay on
+   2 columns for the 4 EOI bubbles and let the custom one span the row
+   underneath, centred via `justify-self`. Visual hierarchy stays
+   EOI-first. */
 .vocab-blocks-with-custom {
   grid-template-columns: repeat(2, 200px);
 }
@@ -1062,17 +1084,80 @@
   margin-top: 0.4rem;
 }
 
-/* The custom bubble itself — slightly different glow to suggest "yours"
-   rather than the heavier shadow of the EOI blocks. */
+/* The custom bubble — Phrases-card style overrides over the base
+   .vocab-block rules. We REPLACE the gradient with a flat cream
+   surface, override colour to ink, and add a hairline terracotta
+   border. */
 .vocab-block-custom {
-  box-shadow:
-    0 12px 28px rgba(0, 0, 0, 0.30),
-    0 0 0 3px rgba(247, 181, 56, 0.18);
+  background: var(--v-custom-cream) !important;
+  border: 2px solid var(--v-custom-accent) !important;
+  color: var(--v-custom-ink);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.18);
+  overflow: hidden;
 }
 .vocab-block-custom:hover:not(:disabled) {
-  box-shadow:
-    0 18px 36px rgba(0, 0, 0, 0.38),
-    0 0 0 3px rgba(247, 181, 56, 0.30);
+  box-shadow: 0 18px 36px rgba(0, 0, 0, 0.24);
+}
+
+/* Title in the custom bubble — italic serif on ink, no white shadow. */
+.vocab-block-custom .vocab-block-title {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-style: italic;
+  font-weight: 700;
+  color: var(--v-custom-ink);
+  text-shadow: none;
+  font-size: 1.7rem;
+  margin-bottom: 4px;
+}
+
+/* The icon row functions as the "DAILY" eyebrow label of Phrases. We
+   hide the original .vocab-block-icon and inject the eyebrow via
+   ::before so the JSX can stay symmetrical with the other 4 bubbles. */
+.vocab-block-custom .vocab-block-icon {
+  display: none;
+}
+.vocab-block-custom::before {
+  content: "🗂️";
+  display: block;
+  /* Eyebrow icon — sized slightly larger than the previous "✦ YOURS"
+     text label so the file-folder emoji reads at a glance. ~1.1rem
+     keeps it balanced against the 1.7rem italic serif title below. */
+  font-size: 1.1rem;
+  line-height: 1;
+  margin-bottom: 8px;
+  position: relative;
+  z-index: 2;
+}
+
+/* Preview text in muted warm grey, not white. */
+.vocab-block-custom .vocab-block-preview {
+  color: var(--v-custom-muted);
+  position: relative;
+  z-index: 2;
+  margin-bottom: 0;
+}
+
+/* Hide the "YOURS" badge that the JSX renders — the eyebrow above
+   plays that role now, and we want the bottom of the bubble to be
+   clean for the decorative quotes. */
+.vocab-block-custom .vocab-block-badge {
+  display: none;
+}
+
+/* Two big decorative quotes, bottom-right of the bubble. */
+.vocab-block-custom::after {
+  content: ",,";
+  position: absolute;
+  right: 14px;
+  bottom: -10px;
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: 4.4rem;
+  line-height: 0.7;
+  color: var(--v-custom-warm);
+  font-weight: 700;
+  pointer-events: none;
+  letter-spacing: -4px;
+  z-index: 1;
 }
 
 /* ─── My Lists — header ─── */
@@ -1083,6 +1168,7 @@
 }
 .vocab-cl-h {
   font-family: 'Cormorant Garamond', Georgia, serif;
+  font-style: italic;
   font-size: 1.8rem;
   color: var(--v-ink);
   margin: 0 0 0.3rem;
@@ -1096,8 +1182,16 @@
 .vocab-cl-counter {
   margin-top: 0.7rem;
   font-size: 0.78rem;
-  color: var(--v-muted);
+  color: var(--v-custom-accent);
   letter-spacing: 0.5px;
+  font-weight: 600;
+}
+
+/* Topbar icon when inside My Lists — uses an emoji which carries
+   its own colours; we just give it a tiny size bump so it doesn't
+   feel smaller than the EOI block icons. */
+.vocab-blocknav-title .vocab-blocknav-icon-custom {
+  font-size: 1.5rem;
 }
 
 /* ─── My Lists — empty state ─── */
@@ -1107,7 +1201,7 @@
   padding: 2rem 1.5rem;
   text-align: center;
   background: var(--v-card);
-  border: 1px dashed var(--v-border);
+  border: 1px dashed rgba(181, 69, 27, 0.45);
   border-radius: 18px;
 }
 .vocab-cl-empty-icon {
@@ -1116,6 +1210,7 @@
 }
 .vocab-cl-empty-title {
   font-family: 'Cormorant Garamond', Georgia, serif;
+  font-style: italic;
   font-size: 1.4rem;
   color: var(--v-ink);
   margin-bottom: 0.5rem;
@@ -1128,8 +1223,8 @@
   max-width: 360px;
 }
 .vocab-cl-empty-cta {
-  background: #F7B538;
-  color: #1A1A1A;
+  background: var(--v-custom-accent);
+  color: var(--v-custom-cream);
   border: none;
   padding: 10px 18px;
   border-radius: 50px;
@@ -1138,9 +1233,10 @@
   font-size: 0.92rem;
   cursor: pointer;
   transition: background 0.18s, transform 0.18s;
+  letter-spacing: 0.3px;
 }
 .vocab-cl-empty-cta:hover {
-  background: #FFC04A;
+  background: #9C3B17;
   transform: translateY(-1px);
 }
 .vocab-cl-empty-hint {
@@ -1171,7 +1267,7 @@
 }
 .vocab-cl-card:hover {
   background: var(--v-card-hi);
-  border-color: rgba(247, 181, 56, 0.35);
+  border-color: rgba(181, 69, 27, 0.45);
 }
 .vocab-cl-card-confirming {
   background: rgba(248, 113, 113, 0.08);
@@ -1225,7 +1321,9 @@
   font-family: inherit;
 }
 .vocab-cl-icon-btn:hover {
-  background: rgba(255, 255, 255, 0.14);
+  background: rgba(181, 69, 27, 0.18);
+  color: #F5C5A8;
+  border-color: rgba(181, 69, 27, 0.45);
 }
 .vocab-cl-icon-danger:hover {
   background: rgba(248, 113, 113, 0.18);
@@ -1279,9 +1377,9 @@
   margin: 0 auto 2rem;
 }
 .vocab-cl-add-btn {
-  background: rgba(247, 181, 56, 0.18);
-  color: #F7B538;
-  border: 1px solid rgba(247, 181, 56, 0.40);
+  background: rgba(181, 69, 27, 0.18);
+  color: #F5C5A8;
+  border: 1px solid rgba(181, 69, 27, 0.45);
   padding: 10px 18px;
   border-radius: 50px;
   font-family: inherit;
@@ -1291,11 +1389,12 @@
   transition: background 0.18s, color 0.18s;
 }
 .vocab-cl-add-btn:hover {
-  background: rgba(247, 181, 56, 0.28);
+  background: rgba(181, 69, 27, 0.30);
+  color: #F8D9C2;
 }
 .vocab-cl-create-form {
   background: var(--v-card);
-  border: 1px solid rgba(247, 181, 56, 0.30);
+  border: 1px solid rgba(181, 69, 27, 0.35);
   border-radius: 14px;
   padding: 0.8rem;
 }
@@ -1318,7 +1417,7 @@
 }
 .vocab-cl-input:focus {
   outline: none;
-  border-color: rgba(247, 181, 56, 0.60);
+  border-color: rgba(181, 69, 27, 0.70);
   background: rgba(0, 0, 0, 0.30);
 }
 .vocab-cl-input::placeholder {
@@ -1328,8 +1427,8 @@
   border-color: var(--v-ko);
 }
 .vocab-cl-create-btn {
-  background: #F7B538;
-  color: #1A1A1A;
+  background: var(--v-custom-accent);
+  color: var(--v-custom-cream);
   border: none;
   padding: 9px 18px;
   border-radius: 10px;
@@ -1339,7 +1438,7 @@
   cursor: pointer;
   transition: background 0.18s, opacity 0.18s;
 }
-.vocab-cl-create-btn:hover:not(:disabled) { background: #FFC04A; }
+.vocab-cl-create-btn:hover:not(:disabled) { background: #9C3B17; }
 .vocab-cl-create-btn:disabled {
   opacity: 0.45;
   cursor: not-allowed;
@@ -1363,6 +1462,23 @@
   margin-top: 0.6rem;
   font-size: 0.85rem;
   color: var(--v-ko);
+}
+
+/* During the crash animation, the overlay bubble inherits the
+   .vocab-block-custom look so there's no visual jump between idle
+   and crashing. Same flat cream surface, terracotta border, and the
+   title becomes the italic serif on ink. */
+.vocab-crash-bubble[data-block-id="custom"] {
+  background: var(--v-custom-cream);
+  border: 2px solid var(--v-custom-accent);
+}
+.vocab-crash-bubble[data-block-id="custom"] .vocab-block-icon {
+  text-shadow: none;
+}
+.vocab-crash-bubble[data-block-id="custom"] .vocab-block-title {
+  font-style: italic;
+  color: var(--v-custom-ink);
+  text-shadow: none;
 }
 
 /* =====================================================================
