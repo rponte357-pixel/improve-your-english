@@ -1040,6 +1040,332 @@
 }
 
 /* =====================================================================
+   Custom Vocabulary (r30 / A2) — 5th bubble + "My Lists" view.
+
+   Visual conventions:
+     • amber gold gradient (#F7B538 → #C77800) for the bubble
+     • cards use the same translucent surface (--v-card / --v-border)
+       as the rest of Vocabulary so it reads as part of the section
+     • all interactive feedback follows the existing 0.18s easing
+===================================================================== */
+
+/* 5-bubble layout. When the 5th (custom) bubble is present we move to
+   a 3-column grid; the custom bubble spans the full row underneath the
+   4 EOI bubbles, centred by `justify-self: center`. This keeps the
+   visual hierarchy (EOI content first, your stuff after) clear. */
+.vocab-blocks-with-custom {
+  grid-template-columns: repeat(2, 200px);
+}
+.vocab-blocks-with-custom .vocab-block-custom {
+  grid-column: 1 / -1;
+  justify-self: center;
+  margin-top: 0.4rem;
+}
+
+/* The custom bubble itself — slightly different glow to suggest "yours"
+   rather than the heavier shadow of the EOI blocks. */
+.vocab-block-custom {
+  box-shadow:
+    0 12px 28px rgba(0, 0, 0, 0.30),
+    0 0 0 3px rgba(247, 181, 56, 0.18);
+}
+.vocab-block-custom:hover:not(:disabled) {
+  box-shadow:
+    0 18px 36px rgba(0, 0, 0, 0.38),
+    0 0 0 3px rgba(247, 181, 56, 0.30);
+}
+
+/* ─── My Lists — header ─── */
+.vocab-cl-header {
+  text-align: center;
+  margin: 1.2rem auto 1.5rem;
+  max-width: 640px;
+}
+.vocab-cl-h {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: 1.8rem;
+  color: var(--v-ink);
+  margin: 0 0 0.3rem;
+}
+.vocab-cl-sub {
+  color: var(--v-muted);
+  font-size: 0.92rem;
+  line-height: 1.5;
+  margin: 0;
+}
+.vocab-cl-counter {
+  margin-top: 0.7rem;
+  font-size: 0.78rem;
+  color: var(--v-muted);
+  letter-spacing: 0.5px;
+}
+
+/* ─── My Lists — empty state ─── */
+.vocab-cl-empty {
+  max-width: 480px;
+  margin: 2rem auto;
+  padding: 2rem 1.5rem;
+  text-align: center;
+  background: var(--v-card);
+  border: 1px dashed var(--v-border);
+  border-radius: 18px;
+}
+.vocab-cl-empty-icon {
+  font-size: 2.6rem;
+  margin-bottom: 0.6rem;
+}
+.vocab-cl-empty-title {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: 1.4rem;
+  color: var(--v-ink);
+  margin-bottom: 0.5rem;
+}
+.vocab-cl-empty-sub {
+  color: var(--v-muted);
+  font-size: 0.88rem;
+  line-height: 1.55;
+  margin: 0 auto 1.2rem;
+  max-width: 360px;
+}
+.vocab-cl-empty-cta {
+  background: #F7B538;
+  color: #1A1A1A;
+  border: none;
+  padding: 10px 18px;
+  border-radius: 50px;
+  font-family: inherit;
+  font-weight: 700;
+  font-size: 0.92rem;
+  cursor: pointer;
+  transition: background 0.18s, transform 0.18s;
+}
+.vocab-cl-empty-cta:hover {
+  background: #FFC04A;
+  transform: translateY(-1px);
+}
+.vocab-cl-empty-hint {
+  margin-top: 1rem;
+  font-size: 0.78rem;
+  color: var(--v-muted);
+  font-style: italic;
+}
+
+/* ─── My Lists — list of cards ─── */
+.vocab-cl-list {
+  max-width: 640px;
+  margin: 0 auto 1.2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+.vocab-cl-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.6rem;
+  background: var(--v-card);
+  border: 1px solid var(--v-border);
+  border-radius: 14px;
+  padding: 0.6rem 0.8rem 0.6rem 0;
+  transition: background 0.18s, border-color 0.18s;
+}
+.vocab-cl-card:hover {
+  background: var(--v-card-hi);
+  border-color: rgba(247, 181, 56, 0.35);
+}
+.vocab-cl-card-confirming {
+  background: rgba(248, 113, 113, 0.08);
+  border-color: rgba(248, 113, 113, 0.35);
+}
+.vocab-cl-card-body {
+  flex: 1 1 auto;
+  text-align: left;
+  background: none;
+  border: none;
+  color: var(--v-ink);
+  font-family: inherit;
+  cursor: pointer;
+  padding: 0.4rem 0.6rem 0.4rem 1rem;
+  border-radius: 10px;
+  transition: background 0.18s;
+}
+.vocab-cl-card-body:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.04);
+}
+.vocab-cl-card-body:disabled { cursor: default; }
+.vocab-cl-card-title {
+  font-weight: 600;
+  font-size: 1rem;
+  margin-bottom: 2px;
+}
+.vocab-cl-card-meta {
+  font-size: 0.78rem;
+  color: var(--v-muted);
+}
+
+/* ─── My Lists — action icons on each card ─── */
+.vocab-cl-card-actions {
+  display: flex;
+  gap: 0.4rem;
+  flex-shrink: 0;
+}
+.vocab-cl-icon-btn {
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid var(--v-border);
+  color: var(--v-ink);
+  cursor: pointer;
+  font-size: 0.95rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.18s, color 0.18s, border-color 0.18s;
+  font-family: inherit;
+}
+.vocab-cl-icon-btn:hover {
+  background: rgba(255, 255, 255, 0.14);
+}
+.vocab-cl-icon-danger:hover {
+  background: rgba(248, 113, 113, 0.18);
+  color: var(--v-ko);
+  border-color: rgba(248, 113, 113, 0.35);
+}
+
+/* ─── My Lists — inline delete confirmation ─── */
+.vocab-cl-confirm {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: rgba(248, 113, 113, 0.12);
+  border: 1px solid rgba(248, 113, 113, 0.30);
+  border-radius: 10px;
+  padding: 4px 8px;
+  flex-shrink: 0;
+}
+.vocab-cl-confirm-text {
+  font-size: 0.82rem;
+  color: var(--v-ko);
+  font-weight: 600;
+  margin-right: 0.2rem;
+}
+.vocab-cl-confirm-yes,
+.vocab-cl-confirm-no {
+  font-family: inherit;
+  font-size: 0.78rem;
+  padding: 4px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.18s, color 0.18s;
+}
+.vocab-cl-confirm-yes {
+  background: var(--v-ko);
+  color: #1A1A1A;
+  border: none;
+  font-weight: 700;
+}
+.vocab-cl-confirm-yes:hover { background: #fca5a5; }
+.vocab-cl-confirm-no {
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--v-ink);
+  border: 1px solid var(--v-border);
+}
+.vocab-cl-confirm-no:hover { background: rgba(255, 255, 255, 0.16); }
+
+/* ─── My Lists — create form / button ─── */
+.vocab-cl-create {
+  max-width: 640px;
+  margin: 0 auto 2rem;
+}
+.vocab-cl-add-btn {
+  background: rgba(247, 181, 56, 0.18);
+  color: #F7B538;
+  border: 1px solid rgba(247, 181, 56, 0.40);
+  padding: 10px 18px;
+  border-radius: 50px;
+  font-family: inherit;
+  font-weight: 700;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: background 0.18s, color 0.18s;
+}
+.vocab-cl-add-btn:hover {
+  background: rgba(247, 181, 56, 0.28);
+}
+.vocab-cl-create-form {
+  background: var(--v-card);
+  border: 1px solid rgba(247, 181, 56, 0.30);
+  border-radius: 14px;
+  padding: 0.8rem;
+}
+.vocab-cl-create-row {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.vocab-cl-input {
+  flex: 1 1 200px;
+  background: rgba(0, 0, 0, 0.20);
+  border: 1px solid var(--v-border);
+  border-radius: 10px;
+  padding: 9px 12px;
+  color: var(--v-ink);
+  font-family: inherit;
+  font-size: 0.92rem;
+  transition: border-color 0.18s, background 0.18s;
+}
+.vocab-cl-input:focus {
+  outline: none;
+  border-color: rgba(247, 181, 56, 0.60);
+  background: rgba(0, 0, 0, 0.30);
+}
+.vocab-cl-input::placeholder {
+  color: var(--v-muted);
+}
+.vocab-cl-input-error {
+  border-color: var(--v-ko);
+}
+.vocab-cl-create-btn {
+  background: #F7B538;
+  color: #1A1A1A;
+  border: none;
+  padding: 9px 18px;
+  border-radius: 10px;
+  font-family: inherit;
+  font-weight: 700;
+  font-size: 0.88rem;
+  cursor: pointer;
+  transition: background 0.18s, opacity 0.18s;
+}
+.vocab-cl-create-btn:hover:not(:disabled) { background: #FFC04A; }
+.vocab-cl-create-btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+.vocab-cl-cancel-btn {
+  background: transparent;
+  color: var(--v-muted);
+  border: 1px solid var(--v-border);
+  padding: 9px 16px;
+  border-radius: 10px;
+  font-family: inherit;
+  font-size: 0.88rem;
+  cursor: pointer;
+  transition: color 0.18s, background 0.18s;
+}
+.vocab-cl-cancel-btn:hover {
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--v-ink);
+}
+.vocab-cl-error {
+  margin-top: 0.6rem;
+  font-size: 0.85rem;
+  color: var(--v-ko);
+}
+
+/* =====================================================================
    Mobile tweaks for the new block UI.
 ===================================================================== */
 @media (max-width: 600px) {
@@ -1049,6 +1375,13 @@
     grid-template-columns: 200px;
     gap: 1rem;
     padding: 0;
+  }
+  .vocab-blocks-with-custom {
+    grid-template-columns: 200px;
+  }
+  .vocab-blocks-with-custom .vocab-block-custom {
+    grid-column: auto;
+    margin-top: 0;
   }
   /* Same 200px bubble on mobile so the proportions read the same. */
   .vocab-block-icon { font-size: 1.7rem; }
@@ -1060,4 +1393,14 @@
   .vocab-blocknav-title { font-size: 1.1rem; }
   .vocab-crash-bubble .vocab-block-icon { font-size: 1.7rem; }
   .vocab-crash-bubble .vocab-block-title { font-size: 1.3rem; }
+
+  /* Custom lists view — tighter padding on small screens. */
+  .vocab-cl-header { margin: 0.8rem auto 1.2rem; padding: 0 0.5rem; }
+  .vocab-cl-h { font-size: 1.5rem; }
+  .vocab-cl-empty { padding: 1.5rem 1rem; }
+  .vocab-cl-card { flex-wrap: wrap; }
+  .vocab-cl-card-body { padding-left: 0.8rem; }
+  .vocab-cl-create-row { gap: 0.4rem; }
+  .vocab-cl-create-btn,
+  .vocab-cl-cancel-btn { padding: 9px 14px; }
 }

@@ -29,7 +29,34 @@ import {
   hasContent,
   getTotalWordCount,
 } from "../data/vocabulary";
+import MyListsView from "../components/MyListsView";
 import "../styles/vocabulary.css";
+
+// ─────────────────────────────────────────────────────────────────────
+// The "My Vocabulary" custom block is NOT defined in data/vocabulary.js.
+// It lives here as a local pseudo-block so that:
+//   • BLOCKS (the EOI data) stays pure — used by getTotalWordCount()
+//     and other helpers without leaking custom-list concepts.
+//   • The BlockSelector can render 5 bubbles using the same code path.
+//   • The crash animation reuses the same gradients/particle colours
+//     machinery as the 4 themed bubbles.
+//
+// This block has NO themeIds and NO levels because clicking it routes
+// to MyListsView (custom lists) rather than ThemeView (EOI themes).
+// =====================================================================
+const CUSTOM_BLOCK_ID = "custom";
+const CUSTOM_BLOCK = {
+  id: CUSTOM_BLOCK_ID,
+  name: "My Vocabulary",
+  icon: "⭐",
+  // Amber gold gradient — sits well next to the existing teal/purple/
+  // red/dark-amber palette without clashing, and reads as "your stuff".
+  gradientFrom: "#F7B538",
+  gradientTo:   "#C77800",
+  particleColors: ["#F7B538", "#C77800", "#FFE5A0", "#E69A1F"],
+  themeIds: [],
+  levels: [],
+};
 
 const STORAGE_KEY = "iye:vocab:progress";
 // All possible levels. Each block exposes its own subset via block.levels
@@ -89,12 +116,23 @@ function useProgress() {
 // =======================================================================
 
 export default function Vocabulary() {
-  // null = show the BlockSelector. Otherwise it's a block id from BLOCKS.
+  // null = show the BlockSelector. Otherwise it's a block id from BLOCKS
+  // or the CUSTOM_BLOCK_ID for the user's custom lists.
   const [selectedBlock, setSelectedBlock] = useState(null);
   const { progress, markLearned, isLearned, totalLearned } = useProgress();
   const totalWords = getTotalWordCount();
 
-  const block = selectedBlock ? BLOCKS[selectedBlock] : null;
+  // Resolve the selected block. We look in EOI BLOCKS first, then fall
+  // back to the local CUSTOM_BLOCK so the same selector state value
+  // works for both worlds.
+  const block =
+    selectedBlock === CUSTOM_BLOCK_ID
+      ? CUSTOM_BLOCK
+      : selectedBlock
+      ? BLOCKS[selectedBlock]
+      : null;
+
+  const isCustom = block && block.id === CUSTOM_BLOCK_ID;
 
   return (
     <section className="vocab">
@@ -104,7 +142,7 @@ export default function Vocabulary() {
           <span className="vocab-brand-mark">🇬🇧 🇺🇸 🇦🇺</span>
           Vocabulary Lab
         </div>
-        <div className="vocab-trophy" title="Words learned">
+        <div className="vocab-trophy" title="Words learned (EOI blocks)">
           🏆 <b>{totalLearned}</b>
           <span className="vocab-trophy-total">/ {totalWords}</span>
         </div>
@@ -114,7 +152,24 @@ export default function Vocabulary() {
         <BlockSelector onPick={(id) => setSelectedBlock(id)} />
       )}
 
-      {block && (
+      {block && isCustom && (
+        <MyListsView
+          onBack={() => setSelectedBlock(null)}
+          onOpenList={(_listId) => {
+            // The actual editor / study view for a specific custom list
+            // is implemented in Round A3 (editor) and A4 (modes).
+            // For now, surface a friendly notice rather than navigate
+            // nowhere — keeps the prototype honest.
+            // eslint-disable-next-line no-alert
+            window.alert(
+              "Opening individual lists arrives in the next round (A3).\n\n" +
+              "For now you can create, see and delete lists here."
+            );
+          }}
+        />
+      )}
+
+      {block && !isCustom && (
         <ThemeView
           block={block}
           onBack={() => setSelectedBlock(null)}
@@ -148,6 +203,14 @@ function BlockSelector({ onPick }) {
     onPick(id);
   };
 
+  // Resolve the block being crashed: EOI block or the custom one.
+  const crashingBlock =
+    crashingId === CUSTOM_BLOCK_ID
+      ? CUSTOM_BLOCK
+      : crashingId
+      ? BLOCKS[crashingId]
+      : null;
+
   return (
     <>
       <header className="vocab-hero">
@@ -159,7 +222,7 @@ function BlockSelector({ onPick }) {
         </p>
       </header>
 
-      <div className="vocab-blocks">
+      <div className="vocab-blocks vocab-blocks-with-custom">
         {Object.values(BLOCKS).map((b) => {
           // Count words available in this block to decide whether it's
           // marked "ready" or "coming soon".
@@ -205,11 +268,36 @@ function BlockSelector({ onPick }) {
             </button>
           );
         })}
+
+        {/* 5th bubble — the user's own vocabulary lists.
+            Visually it lives in the same grid as the 4 EOI bubbles, with
+            its own amber-gold gradient. Sits centred in the 2nd row on
+            desktop (via .vocab-blocks-with-custom .vocab-block-custom). */}
+        <button
+          key={CUSTOM_BLOCK.id}
+          className={`vocab-block vocab-block-custom ${crashingId === CUSTOM_BLOCK.id ? "vocab-block-crashing" : ""}`}
+          data-block-id={CUSTOM_BLOCK.id}
+          style={{
+            "--block-from": CUSTOM_BLOCK.gradientFrom,
+            "--block-to":   CUSTOM_BLOCK.gradientTo,
+          }}
+          onClick={() => handleClick(CUSTOM_BLOCK.id)}
+          disabled={!!crashingId}
+        >
+          <div className="vocab-block-icon">{CUSTOM_BLOCK.icon}</div>
+          <div className="vocab-block-title">{CUSTOM_BLOCK.name}</div>
+          <div className="vocab-block-preview">
+            Your own word lists
+          </div>
+          <div className="vocab-block-badge">
+            YOURS
+          </div>
+        </button>
       </div>
 
-      {crashingId && (
+      {crashingBlock && (
         <BubbleCrash
-          block={BLOCKS[crashingId]}
+          block={crashingBlock}
           onEnd={() => handleCrashEnd(crashingId)}
         />
       )}
