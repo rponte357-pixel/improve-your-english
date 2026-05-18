@@ -73,24 +73,45 @@ export function customProgressKey(listId) {
 }
 
 // Validate a single word. Returns { ok: true } or { ok: false, error }.
+//
+// Schema (r35 / A3.2):
+//   • en              required, 1–80 chars
+//   • es              OPTIONAL — users can save a word without translating
+//                     it yet; the Edit tab and Flashcards will treat
+//                     missing `es` gracefully.
+//   • example         optional, 0–240 chars
+//   • example2        optional, 0–240 chars (added in r35 to support
+//                     Quick check returning two dictionary examples)
+//   • partOfSpeech    optional, short token like "noun", "phrasal verb"
+//                     (added in r35 for the same reason; UI shows it as
+//                     a small chip next to the word)
 export function validateWord(word) {
   if (!word || typeof word !== "object") {
     return { ok: false, error: "Invalid word" };
   }
   const en = typeof word.en === "string" ? word.en.trim() : "";
   const es = typeof word.es === "string" ? word.es.trim() : "";
-  const example =
-    word.example == null || word.example === ""
+
+  // Optional fields. Each one accepts:
+  //   • undefined / null / ""  → treated as absent
+  //   • string                 → trimmed and length-checked
+  //   • anything else          → invalid
+  const normaliseOptional = (val) =>
+    val == null || val === ""
       ? ""
-      : typeof word.example === "string"
-      ? word.example.trim()
+      : typeof val === "string"
+      ? val.trim()
       : null;
+
+  const example       = normaliseOptional(word.example);
+  const example2      = normaliseOptional(word.example2);
+  const partOfSpeech  = normaliseOptional(word.partOfSpeech);
 
   if (!en) return { ok: false, error: "English word is required" };
   if (en.length > MAX_WORD_LENGTH) {
     return { ok: false, error: `English word is too long (max ${MAX_WORD_LENGTH})` };
   }
-  if (!es) return { ok: false, error: "Spanish translation is required" };
+  // `es` is now OPTIONAL. Only enforce a length limit when present.
   if (es.length > MAX_WORD_LENGTH) {
     return { ok: false, error: `Spanish translation is too long (max ${MAX_WORD_LENGTH})` };
   }
@@ -99,6 +120,20 @@ export function validateWord(word) {
   }
   if (example.length > MAX_EXAMPLE_LENGTH) {
     return { ok: false, error: `Example is too long (max ${MAX_EXAMPLE_LENGTH})` };
+  }
+  if (example2 === null) {
+    return { ok: false, error: "Second example must be text" };
+  }
+  if (example2.length > MAX_EXAMPLE_LENGTH) {
+    return { ok: false, error: `Second example is too long (max ${MAX_EXAMPLE_LENGTH})` };
+  }
+  if (partOfSpeech === null) {
+    return { ok: false, error: "Part of speech must be text" };
+  }
+  // A part-of-speech label is always short. 40 chars accommodates
+  // "phrasal verb", "transitive verb", etc. with comfortable margin.
+  if (partOfSpeech.length > 40) {
+    return { ok: false, error: "Part of speech tag is too long" };
   }
 
   return { ok: true };
@@ -237,15 +272,22 @@ function renameWordInProgress(listId, oldEn, newEn) {
 // React hook — public API for the UI
 // ─────────────────────────────────────────────────────────────────────
 
-// Builds a normalised Word object from raw input, stripping `example`
-// when empty so persisted data stays clean.
-function buildWord({ en, es, example }) {
-  const cleanEn = en.trim();
-  const cleanEs = es.trim();
-  const cleanEx = (example || "").trim();
-  return cleanEx
-    ? { en: cleanEn, es: cleanEs, example: cleanEx }
-    : { en: cleanEn, es: cleanEs };
+// Builds a normalised Word object from raw input, stripping optional
+// fields when empty so persisted data stays clean. Optional fields
+// added in r35: `example2` and `partOfSpeech`.
+function buildWord({ en, es, example, example2, partOfSpeech }) {
+  const cleanEn  = en.trim();
+  const cleanEs  = (es || "").trim();
+  const cleanEx  = (example || "").trim();
+  const cleanEx2 = (example2 || "").trim();
+  const cleanPos = (partOfSpeech || "").trim();
+
+  const out = { en: cleanEn };
+  if (cleanEs)  out.es           = cleanEs;
+  if (cleanEx)  out.example      = cleanEx;
+  if (cleanEx2) out.example2     = cleanEx2;
+  if (cleanPos) out.partOfSpeech = cleanPos;
+  return out;
 }
 
 export function useCustomLists() {

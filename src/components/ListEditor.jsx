@@ -22,6 +22,7 @@ import {
   SOFT_TOTAL_WORDS_WARNING,
   MAX_NAME_LENGTH,
 } from "../data/customLists";
+import { lookupDictionary } from "../data/dictionary";
 
 const MODE_TABS = [
   { id: "edit",       label: "Edit",                  icon: null },
@@ -184,27 +185,30 @@ export default function ListEditor({ listId, onBack }) {
 // ─────────────────────────────────────────────────────────────────────
 
 function EditTab({ list, totalWords, addWord, editWord, removeWord }) {
-  // Word-level micro-states. At most one row at a time can be in
-  // "editing" or "confirming-delete" — the UI cancels any other when
-  // a new one opens.
-  const [editingEn, setEditingEn]     = useState(null);  // wordEn key
-  const [confirmingEn, setConfirmingEn] = useState(null);
+  // Word-level micro-states. At most one row at a time can be in any of
+  // these — UI cancels the others when a new one opens.
+  const [editingEn, setEditingEn]         = useState(null);  // wordEn
+  const [confirmingEn, setConfirmingEn]   = useState(null);
+  const [quickCheckEn, setQuickCheckEn]   = useState(null);  // r35
 
   // Reset row-level UI state when the list changes (e.g. user goes
   // back and opens a different list without unmounting the editor).
   useEffect(() => {
     setEditingEn(null);
     setConfirmingEn(null);
+    setQuickCheckEn(null);
   }, [list.id]);
 
   const startEdit = (word) => {
     setConfirmingEn(null);
+    setQuickCheckEn(null);
     setEditingEn(word.en);
   };
   const cancelEdit = () => setEditingEn(null);
 
   const requestDelete = (word) => {
     setEditingEn(null);
+    setQuickCheckEn(null);
     setConfirmingEn(word.en);
   };
   const cancelDelete = () => setConfirmingEn(null);
@@ -212,6 +216,15 @@ function EditTab({ list, totalWords, addWord, editWord, removeWord }) {
     removeWord(list.id, word.en);
     setConfirmingEn(null);
   };
+
+  // Quick check (r35): only meaningful for rows without a Spanish
+  // translation yet. Opens an inline expanded panel below the row.
+  const startQuickCheck = (word) => {
+    setEditingEn(null);
+    setConfirmingEn(null);
+    setQuickCheckEn(word.en);
+  };
+  const cancelQuickCheck = () => setQuickCheckEn(null);
 
   // Soft cap surfaces a warning banner — never blocks. The 500 figure
   // comes from customLists.js (SOFT_TOTAL_WORDS_WARNING).
@@ -228,8 +241,9 @@ function EditTab({ list, totalWords, addWord, editWord, removeWord }) {
       {list.words.length > 0 && (
         <div className="vocab-le-words">
           {list.words.map((word) => {
-            const isEditing    = editingEn === word.en;
-            const isConfirming = confirmingEn === word.en;
+            const isEditing      = editingEn === word.en;
+            const isConfirming   = confirmingEn === word.en;
+            const isQuickCheck   = quickCheckEn === word.en;
             return (
               <WordRow
                 key={word.en}
@@ -240,6 +254,7 @@ function EditTab({ list, totalWords, addWord, editWord, removeWord }) {
                   .map((w) => w.en.toLowerCase())}
                 isEditing={isEditing}
                 isConfirming={isConfirming}
+                isQuickCheck={isQuickCheck}
                 onStartEdit={() => startEdit(word)}
                 onCancelEdit={cancelEdit}
                 onSaveEdit={(updated) => {
@@ -250,6 +265,13 @@ function EditTab({ list, totalWords, addWord, editWord, removeWord }) {
                 onRequestDelete={() => requestDelete(word)}
                 onCancelDelete={cancelDelete}
                 onConfirmDelete={() => confirmDelete(word)}
+                onStartQuickCheck={() => startQuickCheck(word)}
+                onCancelQuickCheck={cancelQuickCheck}
+                onSaveQuickCheck={(updated) => {
+                  const r = editWord(list.id, word.en, updated);
+                  if (r.ok) setQuickCheckEn(null);
+                  return r;
+                }}
               />
             );
           })}
@@ -283,45 +305,56 @@ function WordRow({
   otherEns,
   isEditing,
   isConfirming,
+  isQuickCheck,
   onStartEdit,
   onCancelEdit,
   onSaveEdit,
   onRequestDelete,
   onCancelDelete,
   onConfirmDelete,
+  onStartQuickCheck,
+  onCancelQuickCheck,
+  onSaveQuickCheck,
 }) {
   // Local draft while editing — never mutates the parent until Save.
   const [draftEn, setDraftEn]   = useState(word.en);
-  const [draftEs, setDraftEs]   = useState(word.es);
+  const [draftEs, setDraftEs]   = useState(word.es || "");
   const [draftEx, setDraftEx]   = useState(word.example || "");
+  const [draftEx2, setDraftEx2] = useState(word.example2 || "");
+  const [draftPos, setDraftPos] = useState(word.partOfSpeech || "");
   const [error, setError]       = useState(null);
   const enInputRef              = useRef(null);
 
   useEffect(() => {
     if (isEditing) {
       setDraftEn(word.en);
-      setDraftEs(word.es);
+      setDraftEs(word.es || "");
       setDraftEx(word.example || "");
+      setDraftEx2(word.example2 || "");
+      setDraftPos(word.partOfSpeech || "");
       setError(null);
-      // Focus moves to the first input on entering edit mode.
       setTimeout(() => enInputRef.current?.focus(), 0);
     }
-  }, [isEditing, word.en, word.es, word.example]);
+  }, [isEditing, word.en, word.es, word.example, word.example2, word.partOfSpeech]);
 
-  // Cancel-on-escape, save-on-enter (in any of the 3 inputs).
   const onKeyDown = (e) => {
     if (e.key === "Escape") { e.preventDefault(); onCancelEdit(); }
     if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); doSave(); }
   };
 
   const doSave = () => {
-    // Local duplicate check first — friendlier message than the hook's.
     const cleanEn = draftEn.trim().toLowerCase();
     if (cleanEn && otherEns.includes(cleanEn)) {
       setError(`"${draftEn.trim()}" is already in this list`);
       return;
     }
-    const r = onSaveEdit({ en: draftEn, es: draftEs, example: draftEx });
+    const r = onSaveEdit({
+      en: draftEn,
+      es: draftEs,
+      example: draftEx,
+      example2: draftEx2,
+      partOfSpeech: draftPos,
+    });
     if (!r.ok) setError(r.error);
   };
 
@@ -345,7 +378,7 @@ function WordRow({
           value={draftEs}
           onChange={(e) => { setDraftEs(e.target.value); if (error) setError(null); }}
           onKeyDown={onKeyDown}
-          placeholder="Spanish"
+          placeholder="Spanish (optional)"
           maxLength={80}
         />
         <div className="vocab-le-row-actions">
@@ -361,6 +394,15 @@ function WordRow({
           placeholder="Example sentence (optional)"
           maxLength={240}
         />
+        <input
+          type="text"
+          className="vocab-le-row-input vocab-le-row-input-ex"
+          value={draftEx2}
+          onChange={(e) => setDraftEx2(e.target.value)}
+          onKeyDown={onKeyDown}
+          placeholder="Second example sentence (optional)"
+          maxLength={240}
+        />
         {error && (
           <div className="vocab-le-row-error">⚠ {error}</div>
         )}
@@ -368,11 +410,23 @@ function WordRow({
     );
   }
 
-  // ─── State 2 + 3: normal / confirming-delete ──────────────────────
+  // ─── State 2 + 3: normal / confirming-delete (+ quick-check expanded) ─
+  // The row body itself is the same in normal and confirming. The
+  // Quick check panel renders BELOW the row when active, so we wrap
+  // both in a fragment-like container.
+  const showQuickCheckBtn = !word.es && !isConfirming;
+
   return (
-    <div className={`vocab-le-row ${isConfirming ? "vocab-le-row-confirming" : ""}`}>
-      <span className="vocab-le-row-en">{word.en}</span>
-      <span className="vocab-le-row-es">{word.es}</span>
+    <div className={`vocab-le-row ${isConfirming ? "vocab-le-row-confirming" : ""} ${isQuickCheck ? "vocab-le-row-quick" : ""}`}>
+      <span className="vocab-le-row-en">
+        {word.en}
+        {word.partOfSpeech && (
+          <span className="vocab-le-row-pos">{word.partOfSpeech}</span>
+        )}
+      </span>
+      <span className={`vocab-le-row-es ${!word.es ? "vocab-le-row-es-empty" : ""}`}>
+        {word.es || "— no translation yet"}
+      </span>
       {isConfirming ? (
         <div className="vocab-le-row-confirm">
           <span className="vocab-le-row-confirm-text">Delete?</span>
@@ -391,6 +445,15 @@ function WordRow({
         </div>
       ) : (
         <div className="vocab-le-row-actions">
+          {showQuickCheckBtn && (
+            <button
+              className="vocab-le-qc-btn"
+              onClick={onStartQuickCheck}
+              title="Look up this word in the dictionary"
+            >
+              🔎 Quick check
+            </button>
+          )}
           <button
             className="vocab-le-icon-btn"
             onClick={onStartEdit}
@@ -410,7 +473,184 @@ function WordRow({
       {word.example && !isConfirming && (
         <div className="vocab-le-row-ex">"{word.example}"</div>
       )}
+      {word.example2 && !isConfirming && (
+        <div className="vocab-le-row-ex">"{word.example2}"</div>
+      )}
+      {isQuickCheck && (
+        <QuickCheckPanel
+          word={word}
+          onCancel={onCancelQuickCheck}
+          onSave={onSaveQuickCheck}
+        />
+      )}
     </div>
+  );
+}
+
+// ─────────────────────────────────────────────────────────────────────
+// QuickCheckPanel — inline expanded panel shown below a word when the
+// user pulls the Quick check trigger. Fetches a definition from
+// dictionaryapi.dev, lets the user edit the result, then saves.
+// ─────────────────────────────────────────────────────────────────────
+
+function QuickCheckPanel({ word, onCancel, onSave }) {
+  // status: 'loading' | 'ready' | 'error'
+  const [status, setStatus]   = useState("loading");
+  const [errMsg, setErrMsg]   = useState("");
+  const [dictPos, setDictPos] = useState("");
+  const [dictDef, setDictDef] = useState("");
+
+  // Editable fields. We seed them from the dictionary response when it
+  // arrives; the user can override anything before saving.
+  const [draftEs, setDraftEs]   = useState(word.es || "");
+  const [draftEx, setDraftEx]   = useState(word.example || "");
+  const [draftEx2, setDraftEx2] = useState(word.example2 || "");
+  const [draftPos, setDraftPos] = useState(word.partOfSpeech || "");
+
+  const [saveErr, setSaveErr] = useState(null);
+
+  // Fire the dictionary lookup on mount. We use an AbortController so
+  // navigating away or closing the panel mid-flight doesn't cause a
+  // state update on an unmounted component.
+  useEffect(() => {
+    const ac = new AbortController();
+    setStatus("loading");
+    setErrMsg("");
+    (async () => {
+      const result = await lookupDictionary(word.en, { signal: ac.signal });
+      if (ac.signal.aborted) return;
+      if (!result.ok) {
+        setStatus("error");
+        setErrMsg(result.error);
+        return;
+      }
+      const { partOfSpeech, definition, examples } = result.data;
+      setDictPos(partOfSpeech);
+      setDictDef(definition);
+      // Pre-fill editable fields ONLY where the user hasn't typed
+      // anything yet (don't overwrite their existing value).
+      setDraftPos((prev) => prev || partOfSpeech);
+      setDraftEx((prev)  => prev || examples[0] || "");
+      setDraftEx2((prev) => prev || examples[1] || "");
+      setStatus("ready");
+    })();
+    return () => ac.abort();
+  }, [word.en]);
+
+  const doSave = () => {
+    const r = onSave({
+      en: word.en,
+      es: draftEs,
+      example: draftEx,
+      example2: draftEx2,
+      partOfSpeech: draftPos,
+    });
+    if (!r.ok) setSaveErr(r.error);
+  };
+
+  return (
+    <div className="vocab-le-qc-panel">
+      {status === "loading" && (
+        <div className="vocab-le-qc-loading">
+          <span className="vocab-le-qc-spinner" aria-hidden="true">⏳</span>
+          <span>Looking up "{word.en}" in the dictionary…</span>
+        </div>
+      )}
+
+      {status === "error" && (
+        <>
+          <div className="vocab-le-qc-error">⚠ {errMsg}</div>
+          <p className="vocab-le-qc-hint">
+            You can still fill the fields manually below.
+          </p>
+          <QuickCheckForm
+            draftEs={draftEs} setDraftEs={setDraftEs}
+            draftEx={draftEx} setDraftEx={setDraftEx}
+            draftEx2={draftEx2} setDraftEx2={setDraftEx2}
+            draftPos={draftPos} setDraftPos={setDraftPos}
+          />
+          {saveErr && <div className="vocab-le-qc-error">⚠ {saveErr}</div>}
+          <div className="vocab-le-qc-actions">
+            <button className="vocab-le-cancel-btn" onClick={onCancel}>Cancel</button>
+            <button className="vocab-le-save-btn" onClick={doSave}>Save</button>
+          </div>
+        </>
+      )}
+
+      {status === "ready" && (
+        <>
+          <div className="vocab-le-qc-head">
+            {dictPos && <span className="vocab-le-qc-tag">{dictPos}</span>}
+            <p className="vocab-le-qc-def">{dictDef}</p>
+          </div>
+          <QuickCheckForm
+            draftEs={draftEs} setDraftEs={setDraftEs}
+            draftEx={draftEx} setDraftEx={setDraftEx}
+            draftEx2={draftEx2} setDraftEx2={setDraftEx2}
+            draftPos={draftPos} setDraftPos={setDraftPos}
+          />
+          {saveErr && <div className="vocab-le-qc-error">⚠ {saveErr}</div>}
+          <div className="vocab-le-qc-actions">
+            <button className="vocab-le-cancel-btn" onClick={onCancel}>Cancel</button>
+            <button className="vocab-le-save-btn" onClick={doSave}>Save</button>
+          </div>
+        </>
+      )}
+    </div>
+  );
+}
+
+// Editable form shared by both the "ready" and "error" branches of
+// QuickCheckPanel. Lifted out for readability and to avoid duplicated
+// markup.
+function QuickCheckForm({
+  draftEs, setDraftEs,
+  draftEx, setDraftEx,
+  draftEx2, setDraftEx2,
+  draftPos, setDraftPos,
+}) {
+  return (
+    <>
+      <div className="vocab-le-qc-section">SPANISH TRANSLATION</div>
+      <input
+        type="text"
+        className="vocab-le-row-input"
+        value={draftEs}
+        placeholder="Type your Spanish translation…"
+        onChange={(e) => setDraftEs(e.target.value)}
+        maxLength={80}
+      />
+
+      <div className="vocab-le-qc-section">PART OF SPEECH</div>
+      <input
+        type="text"
+        className="vocab-le-row-input"
+        value={draftPos}
+        placeholder='e.g. "Noun", "Phrasal verb"'
+        onChange={(e) => setDraftPos(e.target.value)}
+        maxLength={40}
+      />
+
+      <div className="vocab-le-qc-section">EXAMPLE 1</div>
+      <input
+        type="text"
+        className="vocab-le-row-input"
+        value={draftEx}
+        placeholder="First example sentence"
+        onChange={(e) => setDraftEx(e.target.value)}
+        maxLength={240}
+      />
+
+      <div className="vocab-le-qc-section">EXAMPLE 2</div>
+      <input
+        type="text"
+        className="vocab-le-row-input"
+        value={draftEx2}
+        placeholder="Second example sentence"
+        onChange={(e) => setDraftEx2(e.target.value)}
+        maxLength={240}
+      />
+    </>
   );
 }
 
@@ -425,7 +665,10 @@ function AddWordForm({ listId, existingEns, addWord }) {
   const [error, setError] = useState(null);
   const enInputRef = useRef(null);
 
-  const canSubmit = en.trim() && es.trim();
+  // Spanish is OPTIONAL now (r35) — users can save a word without
+  // translating it yet and use the per-row "Quick check" button later
+  // to look up the definition.
+  const canSubmit = en.trim().length > 0;
 
   const reset = () => {
     setEn("");
@@ -472,7 +715,7 @@ function AddWordForm({ listId, existingEns, addWord }) {
         <input
           type="text"
           className="vocab-le-row-input"
-          placeholder="Spanish translation"
+          placeholder="Spanish translation (optional)"
           value={es}
           onChange={(e) => { setEs(e.target.value); if (error) setError(null); }}
           onKeyDown={onKey}
