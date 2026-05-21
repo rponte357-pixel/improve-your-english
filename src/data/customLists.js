@@ -41,7 +41,7 @@ export const CUSTOM_LISTS_STORAGE_KEY = "iye:vocab:custom-lists";
 export const PROGRESS_STORAGE_KEY     = "iye:vocab:progress";
 
 // Synthetic "level" used when building the progress key for custom
-// lists. Mirrors the `<themeId>-<level>` format used by EOI themes so
+// lists. Mirrors the `<themeId>-<level>` format used by curated themes so
 // the existing study modes can stay completely agnostic.
 export const CUSTOM_LEVEL = "all";
 
@@ -67,7 +67,7 @@ export function makeListId() {
 }
 
 // Build the progress key for a given list. Exported so the views can
-// read/write the same shared progress map used by EOI themes.
+// read/write the same shared progress map used by curated themes.
 export function customProgressKey(listId) {
   return `custom-${listId}-${CUSTOM_LEVEL}`;
 }

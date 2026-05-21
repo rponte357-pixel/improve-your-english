@@ -8,11 +8,8 @@
 //   • Inline delete confirmation on each card (no modal).
 //   • Click a card body → call onOpenList(listId) so the parent can
 //     navigate to the editor / study view (A3 / A4).
-//
-// What this component does NOT do (yet):
-//   • Renaming a list (lives in the editor view in A3).
-//   • Editing words inside a list (A3).
-//   • Launching study modes from the card (A4).
+//   • Button "📋 Paste & import" → call onOpenPasteImport so the
+//     parent can open the wizard (Round B1).
 //
 // Data + persistence is handled entirely by useCustomLists() from
 // ../data/customLists. This component is presentational on top.
@@ -20,7 +17,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useCustomLists } from "../data/customLists";
 
-export default function MyListsView({ onBack, onOpenList }) {
+export default function MyListsView({ onBack, onOpenList, onOpenPasteImport, recentlyImportedListId }) {
   const {
     lists,
     totalLists,
@@ -115,7 +112,7 @@ export default function MyListsView({ onBack, onOpenList }) {
         <p className="vocab-cl-sub">
           Build your own word lists from class notes, mistakes you keep
           making, or vocabulary you want to revise — and study them with
-          the same four modes as the EOI blocks.
+          the same four modes as the curated blocks.
         </p>
         {totalLists > 0 && (
           <div className="vocab-cl-counter">
@@ -135,11 +132,21 @@ export default function MyListsView({ onBack, onOpenList }) {
           <p className="vocab-cl-empty-sub">
             Build your own word lists from class notes, mistakes you keep
             making, or vocabulary you want to revise. You'll study them
-            with the same four modes as the EOI blocks.
+            with the same four modes as the curated blocks.
           </p>
-          <button className="vocab-cl-empty-cta" onClick={openCreateForm}>
-            + Create your first list
-          </button>
+          <div className="vocab-cl-empty-ctas">
+            <button className="vocab-cl-empty-cta" onClick={openCreateForm}>
+              + Create your first list
+            </button>
+            {onOpenPasteImport && (
+              <button
+                className="vocab-cl-empty-cta vocab-cl-empty-cta-alt"
+                onClick={onOpenPasteImport}
+              >
+                📋 Paste a list
+              </button>
+            )}
+          </div>
           <div className="vocab-cl-empty-hint">
             Tip: keep each list focused on one theme or purpose.
           </div>
@@ -154,7 +161,7 @@ export default function MyListsView({ onBack, onOpenList }) {
             return (
               <div
                 key={list.id}
-                className={`vocab-cl-card ${isConfirming ? "vocab-cl-card-confirming" : ""}`}
+                className={`vocab-cl-card ${isConfirming ? "vocab-cl-card-confirming" : ""} ${recentlyImportedListId === list.id ? "vocab-cl-card-pulse" : ""}`}
               >
                 <button
                   className="vocab-cl-card-body"
@@ -210,13 +217,24 @@ export default function MyListsView({ onBack, onOpenList }) {
         </div>
       )}
 
-      {/* ─── Create form / button ─── */}
+      {/* ─── Create form / button + paste import ─── */}
       {(totalLists > 0 || creating) && (
         <div className="vocab-cl-create">
           {!creating && (
-            <button className="vocab-cl-add-btn" onClick={openCreateForm}>
-              + New list
-            </button>
+            <div className="vocab-cl-create-actions">
+              <button className="vocab-cl-add-btn" onClick={openCreateForm}>
+                + New list
+              </button>
+              {onOpenPasteImport && (
+                <button
+                  className="vocab-cl-paste-btn"
+                  onClick={onOpenPasteImport}
+                  title="Paste a list of words from a PDF or document"
+                >
+                  📋 Paste &amp; import
+                </button>
+              )}
+            </div>
           )}
 
           {creating && (
@@ -226,7 +244,7 @@ export default function MyListsView({ onBack, onOpenList }) {
                   ref={draftInputRef}
                   type="text"
                   className={`vocab-cl-input ${createError ? "vocab-cl-input-error" : ""}`}
-                  placeholder="List name (e.g. EOI Mock Exam — June)"
+                  placeholder="List name (e.g. Advanced Vocab — June)"
                   value={draftName}
                   onChange={(e) => {
                     setDraftName(e.target.value);

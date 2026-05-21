@@ -1,4 +1,4 @@
-// Vocabulary — EOI exam vocabulary practice, organised in 4 thematic blocks.
+// Vocabulary — advanced English vocabulary practice, organised in 4 thematic blocks.
 //
 // Navigation flow:
 //   1. BlockSelector  — 4 large bubbles (Daily Life, Identity & Science,
@@ -31,19 +31,21 @@ import {
 } from "../data/vocabulary";
 import MyListsView from "../components/MyListsView";
 import ListEditor from "../components/ListEditor";
+import PasteImport from "../components/PasteImport";
+import PDFExportModal from "../components/PDFExportModal";
 import "../styles/vocabulary.css";
 
 // ─────────────────────────────────────────────────────────────────────
 // The "My Vocabulary" custom block is NOT defined in data/vocabulary.js.
 // It lives here as a local pseudo-block so that:
-//   • BLOCKS (the EOI data) stays pure — used by getTotalWordCount()
+//   • BLOCKS (the curated data) stays pure — used by getTotalWordCount()
 //     and other helpers without leaking custom-list concepts.
 //   • The BlockSelector can render 5 bubbles using the same code path.
 //   • The crash animation reuses the same gradients/particle colours
 //     machinery as the 4 themed bubbles.
 //
 // This block has NO themeIds and NO levels because clicking it routes
-// to MyListsView (custom lists) rather than ThemeView (EOI themes).
+// to MyListsView (custom lists) rather than ThemeView (curated themes).
 // =====================================================================
 const CUSTOM_BLOCK_ID = "custom";
 const CUSTOM_BLOCK = {
@@ -79,7 +81,7 @@ const MODES = [
 ];
 
 // --------- progress hook ----------
-function useProgress() {
+export function useProgress() {
   const [progress, setProgress] = useState({});
 
   useEffect(() => {
@@ -134,10 +136,23 @@ export default function Vocabulary() {
   // component state — no React Router change needed.
   const [selectedListId, setSelectedListId] = useState(null);
 
+  // Paste & import wizard (Round B1). When `pasteImportOpen` is true,
+  // the wizard occupies the same screen real estate as MyListsView /
+  // ListEditor — only one of these is visible at any time inside the
+  // custom block. `lastImportedListId` is set after a successful import
+  // so MyListsView can pulse the affected card briefly.
+  const [pasteImportOpen, setPasteImportOpen] = useState(false);
+  const [lastImportedListId, setLastImportedListId] = useState(null);
+  const [importToast, setImportToast] = useState(null);
+
+  // PDF export modal (Round B fase 2). Open from the topbar; closes
+  // on Cancel, on overlay click, or shortly after a successful export.
+  const [pdfModalOpen, setPdfModalOpen] = useState(false);
+
   const { progress, markLearned, isLearned, totalLearned } = useProgress();
   const totalWords = getTotalWordCount();
 
-  // Resolve the selected block. We look in EOI BLOCKS first, then fall
+  // Resolve the selected block. We look in the curated BLOCKS first, then fall
   // back to the local CUSTOM_BLOCK so the same selector state value
   // works for both worlds.
   const block =
@@ -149,12 +164,30 @@ export default function Vocabulary() {
 
   const isCustom = block && block.id === CUSTOM_BLOCK_ID;
 
-  // Reset the list-detail state whenever we leave the custom block —
-  // prevents a stale `selectedListId` from rendering ListEditor after
-  // the user navigates away and comes back.
+  // Reset the list-detail / wizard state whenever we leave the custom
+  // block — prevents stale state from rendering after navigating away.
   useEffect(() => {
-    if (!isCustom && selectedListId) setSelectedListId(null);
-  }, [isCustom, selectedListId]);
+    if (!isCustom) {
+      if (selectedListId)    setSelectedListId(null);
+      if (pasteImportOpen)   setPasteImportOpen(false);
+      if (lastImportedListId) setLastImportedListId(null);
+      if (importToast)       setImportToast(null);
+    }
+  }, [isCustom, selectedListId, pasteImportOpen, lastImportedListId, importToast]);
+
+  // Auto-dismiss the import toast after a few seconds.
+  useEffect(() => {
+    if (!importToast) return;
+    const id = setTimeout(() => setImportToast(null), 4500);
+    return () => clearTimeout(id);
+  }, [importToast]);
+
+  // Clear the pulse highlight after the animation finishes.
+  useEffect(() => {
+    if (!lastImportedListId) return;
+    const id = setTimeout(() => setLastImportedListId(null), 2400);
+    return () => clearTimeout(id);
+  }, [lastImportedListId]);
 
   return (
     <section className="vocab">
@@ -164,28 +197,76 @@ export default function Vocabulary() {
           <span className="vocab-brand-mark">🇬🇧 🇺🇸 🇦🇺</span>
           Vocabulary Lab
         </div>
-        <div className="vocab-trophy" title="Words learned (EOI blocks)">
-          🏆 <b>{totalLearned}</b>
-          <span className="vocab-trophy-total">/ {totalWords}</span>
+        <div className="vocab-topbar-right">
+          <div className="vocab-trophy" title="Words learned (curated blocks)">
+            🏆 <b>{totalLearned}</b>
+            <span className="vocab-trophy-total">/ {totalWords}</span>
+          </div>
+          <button
+            type="button"
+            className="vocab-topbar-export"
+            onClick={() => setPdfModalOpen(true)}
+            title="Export your vocabulary to PDF"
+          >
+            ⬇<span className="vocab-topbar-export-label"> Export PDF</span>
+          </button>
         </div>
       </div>
+
+      <PDFExportModal
+        open={pdfModalOpen}
+        onClose={() => setPdfModalOpen(false)}
+        blocks={BLOCKS}
+        vocabThemes={VOCAB_THEMES}
+        isLearned={isLearned}
+      />
 
       {!block && (
         <BlockSelector onPick={(id) => setSelectedBlock(id)} />
       )}
 
-      {block && isCustom && !selectedListId && (
-        <MyListsView
-          onBack={() => setSelectedBlock(null)}
-          onOpenList={(listId) => setSelectedListId(listId)}
+      {/* Custom block — three possible sub-views, mutually exclusive. */}
+      {block && isCustom && pasteImportOpen && (
+        <PasteImport
+          onCancel={() => setPasteImportOpen(false)}
+          onDone={({ listId, added, skipped, destKind }) => {
+            setPasteImportOpen(false);
+            setLastImportedListId(listId);
+            setImportToast({
+              added,
+              skipped,
+              destKind,
+            });
+          }}
         />
       )}
 
-      {block && isCustom && selectedListId && (
+      {block && isCustom && !pasteImportOpen && !selectedListId && (
+        <MyListsView
+          onBack={() => setSelectedBlock(null)}
+          onOpenList={(listId) => setSelectedListId(listId)}
+          onOpenPasteImport={() => setPasteImportOpen(true)}
+          recentlyImportedListId={lastImportedListId}
+        />
+      )}
+
+      {block && isCustom && !pasteImportOpen && selectedListId && (
         <ListEditor
           listId={selectedListId}
           onBack={() => setSelectedListId(null)}
         />
+      )}
+
+      {/* Import toast — shown after wizard closes successfully. */}
+      {importToast && (
+        <div className="vocab-pi-toast" role="status">
+          ✓ {importToast.added} word{importToast.added === 1 ? "" : "s"} added
+          {importToast.skipped > 0 && (
+            <span className="vocab-pi-toast-skipped">
+              {" "}({importToast.skipped} skipped)
+            </span>
+          )}
+        </div>
       )}
 
       {block && !isCustom && (
@@ -222,7 +303,7 @@ function BlockSelector({ onPick }) {
     onPick(id);
   };
 
-  // Resolve the block being crashed: EOI block or the custom one.
+  // Resolve the block being crashed: curated block or the custom one.
   const crashingBlock =
     crashingId === CUSTOM_BLOCK_ID
       ? CUSTOM_BLOCK
@@ -233,11 +314,11 @@ function BlockSelector({ onPick }) {
   return (
     <>
       <header className="vocab-hero">
-        <div className="vocab-eye">EOI Exam Prep · B1 · B2 · C1 · C2</div>
+        <div className="vocab-eye">Advanced English · B1 · B2 · C1 · C2</div>
         <h1 className="vocab-h1">Grow your Vocabulary</h1>
         <p className="vocab-sub">
-          Choose a thematic block to start. Each block groups related topics
-          you'll see across EOI exams.
+          Choose a thematic block to start. Each block groups related
+          everyday and academic topics for advanced English learners.
         </p>
       </header>
 
@@ -289,7 +370,7 @@ function BlockSelector({ onPick }) {
         })}
 
         {/* 5th bubble — the user's own vocabulary lists.
-            Visually it lives in the same grid as the 4 EOI bubbles, with
+            Visually it lives in the same grid as the 4 curated bubbles, with
             its own amber-gold gradient. Sits centred in the 2nd row on
             desktop (via .vocab-blocks-with-custom .vocab-block-custom). */}
         <button
@@ -598,7 +679,7 @@ function EmptyState({ themeName }) {
 // Flashcards mode
 // =======================================================================
 
-function Flashcards({ words, themeId, level, markLearned, isLearned }) {
+export function Flashcards({ words, themeId, level, markLearned, isLearned }) {
   const [index, setIndex] = useState(0);
   const [flipped, setFlipped] = useState(false);
 
@@ -691,7 +772,7 @@ function Flashcards({ words, themeId, level, markLearned, isLearned }) {
 // Quiz mode — pick the correct Spanish translation
 // =======================================================================
 
-function Quiz({ words, themeId, level, markLearned }) {
+export function Quiz({ words, themeId, level, markLearned }) {
   const [index, setIndex] = useState(0);
   const [score, setScore] = useState(0);
   const [picked, setPicked] = useState(null);
@@ -827,7 +908,7 @@ function Quiz({ words, themeId, level, markLearned }) {
 // Matching mode — match EN with ES under a 60-second timer
 // =======================================================================
 
-function Matching({ words, themeId, level, markLearned }) {
+export function Matching({ words, themeId, level, markLearned }) {
   const [difficulty, setDifficulty] = useState(6);
   const [items, setItems] = useState([]);
   const [shuffledEs, setShuffledEs] = useState([]);

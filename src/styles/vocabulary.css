@@ -1,4 +1,4 @@
-/* Vocabulary section — EOI exam prep, anglosphere palette.
+/* Vocabulary section — advanced English, anglosphere palette.
  *
  * Visual identity:
  *   • Navy background (#0A2F5C) gradient — matches the bubble
@@ -46,6 +46,11 @@
   margin-bottom: 1.5rem;
   gap: 1rem;
   flex-wrap: wrap;
+}
+.vocab-topbar-right {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
 }
 .vocab-back {
   color: var(--v-muted);
@@ -1043,7 +1048,7 @@
    Custom Vocabulary (r30 / A2, restyled r31) — 5th bubble + "My Lists" view.
 
    The 5th bubble adopts the Phrases-card aesthetic to set the personal
-   section visually apart from the 4 EOI gradient bubbles:
+   section visually apart from the 4 curated gradient bubbles:
      • cream surface, terracotta hairline border, black serif title
      • small "✦ YOURS" eyebrow label in terracotta
      • two big decorative quotes in soft warm beige
@@ -1072,9 +1077,9 @@
 }
 
 /* 5-bubble layout. When the 5th (custom) bubble is present we stay on
-   2 columns for the 4 EOI bubbles and let the custom one span the row
+   2 columns for the 4 curated bubbles and let the custom one span the row
    underneath, centred via `justify-self`. Visual hierarchy stays
-   EOI-first. */
+   curated-first. */
 .vocab-blocks-with-custom {
   grid-template-columns: repeat(2, 200px);
 }
@@ -1119,7 +1124,7 @@
 .vocab-block-custom::before {
   content: "🗂️";
   display: block;
-  /* Same 2rem icon size as the EOI block icons so the 5th bubble's
+  /* Same 2rem icon size as the curated block icons so the 5th bubble's
      visual hierarchy matches: icon → title → preview. */
   font-size: 2rem;
   line-height: 1;
@@ -1188,7 +1193,7 @@
 
 /* Topbar icon when inside My Lists — uses an emoji which carries
    its own colours; we just give it a tiny size bump so it doesn't
-   feel smaller than the EOI block icons. */
+   feel smaller than the curated block icons. */
 .vocab-blocknav-title .vocab-blocknav-icon-custom {
   font-size: 1.5rem;
 }
@@ -2055,7 +2060,1315 @@
 }
 
 /* =====================================================================
-   Mobile tweaks for the new block UI.
+   r36 / A4 — Study tab styles for custom lists
+   (empty states, exclusion banner, Stats panel, pills, reset confirm).
+===================================================================== */
+
+/* Empty-state container shared by all "nothing to study" cases. */
+.vocab-le-study-empty {
+  max-width: 480px;
+  margin: 2rem auto;
+  padding: 2rem 1.5rem;
+  text-align: center;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px dashed rgba(255, 255, 255, 0.22);
+  border-radius: 14px;
+  color: var(--v-ink);
+}
+.vocab-le-study-empty-icon {
+  font-size: 2.2rem;
+  margin-bottom: 0.6rem;
+}
+.vocab-le-study-empty-h {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-style: italic;
+  font-size: 1.3rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+  color: var(--v-ink);
+}
+.vocab-le-study-empty-s {
+  font-size: 0.9rem;
+  color: rgba(248, 244, 238, 0.88);
+  line-height: 1.6;
+  max-width: 360px;
+  margin: 0 auto;
+}
+
+/* Exclusion banner — shown above Flashcards if any words lack es. */
+.vocab-le-study-banner {
+  max-width: 720px;
+  margin: 0 auto 1rem;
+  padding: 0.7rem 1rem;
+  background: rgba(201, 150, 58, 0.14);
+  border: 1px solid rgba(201, 150, 58, 0.45);
+  border-radius: 12px;
+  font-size: 0.85rem;
+  color: #E9C46A;
+  line-height: 1.5;
+}
+.vocab-le-study-banner b { color: #F0D78C; }
+
+/* ─── Stats card ─── */
+.vocab-le-stats {
+  max-width: 720px;
+  margin: 0 auto 2rem;
+}
+.vocab-le-stats-card {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 14px;
+  padding: 1.4rem 1.5rem;
+}
+.vocab-le-stats-h {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-style: italic;
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--v-ink);
+  margin: 0 0 0.25rem;
+}
+.vocab-le-stats-s {
+  font-size: 0.85rem;
+  color: rgba(248, 244, 238, 0.85);
+  line-height: 1.5;
+  margin: 0 0 1rem;
+}
+
+/* Progress bar */
+.vocab-le-stats-bar-shell {
+  background: rgba(0, 0, 0, 0.30);
+  border-radius: 999px;
+  height: 10px;
+  overflow: hidden;
+  margin-bottom: 0.5rem;
+}
+.vocab-le-stats-bar-fill {
+  background: linear-gradient(90deg, #B5451B 0%, #C77800 100%);
+  height: 100%;
+  border-radius: 999px;
+  transition: width 0.4s ease-out;
+}
+.vocab-le-stats-pct-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 1.2rem;
+}
+.vocab-le-stats-pct {
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: var(--v-ink);
+}
+.vocab-le-stats-pct-s {
+  font-size: 0.85rem;
+  color: rgba(248, 244, 238, 0.85);
+}
+
+/* Mini cards (studyable / learned / to review) */
+.vocab-le-stats-mini-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.5rem;
+  margin-bottom: 1.2rem;
+}
+.vocab-le-stats-mini {
+  background: rgba(0, 0, 0, 0.22);
+  border-radius: 10px;
+  padding: 0.8rem 0.4rem;
+  text-align: center;
+}
+.vocab-le-stats-mini-n {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--v-ink);
+}
+.vocab-le-stats-mini-l {
+  font-size: 0.66rem;
+  color: rgba(248, 244, 238, 0.85);
+  margin-top: 0.15rem;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+}
+
+/* Section labels */
+.vocab-le-stats-section {
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+  color: #F5C5A8;
+  margin: 1rem 0 0.4rem;
+}
+
+/* Pills */
+.vocab-le-stats-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+.vocab-le-stats-pill {
+  font-size: 0.8rem;
+  padding: 4px 12px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.10);
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  color: rgba(248, 244, 238, 0.95);
+  font-family: inherit;
+  white-space: nowrap;
+}
+.vocab-le-stats-pill-learned {
+  background: rgba(181, 69, 27, 0.25);
+  border-color: rgba(181, 69, 27, 0.50);
+  color: #F8D9C2;
+}
+.vocab-le-stats-pill-muted {
+  background: rgba(255, 255, 255, 0.04);
+  border-color: rgba(255, 255, 255, 0.14);
+  color: rgba(248, 244, 238, 0.65);
+  font-style: italic;
+}
+/* "+N more" button — looks like a pill but is interactive. */
+.vocab-le-stats-pill-more {
+  cursor: pointer;
+  background: transparent;
+  border: 1px dashed rgba(255, 255, 255, 0.30);
+  color: rgba(248, 244, 238, 0.85);
+  transition: background 0.18s, color 0.18s;
+}
+.vocab-le-stats-pill-more:hover {
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--v-ink);
+}
+
+/* Reset progress row */
+.vocab-le-stats-reset-row {
+  margin-top: 1.4rem;
+  display: flex;
+  justify-content: flex-end;
+}
+.vocab-le-stats-reset-btn {
+  background: rgba(255, 255, 255, 0.10);
+  color: rgba(248, 244, 238, 0.95);
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  padding: 7px 14px;
+  border-radius: 999px;
+  font-size: 0.78rem;
+  font-family: inherit;
+  cursor: pointer;
+  transition: background 0.18s, color 0.18s, opacity 0.18s;
+}
+.vocab-le-stats-reset-btn:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.16);
+}
+.vocab-le-stats-reset-btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+.vocab-le-stats-reset-confirm {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: rgba(156, 59, 23, 0.18);
+  border: 1px solid rgba(156, 59, 23, 0.45);
+  border-radius: 8px;
+  padding: 4px 8px;
+}
+.vocab-le-stats-reset-confirm-text {
+  font-size: 0.78rem;
+  color: #F5C5A8;
+  font-weight: 600;
+  margin-right: 0.2rem;
+}
+
+/* =====================================================================
+   r37 / B1 — Paste & import wizard
+   (entry buttons, 3-step wizard, review rows, destination, toast).
+
+   Reuses tokens from the rest of the custom-list area (--v-custom-*).
+===================================================================== */
+
+/* ─── Entry buttons in MyListsView ─── */
+.vocab-cl-create-actions {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+.vocab-cl-paste-btn {
+  background: rgba(255, 255, 255, 0.10);
+  color: rgba(248, 244, 238, 0.95);
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  padding: 10px 18px;
+  border-radius: 50px;
+  font-family: inherit;
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: background 0.18s, color 0.18s, border-color 0.18s;
+}
+.vocab-cl-paste-btn:hover {
+  background: rgba(181, 69, 27, 0.20);
+  border-color: rgba(181, 69, 27, 0.45);
+  color: #F8D9C2;
+}
+
+/* Empty-state CTAs row */
+.vocab-cl-empty-ctas {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+.vocab-cl-empty-cta-alt {
+  background: rgba(255, 255, 255, 0.10);
+  color: rgba(248, 244, 238, 0.95);
+  border: 1px solid rgba(255, 255, 255, 0.22);
+}
+.vocab-cl-empty-cta-alt:hover {
+  background: rgba(181, 69, 27, 0.18);
+  color: #F8D9C2;
+  border-color: rgba(181, 69, 27, 0.40);
+  transform: translateY(-1px);
+}
+
+/* Pulse highlight on recently-imported card */
+@keyframes vocab-cl-card-pulse {
+  0%   { box-shadow: 0 0 0 0 rgba(181, 69, 27, 0.50); background: rgba(181, 69, 27, 0.20); }
+  60%  { box-shadow: 0 0 0 14px rgba(181, 69, 27, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(181, 69, 27, 0); background: var(--v-card); }
+}
+.vocab-cl-card-pulse {
+  animation: vocab-cl-card-pulse 2.4s ease-out;
+}
+
+/* ─── Step indicator (3-pill row) ─── */
+.vocab-pi-steps {
+  display: flex;
+  justify-content: center;
+  gap: 0.4rem;
+  margin: 0 0 1.2rem;
+  flex-wrap: wrap;
+}
+.vocab-pi-step {
+  font-size: 0.72rem;
+  padding: 4px 12px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.20);
+  color: rgba(248, 244, 238, 0.85);
+  letter-spacing: 0.3px;
+}
+.vocab-pi-step-on {
+  background: rgba(181, 69, 27, 0.25);
+  border-color: rgba(181, 69, 27, 0.50);
+  color: #F5C5A8;
+  font-weight: 600;
+}
+.vocab-pi-step-done {
+  color: rgba(248, 244, 238, 0.55);
+}
+
+/* ─── Shared card ─── */
+.vocab-pi-card {
+  max-width: 760px;
+  margin: 0 auto 2rem;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 14px;
+  padding: 1.4rem 1.5rem;
+}
+.vocab-pi-card-h {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-style: italic;
+  font-size: 1.4rem;
+  font-weight: 700;
+  margin: 0 0 0.25rem;
+  color: var(--v-ink);
+}
+.vocab-pi-card-s {
+  font-size: 0.88rem;
+  color: rgba(248, 244, 238, 0.88);
+  line-height: 1.55;
+  margin: 0 0 1rem;
+}
+
+/* CTAs row at bottom of each step */
+.vocab-pi-ctas {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 1.2rem;
+  gap: 0.5rem;
+}
+.vocab-pi-btn-primary {
+  background: var(--v-custom-accent);
+  color: var(--v-custom-cream);
+  border: none;
+  padding: 9px 18px;
+  border-radius: 999px;
+  font-family: inherit;
+  font-weight: 700;
+  font-size: 0.88rem;
+  cursor: pointer;
+  transition: background 0.18s, opacity 0.18s;
+}
+.vocab-pi-btn-primary:hover:not(:disabled) { background: #9C3B17; }
+.vocab-pi-btn-primary:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+.vocab-pi-btn-secondary {
+  background: rgba(255, 255, 255, 0.10);
+  color: rgba(248, 244, 238, 0.95);
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  padding: 9px 16px;
+  border-radius: 999px;
+  font-family: inherit;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: background 0.18s;
+}
+.vocab-pi-btn-secondary:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.16);
+}
+.vocab-pi-btn-secondary:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+/* ─── Step 1 — Paste ─── */
+.vocab-pi-textarea {
+  width: 100%;
+  box-sizing: border-box;
+  background: rgba(0, 0, 0, 0.30);
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  border-radius: 10px;
+  padding: 12px;
+  color: var(--v-ink);
+  font-family: 'SF Mono', Menlo, Consolas, monospace;
+  font-size: 0.85rem;
+  line-height: 1.6;
+  min-height: 180px;
+  resize: vertical;
+  transition: border-color 0.18s, background 0.18s;
+}
+
+/* r38: inline "See supported formats" link in the description. */
+.vocab-pi-link {
+  background: none;
+  border: none;
+  color: #F5C5A8;
+  text-decoration: underline;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: inherit;
+  padding: 0;
+}
+.vocab-pi-link:hover { color: #F8D9C2; }
+
+/* r38: permanent AI banner. */
+.vocab-pi-ai-banner {
+  background: rgba(181, 69, 27, 0.14);
+  border: 1px solid rgba(181, 69, 27, 0.40);
+  border-radius: 12px;
+  padding: 12px 14px;
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  flex-wrap: wrap;
+}
+.vocab-pi-ai-banner-text {
+  flex: 1 1 220px;
+  font-size: 0.85rem;
+  color: #F8D9C2;
+  line-height: 1.45;
+}
+.vocab-pi-ai-banner-text b { color: #F5C5A8; }
+.vocab-pi-ai-cta {
+  background: var(--v-custom-accent);
+  color: var(--v-custom-cream);
+  border: none;
+  padding: 7px 16px;
+  border-radius: 999px;
+  font-family: inherit;
+  font-size: 0.82rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.18s;
+  white-space: nowrap;
+}
+.vocab-pi-ai-cta:hover { background: #9C3B17; }
+
+/* r38: collapsible help panels (format + AI prompt). */
+.vocab-pi-help-panel {
+  background: rgba(0, 0, 0, 0.22);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 12px;
+  padding: 12px 14px;
+  margin-bottom: 1rem;
+}
+.vocab-pi-help-h {
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+  color: #F5C5A8;
+  margin-bottom: 0.5rem;
+}
+.vocab-pi-help-label {
+  font-size: 0.68rem;
+  color: rgba(248, 244, 238, 0.70);
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  margin: 0.5rem 0 0.25rem;
+}
+.vocab-pi-help-block {
+  font-family: 'SF Mono', Menlo, Consolas, monospace;
+  font-size: 0.78rem;
+  background: rgba(0, 0, 0, 0.35);
+  border: 1px solid rgba(255, 255, 255, 0.10);
+  border-radius: 6px;
+  padding: 9px 12px;
+  margin: 0 0 0.5rem;
+  line-height: 1.5;
+  color: rgba(248, 244, 238, 0.92);
+  overflow-x: auto;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+.vocab-pi-help-block-tall {
+  max-height: 280px;
+  overflow-y: auto;
+}
+.vocab-pi-help-list {
+  font-size: 0.82rem;
+  color: rgba(248, 244, 238, 0.92);
+  line-height: 1.6;
+  margin: 0.6rem 0 0;
+  padding-left: 1.1rem;
+}
+.vocab-pi-help-list li { margin-bottom: 0.2rem; }
+.vocab-pi-help-list b { color: #F5C5A8; }
+.vocab-pi-help-intro {
+  font-size: 0.82rem;
+  color: rgba(248, 244, 238, 0.92);
+  line-height: 1.55;
+  margin: 0 0 0.6rem;
+}
+.vocab-pi-help-intro b { color: #F5C5A8; }
+.vocab-pi-help-intro code {
+  font-family: 'SF Mono', Menlo, Consolas, monospace;
+  font-size: 0.85em;
+  background: rgba(0, 0, 0, 0.30);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 4px;
+  padding: 1px 5px;
+}
+.vocab-pi-help-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 0.4rem;
+}
+.vocab-pi-help-copy {
+  background: rgba(255, 255, 255, 0.10);
+  color: rgba(248, 244, 238, 0.95);
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  padding: 6px 14px;
+  border-radius: 999px;
+  font-family: inherit;
+  font-size: 0.78rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.18s, color 0.18s;
+}
+.vocab-pi-help-copy:hover {
+  background: rgba(181, 69, 27, 0.20);
+  color: #F8D9C2;
+  border-color: rgba(181, 69, 27, 0.45);
+}
+.vocab-pi-textarea:focus {
+  outline: none;
+  border-color: rgba(181, 69, 27, 0.70);
+  background: rgba(0, 0, 0, 0.40);
+}
+.vocab-pi-textarea::placeholder {
+  color: rgba(248, 244, 238, 0.45);
+}
+.vocab-pi-preview {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  margin-top: 0.8rem;
+  font-size: 0.78rem;
+}
+.vocab-pi-preview-num {
+  background: rgba(0, 0, 0, 0.22);
+  padding: 5px 12px;
+  border-radius: 8px;
+  color: rgba(248, 244, 238, 0.92);
+}
+.vocab-pi-preview-num b {
+  color: #F5C5A8;
+  font-size: 0.92rem;
+  margin-right: 3px;
+}
+.vocab-pi-warn {
+  color: #E9C46A !important;
+}
+.vocab-pi-warn b {
+  color: #F0D78C !important;
+}
+.vocab-pi-muted {
+  color: rgba(248, 244, 238, 0.65) !important;
+}
+.vocab-pi-muted b {
+  color: rgba(248, 244, 238, 0.85) !important;
+}
+
+/* ─── Step 2 — Review ─── */
+.vocab-pi-summary {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  margin-bottom: 0.7rem;
+}
+.vocab-pi-stat {
+  font-size: 0.78rem;
+  background: rgba(0, 0, 0, 0.22);
+  padding: 5px 12px;
+  border-radius: 8px;
+  color: rgba(248, 244, 238, 0.92);
+}
+.vocab-pi-stat b {
+  color: #F5C5A8;
+  font-size: 0.92rem;
+  margin-right: 3px;
+}
+.vocab-pi-bulk {
+  font-size: 0.78rem;
+  color: rgba(248, 244, 238, 0.85);
+  margin-bottom: 0.7rem;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+.vocab-pi-bulk button {
+  background: none;
+  border: none;
+  color: #F5C5A8;
+  text-decoration: underline;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 0.78rem;
+  padding: 0;
+}
+.vocab-pi-bulk-sep {
+  color: rgba(248, 244, 238, 0.45);
+}
+
+.vocab-pi-rows {
+  background: rgba(0, 0, 0, 0.16);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 12px;
+  overflow: hidden;
+}
+.vocab-pi-row {
+  display: grid;
+  grid-template-columns: 22px 1fr 28px;
+  gap: 0.6rem;
+  align-items: center;
+  padding: 0.6rem 0.8rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  position: relative;
+}
+.vocab-pi-row:last-child { border-bottom: none; }
+.vocab-pi-check {
+  accent-color: var(--v-custom-accent);
+  width: 16px;
+  height: 16px;
+}
+.vocab-pi-fields {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1.3fr;
+  gap: 0.4rem;
+}
+.vocab-pi-input {
+  background: rgba(0, 0, 0, 0.25);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 6px;
+  padding: 6px 9px;
+  color: var(--v-ink);
+  font-family: inherit;
+  font-size: 0.84rem;
+  width: 100%;
+  box-sizing: border-box;
+  transition: border-color 0.18s, background 0.18s;
+}
+.vocab-pi-input:focus {
+  outline: none;
+  border-color: rgba(181, 69, 27, 0.55);
+  background: rgba(0, 0, 0, 0.35);
+}
+.vocab-pi-input::placeholder {
+  color: rgba(248, 244, 238, 0.45);
+}
+.vocab-pi-input-en {
+  font-weight: 600;
+}
+.vocab-pi-remove {
+  background: rgba(255, 255, 255, 0.10);
+  border: 1px solid rgba(255, 255, 255, 0.20);
+  border-radius: 6px;
+  width: 26px;
+  height: 26px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: rgba(248, 244, 238, 0.95);
+  font-family: inherit;
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: background 0.18s;
+}
+.vocab-pi-remove:hover {
+  background: rgba(156, 59, 23, 0.30);
+  border-color: rgba(156, 59, 23, 0.55);
+  color: #F5C5A8;
+}
+
+/* Row states */
+.vocab-pi-row-off { opacity: 0.55; }
+.vocab-pi-row-dup {
+  background: rgba(255, 255, 255, 0.02);
+  opacity: 0.55;
+}
+.vocab-pi-row-dup .vocab-pi-input {
+  pointer-events: none;
+}
+.vocab-pi-row-warn {
+  background: rgba(201, 150, 58, 0.06);
+}
+.vocab-pi-row-warn .vocab-pi-input-en {
+  border-color: rgba(201, 150, 58, 0.45);
+}
+.vocab-pi-row-err {
+  background: rgba(248, 113, 113, 0.06);
+}
+.vocab-pi-row-err .vocab-pi-input-en {
+  border-color: rgba(248, 113, 113, 0.55);
+}
+
+.vocab-pi-badge {
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  white-space: nowrap;
+  margin-left: 1.8rem;
+  grid-column: 2;
+  align-self: flex-start;
+}
+.vocab-pi-badge-dup {
+  background: rgba(255, 255, 255, 0.10);
+  color: rgba(248, 244, 238, 0.85);
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  text-transform: uppercase;
+}
+.vocab-pi-badge-warn {
+  background: rgba(201, 150, 58, 0.20);
+  color: #E9C46A;
+  border: 1px solid rgba(201, 150, 58, 0.45);
+}
+.vocab-pi-badge-header {
+  background: rgba(181, 69, 27, 0.22);
+  color: #F5C5A8;
+  border: 1px solid rgba(181, 69, 27, 0.50);
+  letter-spacing: 0.6px;
+}
+.vocab-pi-badge-err {
+  background: rgba(248, 113, 113, 0.18);
+  color: var(--v-ko);
+  border: 1px solid rgba(248, 113, 113, 0.40);
+}
+
+/* ─── Step 3 — Destination ─── */
+.vocab-pi-dest-options {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+.vocab-pi-dest-opt {
+  background: rgba(0, 0, 0, 0.18);
+  border: 1px solid rgba(255, 255, 255, 0.20);
+  border-radius: 10px;
+  padding: 12px 14px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  color: var(--v-ink);
+  font-family: inherit;
+  text-align: left;
+  width: 100%;
+  transition: background 0.18s, border-color 0.18s;
+}
+.vocab-pi-dest-opt:hover {
+  background: rgba(255, 255, 255, 0.04);
+}
+.vocab-pi-dest-opt-on {
+  background: rgba(181, 69, 27, 0.15);
+  border-color: rgba(181, 69, 27, 0.45);
+}
+.vocab-pi-dest-radio {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.45);
+  flex-shrink: 0;
+  position: relative;
+}
+.vocab-pi-dest-opt-on .vocab-pi-dest-radio::after {
+  content: "";
+  position: absolute;
+  inset: 3px;
+  border-radius: 50%;
+  background: var(--v-custom-accent);
+}
+.vocab-pi-dest-label {
+  font-size: 0.92rem;
+  font-weight: 600;
+}
+.vocab-pi-dest-sub {
+  font-size: 0.78rem;
+  color: rgba(248, 244, 238, 0.75);
+  margin-top: 2px;
+}
+.vocab-pi-dest-input {
+  background: rgba(0, 0, 0, 0.25);
+  border: 1px solid rgba(255, 255, 255, 0.20);
+  border-radius: 8px;
+  padding: 9px 12px;
+  color: var(--v-ink);
+  font-family: inherit;
+  font-size: 0.92rem;
+  width: 100%;
+  box-sizing: border-box;
+  transition: border-color 0.18s;
+}
+.vocab-pi-dest-input:focus {
+  outline: none;
+  border-color: rgba(181, 69, 27, 0.65);
+}
+.vocab-pi-dest-input::placeholder {
+  color: rgba(248, 244, 238, 0.45);
+}
+.vocab-pi-dest-list {
+  background: rgba(0, 0, 0, 0.22);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 10px;
+  max-height: 180px;
+  overflow-y: auto;
+}
+.vocab-pi-dest-list-row {
+  background: none;
+  border: none;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  padding: 9px 14px;
+  font-size: 0.88rem;
+  color: var(--v-ink);
+  font-family: inherit;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  text-align: left;
+  cursor: pointer;
+  transition: background 0.18s;
+}
+.vocab-pi-dest-list-row:last-child { border-bottom: none; }
+.vocab-pi-dest-list-row:hover {
+  background: rgba(255, 255, 255, 0.06);
+}
+.vocab-pi-dest-list-row-on {
+  background: rgba(181, 69, 27, 0.18);
+  color: #F5C5A8;
+}
+.vocab-pi-dest-list-meta {
+  font-size: 0.74rem;
+  color: rgba(248, 244, 238, 0.65);
+}
+
+.vocab-pi-error {
+  margin-top: 1rem;
+  padding: 0.6rem 0.8rem;
+  background: rgba(248, 113, 113, 0.10);
+  border: 1px solid rgba(248, 113, 113, 0.32);
+  border-radius: 8px;
+  font-size: 0.85rem;
+  color: var(--v-ko);
+}
+
+/* ─── Toast after successful import ─── */
+.vocab-pi-toast {
+  position: fixed;
+  bottom: 1.5rem;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--v-custom-accent);
+  color: var(--v-custom-cream);
+  padding: 12px 22px;
+  border-radius: 999px;
+  font-family: inherit;
+  font-size: 0.9rem;
+  font-weight: 600;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.40);
+  z-index: 1000;
+  animation: vocab-pi-toast-in 0.25s ease-out;
+}
+.vocab-pi-toast-skipped {
+  opacity: 0.80;
+  font-weight: 400;
+  font-size: 0.84rem;
+}
+@keyframes vocab-pi-toast-in {
+  from { opacity: 0; transform: translate(-50%, 20px); }
+  to   { opacity: 1; transform: translate(-50%, 0); }
+}
+
+/* =====================================================================
+   r40 / B fase 2 — PDF Export modal (curated themes + personal lists)
+   Desktop: centered floating modal · Mobile: bottom sheet.
+===================================================================== */
+
+.vocab-pdf-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55);
+  z-index: 2000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem 1rem;
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  animation: vocab-pdf-fade-in 0.18s ease-out;
+}
+@keyframes vocab-pdf-fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+.vocab-pdf-modal {
+  background: linear-gradient(180deg, #14478C 0%, #0C3266 100%);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 16px;
+  width: 100%;
+  max-width: 520px;
+  max-height: calc(100vh - 4rem);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  color: var(--v-ink);
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.45);
+  animation: vocab-pdf-pop 0.22s ease-out;
+}
+@keyframes vocab-pdf-pop {
+  from { transform: scale(0.96); opacity: 0; }
+  to   { transform: scale(1); opacity: 1; }
+}
+
+/* Drag handle — visible only on mobile (bottom sheet). Hidden by CSS
+   on desktop because the modal isn't draggable. */
+.vocab-pdf-handle {
+  display: none;
+}
+
+/* Header */
+.vocab-pdf-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 1.3rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.14);
+  flex-shrink: 0;
+}
+.vocab-pdf-title {
+  margin: 0;
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-style: italic;
+  font-size: 1.3rem;
+  font-weight: 700;
+}
+.vocab-pdf-x {
+  background: rgba(255, 255, 255, 0.10);
+  color: rgba(248, 244, 238, 0.95);
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: background 0.18s;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.vocab-pdf-x:hover {
+  background: rgba(255, 255, 255, 0.20);
+}
+
+/* Body (scrollable) */
+.vocab-pdf-body {
+  padding: 1rem 1.3rem 1.2rem;
+  overflow-y: auto;
+  flex: 1 1 auto;
+}
+
+/* Section header */
+.vocab-pdf-sec-h {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  font-size: 0.68rem;
+  letter-spacing: 1px;
+  font-weight: 700;
+  color: #F5C5A8;
+  margin: 1rem 0 0.4rem;
+}
+.vocab-pdf-sec-h:first-child {
+  margin-top: 0;
+}
+.vocab-pdf-sec-actions {
+  font-weight: 400;
+  letter-spacing: 0.3px;
+  text-transform: none;
+  font-size: 0.72rem;
+  color: rgba(248, 244, 238, 0.70);
+}
+.vocab-pdf-sec-actions button {
+  background: none;
+  border: none;
+  color: rgba(248, 244, 238, 0.85);
+  font-family: inherit;
+  text-decoration: underline;
+  font-size: inherit;
+  cursor: pointer;
+  padding: 0;
+}
+.vocab-pdf-sec-actions button:hover {
+  color: #F5C5A8;
+}
+.vocab-pdf-sep {
+  margin: 0 0.3rem;
+  color: rgba(248, 244, 238, 0.40);
+}
+
+/* Block row (collapsible) */
+.vocab-pdf-block {
+  margin-bottom: 0.3rem;
+}
+.vocab-pdf-block-row {
+  display: grid;
+  grid-template-columns: 22px 1fr auto 18px;
+  gap: 0.6rem;
+  align-items: center;
+  width: 100%;
+  background: rgba(0, 0, 0, 0.22);
+  border: 1px solid rgba(255, 255, 255, 0.10);
+  border-radius: 10px;
+  padding: 0.7rem 0.9rem;
+  font-family: inherit;
+  color: var(--v-ink);
+  font-size: 0.95rem;
+  text-align: left;
+  cursor: pointer;
+  transition: background 0.18s, border-color 0.18s;
+}
+.vocab-pdf-block-row:hover {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 255, 255, 0.20);
+}
+.vocab-pdf-block-icon {
+  font-size: 1.15rem;
+  text-align: center;
+}
+.vocab-pdf-block-name {
+  font-weight: 600;
+}
+.vocab-pdf-block-meta {
+  font-size: 0.78rem;
+  color: rgba(248, 244, 238, 0.65);
+  font-variant-numeric: tabular-nums;
+}
+.vocab-pdf-chevron {
+  font-size: 0.8rem;
+  color: rgba(248, 244, 238, 0.65);
+}
+
+.vocab-pdf-block-themes {
+  padding: 0.5rem 0.5rem 0.8rem 1rem;
+}
+.vocab-pdf-block-controls {
+  font-size: 0.72rem;
+  margin-bottom: 0.4rem;
+  color: rgba(248, 244, 238, 0.70);
+}
+.vocab-pdf-mini-link {
+  background: none;
+  border: none;
+  color: rgba(248, 244, 238, 0.85);
+  font-family: inherit;
+  font-size: inherit;
+  text-decoration: underline;
+  cursor: pointer;
+  padding: 0;
+}
+.vocab-pdf-mini-link:hover { color: #F5C5A8; }
+
+/* Theme / list option row */
+.vocab-pdf-opt-row {
+  display: grid;
+  grid-template-columns: 18px 1fr auto;
+  gap: 0.7rem;
+  align-items: center;
+  padding: 0.45rem 0.7rem;
+  background: rgba(0, 0, 0, 0.16);
+  border: 1px solid transparent;
+  border-radius: 8px;
+  margin-bottom: 0.3rem;
+  font-size: 0.88rem;
+  cursor: pointer;
+  transition: background 0.18s, border-color 0.18s;
+}
+.vocab-pdf-opt-row:hover {
+  background: rgba(255, 255, 255, 0.04);
+}
+.vocab-pdf-opt-row-on {
+  background: rgba(181, 69, 27, 0.18);
+  border-color: rgba(181, 69, 27, 0.40);
+}
+.vocab-pdf-opt-row input[type="checkbox"] {
+  accent-color: var(--v-custom-accent);
+  width: 14px;
+  height: 14px;
+  margin: 0;
+}
+.vocab-pdf-opt-label {
+  color: var(--v-ink);
+}
+.vocab-pdf-opt-meta {
+  font-size: 0.74rem;
+  color: rgba(248, 244, 238, 0.55);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Levels filter — chip row */
+.vocab-pdf-level-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  align-items: center;
+}
+.vocab-pdf-level-chip {
+  background: rgba(255, 255, 255, 0.08);
+  color: rgba(248, 244, 238, 0.85);
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  border-radius: 999px;
+  padding: 5px 12px;
+  font-family: inherit;
+  font-size: 0.82rem;
+  font-weight: 600;
+  letter-spacing: 0.4px;
+  cursor: pointer;
+  transition: background 0.18s, color 0.18s, border-color 0.18s;
+}
+.vocab-pdf-level-chip-on {
+  background: rgba(181, 69, 27, 0.25);
+  color: #F5C5A8;
+  border-color: rgba(181, 69, 27, 0.55);
+}
+.vocab-pdf-level-hint {
+  font-size: 0.72rem;
+  color: rgba(248, 244, 238, 0.55);
+  margin-left: 0.4rem;
+  font-style: italic;
+}
+
+/* Format chooser cards */
+.vocab-pdf-fmt-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.5rem;
+}
+.vocab-pdf-fmt-card {
+  background: rgba(0, 0, 0, 0.20);
+  border: 1px solid rgba(255, 255, 255, 0.20);
+  border-radius: 10px;
+  padding: 0.7rem 0.85rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  text-align: left;
+  color: var(--v-ink);
+  font-family: inherit;
+  transition: background 0.18s, border-color 0.18s;
+}
+.vocab-pdf-fmt-card:hover {
+  background: rgba(255, 255, 255, 0.04);
+}
+.vocab-pdf-fmt-card-on {
+  background: rgba(181, 69, 27, 0.15);
+  border-color: rgba(181, 69, 27, 0.50);
+}
+.vocab-pdf-fmt-radio {
+  width: 14px;
+  height: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.45);
+  border-radius: 50%;
+  position: relative;
+  flex-shrink: 0;
+}
+.vocab-pdf-fmt-card-on .vocab-pdf-fmt-radio::after {
+  content: "";
+  position: absolute;
+  inset: 3px;
+  background: var(--v-custom-accent);
+  border-radius: 50%;
+}
+.vocab-pdf-fmt-label {
+  font-size: 0.92rem;
+  font-weight: 600;
+}
+.vocab-pdf-fmt-sub {
+  font-size: 0.74rem;
+  color: rgba(248, 244, 238, 0.65);
+  margin-top: 1px;
+}
+
+/* Toggle row (mark learned) */
+.vocab-pdf-toggle-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: rgba(0, 0, 0, 0.20);
+  border-radius: 10px;
+  padding: 0.7rem 0.9rem;
+  cursor: pointer;
+}
+.vocab-pdf-toggle-label {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--v-ink);
+}
+.vocab-pdf-toggle-sub {
+  font-size: 0.74rem;
+  color: rgba(248, 244, 238, 0.65);
+  margin-top: 2px;
+}
+.vocab-pdf-toggle-row input[type="checkbox"] {
+  accent-color: var(--v-custom-accent);
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+}
+
+/* Error feedback */
+.vocab-pdf-error {
+  margin-top: 0.8rem;
+  padding: 0.6rem 0.8rem;
+  background: rgba(248, 113, 113, 0.10);
+  border: 1px solid rgba(248, 113, 113, 0.32);
+  border-radius: 8px;
+  font-size: 0.85rem;
+  color: var(--v-ko);
+}
+
+/* Footer */
+.vocab-pdf-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.85rem 1.3rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.14);
+  background: rgba(0, 0, 0, 0.22);
+  flex-shrink: 0;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+}
+.vocab-pdf-summary {
+  font-size: 0.85rem;
+  color: rgba(248, 244, 238, 0.92);
+}
+.vocab-pdf-summary b {
+  color: #F5C5A8;
+  font-variant-numeric: tabular-nums;
+}
+.vocab-pdf-ctas {
+  display: flex;
+  gap: 0.4rem;
+}
+.vocab-pdf-btn-secondary {
+  background: rgba(255, 255, 255, 0.10);
+  color: rgba(248, 244, 238, 0.95);
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  padding: 8px 16px;
+  border-radius: 999px;
+  font-family: inherit;
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+.vocab-pdf-btn-secondary:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.16);
+}
+.vocab-pdf-btn-secondary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+.vocab-pdf-btn-primary {
+  background: var(--v-custom-accent);
+  color: var(--v-custom-cream);
+  border: none;
+  padding: 8px 18px;
+  border-radius: 999px;
+  font-family: inherit;
+  font-size: 0.88rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.18s;
+}
+.vocab-pdf-btn-primary:hover:not(:disabled) {
+  background: #9C3B17;
+}
+.vocab-pdf-btn-primary:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+/* Topbar export button */
+.vocab-topbar-export {
+  background: rgba(181, 69, 27, 0.20);
+  color: #F5C5A8;
+  border: 1px solid rgba(181, 69, 27, 0.50);
+  padding: 6px 14px;
+  border-radius: 999px;
+  font-family: inherit;
+  font-weight: 600;
+  font-size: 0.82rem;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  transition: background 0.18s, color 0.18s, border-color 0.18s;
+}
+.vocab-topbar-export:hover {
+  background: rgba(181, 69, 27, 0.32);
+  color: #F8D9C2;
+  border-color: rgba(181, 69, 27, 0.65);
+}
+
+/* =====================================================================
+   Mobile tweaks (≤600px) — block grid, lists, editor, study panels.
 ===================================================================== */
 @media (max-width: 600px) {
   /* On mobile we drop to 1 column. The fixed 2×200px grid would scroll
@@ -2112,4 +3425,70 @@
   .vocab-le-add-grid .vocab-le-add-btn {
     width: 100%;
   }
+
+  /* Stats panel — tighter padding, smaller fonts on mobile. */
+  .vocab-le-stats-card { padding: 1rem 1rem; }
+  .vocab-le-stats-h { font-size: 1.2rem; }
+  .vocab-le-stats-pct { font-size: 1.3rem; }
+  .vocab-le-stats-mini-n { font-size: 1.2rem; }
+  .vocab-le-stats-mini-l { font-size: 0.58rem; }
+  .vocab-le-stats-pill { font-size: 0.74rem; padding: 3px 10px; }
+  .vocab-le-stats-reset-row { justify-content: stretch; }
+  .vocab-le-stats-reset-btn { width: 100%; text-align: center; }
+
+  /* Paste & import wizard — collapse 3 inputs per row to stacked. */
+  .vocab-pi-card { padding: 1rem; }
+  .vocab-pi-card-h { font-size: 1.2rem; }
+  .vocab-pi-fields { grid-template-columns: 1fr; gap: 0.3rem; }
+  .vocab-pi-row { grid-template-columns: 20px 1fr 26px; }
+  .vocab-pi-badge { margin-left: 1.7rem; }
+  .vocab-pi-textarea { font-size: 0.8rem; min-height: 150px; }
+  .vocab-pi-ctas { flex-wrap: wrap; gap: 0.4rem; }
+  .vocab-pi-btn-primary,
+  .vocab-pi-btn-secondary { flex: 1 1 auto; text-align: center; }
+  .vocab-pi-toast { font-size: 0.82rem; padding: 10px 16px; max-width: 90%; }
+
+  /* PDF Export modal — collapse to bottom sheet on mobile. */
+  .vocab-pdf-overlay {
+    padding: 0;
+    align-items: flex-end;       /* sticks the sheet to the bottom */
+    justify-content: stretch;
+  }
+  .vocab-pdf-modal {
+    width: 100%;
+    max-width: 100%;
+    max-height: 88vh;
+    border-radius: 18px 18px 0 0;
+    box-shadow: 0 -8px 30px rgba(0, 0, 0, 0.50);
+    animation: vocab-pdf-slide-up 0.24s ease-out;
+  }
+  .vocab-pdf-handle {
+    display: block;
+    width: 40px;
+    height: 4px;
+    background: rgba(255, 255, 255, 0.35);
+    border-radius: 2px;
+    margin: 8px auto 0;
+    flex-shrink: 0;
+  }
+  @keyframes vocab-pdf-slide-up {
+    from { transform: translateY(100%); opacity: 0.6; }
+    to   { transform: translateY(0);   opacity: 1; }
+  }
+  .vocab-pdf-head { padding: 0.7rem 1rem 0.8rem; }
+  .vocab-pdf-title { font-size: 1.15rem; }
+  .vocab-pdf-body { padding: 0.8rem 1rem 1rem; }
+  .vocab-pdf-fmt-row { grid-template-columns: 1fr; }
+  .vocab-pdf-fmt-card { padding: 0.6rem 0.7rem; }
+  .vocab-pdf-footer {
+    padding: 0.7rem 1rem;
+    flex-wrap: wrap;
+  }
+  .vocab-pdf-summary { flex: 1 1 100%; text-align: center; margin-bottom: 0.4rem; }
+  .vocab-pdf-ctas { flex: 1 1 100%; justify-content: stretch; }
+  .vocab-pdf-btn-primary,
+  .vocab-pdf-btn-secondary { flex: 1 1 auto; text-align: center; }
+
+  /* Topbar export button shrinks to icon-only label on mobile. */
+  .vocab-topbar-export-label { display: none; }
 }

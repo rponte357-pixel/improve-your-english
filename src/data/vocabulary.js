@@ -1,9 +1,8 @@
-// Vocabulary data — EOI exam preparation, organised by theme and level.
+// Vocabulary data — advanced English, organised by theme and level.
 //
 // 960 words across 4 thematic blocks (FINAL STATE — MVP complete as of r28).
 // All 16 themes have 60 words (B1=20, B2=20, C1=20). C2 deferred for
-// later work — each theme has an empty C2 array ready to be populated
-// when EOI C2 papers become available.
+// later work — each theme has an empty C2 array ready to be populated.
 //
 //   Block 1 (Daily Life):           5 themes × 60 words = 300
 //   Block 2 (Identity & Science):   4 themes × 60 words = 240
@@ -15,10 +14,8 @@
 //   • Block 1 (Daily Life): standard CEFR-aligned vocabulary, short
 //     didactic examples (rounds 16-17).
 //   • Block 2 B1: assistant-generated B1, simple everyday register (r22).
-//   • Block 2 B2: examples crafted in EOI Andalucía B2 style — based on
-//     real EOI exam papers (ordinaria 2024/2025, r21).
-//   • Block 2 C1: examples crafted in EOI Andalucía C1 style — based on
-//     real EOI exam papers (extraordinaria 2024/2025, r20).
+//   • Block 2 B2: assistant-generated B2 register (r21).
+//   • Block 2 C1: assistant-generated C1 register (r20).
 //   • Block 3 B1: assistant-generated B1, simple everyday register (r25).
 //   • Block 3 B2: assistant-generated B2, lifestyle-journalism (r24).
 //   • Block 3 C1: assistant-generated C1, editorial-journalism (r23).
@@ -26,11 +23,10 @@
 //   • Block 4 B2: assistant-generated B2, lifestyle-journalism (r27).
 //   • Block 4 C1: assistant-generated C1, editorial-journalism (r26).
 //
-//   ALL content should be reviewed by a certified EOI teacher before being
-//   used as preparation for the official exam. Examples in Blocks 3 and 4,
-//   plus Block 2 B1, were not based on specific EOI exam papers — they
-//   follow the same style and register patterns as the EOI-inspired
-//   examples in Block 2 B2 and C1 (the only ones based on real exams).
+//   This is an independent learning resource. Content has not been
+//   reviewed by certified language teachers; learners using it for any
+//   formal exam preparation should cross-check with the appropriate
+//   official syllabus and study guides for their specific exam.
 //
 // To edit an item: find it below by its English word and update the
 // `en`, `es`, or `example` fields. The UI picks up changes automatically.

@@ -2,27 +2,51 @@
 //
 // Opened from MyListsView when the user clicks a list card. Owns:
 //   • Topbar with inline rename of the list name.
-//   • Tab row: Edit (functional in A3) + 4 study modes (locked, A4).
+//   • Tab row: Edit + 4 study modes (Flashcards / Quiz / Matching /
+//     Stats), all functional as of r36 / A4.
 //   • Edit tab: word list with inline edit and inline delete-confirm,
-//     plus an always-visible "add new word" form at the bottom.
+//     plus an always-visible "add new word" form at the bottom, plus
+//     the Quick check button on rows without a translation.
 //   • Soft-cap warning above the add form once total words across all
 //     lists exceeds SOFT_TOTAL_WORDS_WARNING.
 //
-// Why this isn't a route: keeps the navigation flow consistent with the
-// rest of Vocabulary (BlockSelector → ThemeView is also internal state)
-// and avoids nesting routes inside HashRouter for GitHub Pages.
+// Study modes (r36 / A4):
+//   We REUSE the same <Flashcards>, <Quiz> and <Matching> components
+//   that the curated ThemeView uses (exported from pages/Vocabulary.jsx),
+//   passing them:
+//     • words   = list.words filtered to only those with a non-empty es
+//                  (excluding the others is a pedagogy decision: you
+//                  can't practise what you haven't translated yet)
+//     • themeId = `custom-<listId>`        ← synthetic, see customLists.js
+//     • level   = CUSTOM_LEVEL  ("all")    ← synthetic too
+//   The synthetic key plugs straight into the existing useProgress hook
+//   so "learned" state is persisted in the same `iye:vocab:progress`
+//   map without any plumbing changes.
 //
-// Why we surface "locked" tabs at all: showing where study modes will
-// live is more honest than hiding them. The user can already see the
-// shape of the finished feature.
+// Stats has its own simpler view (CustomListStats below) because the
+// curated Stats component renders a theme×level matrix that doesn't apply
+// here. The data model is identical though — same progress key.
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
   useCustomLists,
   SOFT_TOTAL_WORDS_WARNING,
   MAX_NAME_LENGTH,
+  CUSTOM_LEVEL,
+  customProgressKey,
 } from "../data/customLists";
 import { lookupDictionary } from "../data/dictionary";
+import {
+  Flashcards,
+  Quiz,
+  Matching,
+  useProgress,
+} from "../pages/Vocabulary";
+
+// Quiz and Matching need at least 4 words (3 distractors + correct) to
+// generate meaningful questions. Below that, the mode is disabled with
+// a friendly explanation rather than rendering a broken experience.
+const MIN_WORDS_FOR_QUIZ_MATCHING = 4;
 
 const MODE_TABS = [
   { id: "edit",       label: "Edit",                  icon: null },
@@ -148,15 +172,15 @@ export default function ListEditor({ listId, onBack }) {
       {/* ─── Tabs ─── */}
       <div className="vocab-tabs vocab-le-tabs">
         {MODE_TABS.map((t) => {
-          const locked = t.id !== "edit";
+          // A4: every tab is now functional. The "locked" suffix and
+          // the small "A4" pill that lived here in r34 are gone.
           return (
             <button
               key={t.id}
-              className={`vocab-tab ${activeTab === t.id ? "vocab-tab-on" : ""} ${locked ? "vocab-le-tab-locked" : ""}`}
+              className={`vocab-tab ${activeTab === t.id ? "vocab-tab-on" : ""}`}
               onClick={() => setActiveTab(t.id)}
             >
               {t.label}
-              {locked && <span className="vocab-le-tab-soon">A4</span>}
             </button>
           );
         })}
@@ -174,7 +198,7 @@ export default function ListEditor({ listId, onBack }) {
       )}
 
       {activeTab !== "edit" && (
-        <LockedTab tab={MODE_TABS.find((t) => t.id === activeTab)} />
+        <StudyTab list={list} mode={activeTab} />
       )}
     </>
   );
@@ -744,21 +768,335 @@ function AddWordForm({ listId, existingEns, addWord }) {
 }
 
 // ─────────────────────────────────────────────────────────────────────
-// LockedTab — placeholder shown for the 4 study modes until A4
+// StudyTab — dispatches to Flashcards / Quiz / Matching / Stats for
+// custom lists. Reuses the curated study components from pages/Vocabulary.jsx.
 // ─────────────────────────────────────────────────────────────────────
 
-function LockedTab({ tab }) {
+function StudyTab({ list, mode }) {
+  const { progress, markLearned, isLearned } = useProgress();
+
+  // Filter to studyable words: those with a non-empty Spanish
+  // translation. The Edit tab still shows untranslated words and offers
+  // Quick check; the study modes simply skip them. Memoised so the
+  // child modes' useEffect on words doesn't fire on every render.
+  const studyableWords = useMemo(
+    () => list.words.filter((w) => w.es && w.es.trim().length > 0),
+    [list.words]
+  );
+
+  const syntheticThemeId = `custom-${list.id}`;
+  const totalWords        = list.words.length;
+  const untranslatedCount = totalWords - studyableWords.length;
+  const enoughForQuiz     = studyableWords.length >= MIN_WORDS_FOR_QUIZ_MATCHING;
+
+  // Empty-list guard.
+  if (totalWords === 0) {
+    return (
+      <div className="vocab-le-study-empty">
+        <div className="vocab-le-study-empty-icon">📝</div>
+        <div className="vocab-le-study-empty-h">This list is empty</div>
+        <p className="vocab-le-study-empty-s">
+          Go to the <b>Edit</b> tab and add some words first.
+        </p>
+      </div>
+    );
+  }
+
+  // Stats has its own renderer (simpler than the curated matrix view).
+  if (mode === "stats") {
+    return (
+      <CustomListStats
+        list={list}
+        studyableWords={studyableWords}
+        isLearned={isLearned}
+        progressKey={customProgressKey(list.id)}
+      />
+    );
+  }
+
+  // No studyable words at all → all three remaining modes need words.
+  if (studyableWords.length === 0) {
+    return (
+      <div className="vocab-le-study-empty">
+        <div className="vocab-le-study-empty-icon">🔤</div>
+        <div className="vocab-le-study-empty-h">No translated words yet</div>
+        <p className="vocab-le-study-empty-s">
+          Add a Spanish translation to your words in the <b>Edit</b> tab
+          (or use 🔎 Quick check) so you can practise them.
+        </p>
+      </div>
+    );
+  }
+
+  // Quiz and Matching need at least 4 words.
+  if ((mode === "quiz" || mode === "matching") && !enoughForQuiz) {
+    return (
+      <div className="vocab-le-study-empty">
+        <div className="vocab-le-study-empty-icon">🧩</div>
+        <div className="vocab-le-study-empty-h">
+          {mode === "quiz" ? "Quiz" : "Matching"} needs at least{" "}
+          {MIN_WORDS_FOR_QUIZ_MATCHING} translated words
+        </div>
+        <p className="vocab-le-study-empty-s">
+          You currently have <b>{studyableWords.length}</b>. Add more
+          translations to play this mode.
+          {untranslatedCount > 0 && (
+            <> Try 🔎 Quick check on the {untranslatedCount} untranslated
+            word{untranslatedCount === 1 ? "" : "s"}.</>
+          )}
+        </p>
+      </div>
+    );
+  }
+
+  // Banner when some — but not all — words are excluded. Honest signal
+  // that progress numbers may differ from total list size.
+  const showExclusionBanner =
+    untranslatedCount > 0 && mode !== "flashcards"
+      ? false  // Quiz/Matching already require N translated, banner adds noise
+      : untranslatedCount > 0;
+
+  if (mode === "flashcards") {
+    return (
+      <>
+        {showExclusionBanner && (
+          <div className="vocab-le-study-banner">
+            ⚠ {untranslatedCount} word{untranslatedCount === 1 ? "" : "s"}{" "}
+            in this list {untranslatedCount === 1 ? "is" : "are"} not
+            translated yet and won't appear in practice. Add translations
+            in the <b>Edit</b> tab.
+          </div>
+        )}
+        <Flashcards
+          words={studyableWords}
+          themeId={syntheticThemeId}
+          level={CUSTOM_LEVEL}
+          markLearned={markLearned}
+          isLearned={isLearned}
+        />
+      </>
+    );
+  }
+
+  if (mode === "quiz") {
+    return (
+      <Quiz
+        words={studyableWords}
+        themeId={syntheticThemeId}
+        level={CUSTOM_LEVEL}
+        markLearned={markLearned}
+      />
+    );
+  }
+
+  if (mode === "matching") {
+    return (
+      <Matching
+        words={studyableWords}
+        themeId={syntheticThemeId}
+        level={CUSTOM_LEVEL}
+        markLearned={markLearned}
+      />
+    );
+  }
+
+  return null;
+}
+
+// ─────────────────────────────────────────────────────────────────────
+// CustomListStats — simplified Stats for a single custom list.
+//
+// Reads the same iye:vocab:progress map that curated themes use. Only the
+// learned-words subset for this list (key: custom-<listId>-all) is read
+// and surfaced. Includes a Reset button that clears that one key with
+// an inline confirmation.
+// ─────────────────────────────────────────────────────────────────────
+
+// Soft cap on how many pills we render in each group before collapsing
+// the rest into a "+N more" overflow pill that expands on click.
+const MAX_VISIBLE_PILLS = 8;
+
+function CustomListStats({ list, studyableWords, isLearned, progressKey }) {
+  const total      = studyableWords.length;
+  const learned    = studyableWords.filter((w) =>
+    isLearned(`custom-${list.id}`, CUSTOM_LEVEL, w.en)
+  );
+  const stillToLearn = studyableWords.filter((w) =>
+    !isLearned(`custom-${list.id}`, CUSTOM_LEVEL, w.en)
+  );
+  const untranslated = list.words.filter(
+    (w) => !w.es || !w.es.trim()
+  );
+
+  const pct = total === 0 ? 0 : Math.round((learned.length / total) * 100);
+
+  // Reset progress with the same inline-confirm pattern used elsewhere.
+  const [confirmingReset, setConfirmingReset] = useState(false);
+  const resetProgress = () => {
+    try {
+      const raw = window.localStorage.getItem("iye:vocab:progress");
+      if (raw) {
+        const obj = JSON.parse(raw);
+        if (obj && typeof obj === "object" && progressKey in obj) {
+          delete obj[progressKey];
+          window.localStorage.setItem(
+            "iye:vocab:progress",
+            JSON.stringify(obj)
+          );
+        }
+      }
+    } catch { /* ignore */ }
+    setConfirmingReset(false);
+    // Forcing a re-mount via a tiny key trick would be cleaner, but
+    // the next render of the parent already pulls from localStorage,
+    // so the reset shows up as soon as the user navigates the tab.
+    window.location.reload();
+  };
+
   return (
-    <div className="vocab-le-locked">
-      <div className="vocab-le-locked-icon">🔒</div>
-      <div className="vocab-le-locked-h">
-        {tab?.label || "This mode"} — coming in the next round
+    <div className="vocab-le-stats">
+      {untranslated.length > 0 && total < 3 && (
+        <div className="vocab-le-study-banner">
+          ⚠ Only <b>{total}</b> of {list.words.length} words{" "}
+          {total === 1 ? "has" : "have"} a translation. Go back to{" "}
+          <b>Edit</b> to add translations (or use 🔎 Quick check) so you
+          can practise them.
+        </div>
+      )}
+
+      <div className="vocab-le-stats-card">
+        <h3 className="vocab-le-stats-h">Your progress</h3>
+        <p className="vocab-le-stats-s">
+          Words learned in this list — only words with a Spanish
+          translation count.
+        </p>
+
+        <div className="vocab-le-stats-bar-shell">
+          <div
+            className="vocab-le-stats-bar-fill"
+            style={{ width: `${pct}%` }}
+          />
+        </div>
+        <div className="vocab-le-stats-pct-row">
+          <span className="vocab-le-stats-pct">{pct}%</span>
+          <span className="vocab-le-stats-pct-s">
+            {learned.length} of {total} learned
+          </span>
+        </div>
+
+        <div className="vocab-le-stats-mini-grid">
+          <div className="vocab-le-stats-mini">
+            <div className="vocab-le-stats-mini-n">{total}</div>
+            <div className="vocab-le-stats-mini-l">studyable</div>
+          </div>
+          <div className="vocab-le-stats-mini">
+            <div className="vocab-le-stats-mini-n">{learned.length}</div>
+            <div className="vocab-le-stats-mini-l">learned</div>
+          </div>
+          <div className="vocab-le-stats-mini">
+            <div className="vocab-le-stats-mini-n">{stillToLearn.length}</div>
+            <div className="vocab-le-stats-mini-l">to review</div>
+          </div>
+        </div>
+
+        {stillToLearn.length > 0 && (
+          <>
+            <div className="vocab-le-stats-section">
+              STILL TO LEARN ({stillToLearn.length})
+            </div>
+            <PillRow words={stillToLearn} />
+          </>
+        )}
+
+        {learned.length > 0 && (
+          <>
+            <div className="vocab-le-stats-section">
+              ALREADY LEARNED ({learned.length})
+            </div>
+            <PillRow words={learned} learned />
+          </>
+        )}
+
+        {untranslated.length > 0 && (
+          <>
+            <div className="vocab-le-stats-section">
+              NOT STUDYABLE YET ({untranslated.length} — no translation)
+            </div>
+            <PillRow words={untranslated} muted />
+          </>
+        )}
+
+        <div className="vocab-le-stats-reset-row">
+          {!confirmingReset ? (
+            <button
+              className="vocab-le-stats-reset-btn"
+              onClick={() => setConfirmingReset(true)}
+              disabled={learned.length === 0}
+              title={
+                learned.length === 0
+                  ? "Nothing to reset yet"
+                  : "Clear the 'learned' flag for every word in this list"
+              }
+            >
+              ↻ Reset progress for this list
+            </button>
+          ) : (
+            <div className="vocab-le-stats-reset-confirm">
+              <span className="vocab-le-stats-reset-confirm-text">
+                Reset progress?
+              </span>
+              <button
+                className="vocab-le-row-confirm-yes"
+                onClick={resetProgress}
+              >
+                Yes
+              </button>
+              <button
+                className="vocab-le-row-confirm-no"
+                onClick={() => setConfirmingReset(false)}
+              >
+                Cancel
+              </button>
+            </div>
+          )}
+        </div>
       </div>
-      <div className="vocab-le-locked-s">
-        All four study modes will be wired to your custom lists in Round
-        A4 (the one after this). For now you can build the list in the
-        Edit tab.
-      </div>
+    </div>
+  );
+}
+
+// Small reusable row of word pills with overflow collapsing.
+function PillRow({ words, learned = false, muted = false }) {
+  const [expanded, setExpanded] = useState(false);
+  const visible = expanded ? words : words.slice(0, MAX_VISIBLE_PILLS);
+  const overflow = words.length - visible.length;
+
+  return (
+    <div className="vocab-le-stats-pills">
+      {visible.map((w) => (
+        <span
+          key={w.en}
+          className={`vocab-le-stats-pill ${learned ? "vocab-le-stats-pill-learned" : ""} ${muted ? "vocab-le-stats-pill-muted" : ""}`}
+        >
+          {w.en}
+        </span>
+      ))}
+      {overflow > 0 && !expanded && (
+        <button
+          className="vocab-le-stats-pill vocab-le-stats-pill-more"
+          onClick={() => setExpanded(true)}
+        >
+          +{overflow} more
+        </button>
+      )}
+      {expanded && words.length > MAX_VISIBLE_PILLS && (
+        <button
+          className="vocab-le-stats-pill vocab-le-stats-pill-more"
+          onClick={() => setExpanded(false)}
+        >
+          show less
+        </button>
+      )}
     </div>
   );
 }
