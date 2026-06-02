@@ -1,6 +1,10 @@
 // Vocabulary data — advanced English, organised by theme and level.
 //
 // 960 words across 4 thematic blocks (FINAL STATE — MVP complete as of r28).
+// + ~228 words in the Foundations block (A1+A2, r78) — imported from
+//   data/vocabularyFoundations.js for clean separation of concerns.
+
+import { FOUNDATIONS_BLOCK, FOUNDATIONS_THEMES } from "./vocabularyFoundations";
 // All 16 themes have 60 words (B1=20, B2=20, C1=20). C2 deferred for
 // later work — each theme has an empty C2 array ready to be populated.
 //
@@ -47,6 +51,7 @@
 // and for the particle colours when the bubble "crashes").
 // ────────────────────────────────────────────────────────────────────
 export const BLOCKS = {
+  foundations: FOUNDATIONS_BLOCK,
   daily: {
     id: "daily",
     name: "Daily Life",
@@ -108,6 +113,7 @@ export function getBlockForTheme(themeId) {
 }
 
 export const VOCAB_THEMES = {
+  ...FOUNDATIONS_THEMES,
   cities: {
     name: "Cities & Urban Life",
     icon: "🏙️",

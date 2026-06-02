@@ -1,0 +1,380 @@
+/* Guía C1 — exam preparation guide.
+   App identity (navy bg, cream cards, terracotta) with an amber/gold
+   accent specific to this section. */
+
+.guia {
+  --guia-navy:   #0A2F5C;
+  --guia-cream:  #F8F4EE;
+  --guia-ink:    #1A1714;
+  --guia-muted:  #6A6258;
+  --guia-amber:  #C9963A;
+  --guia-amber-dark: #9A7320;
+  --guia-terra:  #B5451B;
+
+  min-height: 100vh;
+  margin: -24px;
+  padding: 24px 20px 60px;
+  background:
+    radial-gradient(900px 600px at 15% -10%, rgba(201, 150, 58, 0.18), transparent 60%),
+    linear-gradient(180deg, #FBF7F0 0%, #F1E7D6 100%);
+  color: var(--guia-ink);
+  font-family: 'Outfit', system-ui, sans-serif;
+}
+
+/* Topbar */
+.guia-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.2rem;
+}
+.guia-back {
+  color: var(--guia-ink);
+  text-decoration: none;
+  font-size: 0.9rem;
+  padding: 6px 12px;
+  border-radius: 999px;
+  border: 1px solid rgba(26, 23, 20, 0.2);
+  transition: background 0.18s ease;
+}
+.guia-back:hover { background: rgba(26, 23, 20, 0.06); }
+.guia-brand {
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  color: var(--guia-amber);
+}
+.guia-brand-mark { margin-right: 4px; }
+
+/* Hero */
+.guia-hero {
+  text-align: center;
+  max-width: 560px;
+  margin: 0 auto 1.6rem;
+}
+.guia-eye {
+  font-size: 0.8rem;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--guia-amber);
+  font-weight: 600;
+  margin-bottom: 0.4rem;
+}
+.guia-h1 {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-style: italic;
+  font-weight: 700;
+  font-size: 2.6rem;
+  margin: 0 0 0.2rem;
+  color: var(--guia-amber-dark);
+}
+.guia-slogan {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-style: italic;
+  font-size: 1.3rem;
+  color: var(--guia-amber);
+  margin: 0 0 0.7rem;
+}
+.guia-sub {
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: var(--guia-muted);
+  margin: 0;
+}
+
+/* Tabs */
+.guia-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: center;
+  max-width: 600px;
+  margin: 0 auto 1.4rem;
+}
+.guia-tab {
+  font-family: inherit;
+  font-size: 0.85rem;
+  font-weight: 600;
+  padding: 7px 16px;
+  border-radius: 999px;
+  border: 1px solid rgba(26, 23, 20, 0.25);
+  background: transparent;
+  color: var(--guia-ink);
+  cursor: pointer;
+  transition: all 0.18s ease;
+}
+.guia-tab:hover { background: rgba(26, 23, 20, 0.06); }
+.guia-tab-active {
+  background: var(--guia-amber);
+  border-color: var(--guia-amber);
+  color: #2A1E08;
+}
+
+/* Section panel */
+.guia-section {
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+/* Tip card — white with amber left bar */
+.guia-tip {
+  background: #fff;
+  border-radius: 14px;
+  border-left: 5px solid var(--guia-amber);
+  padding: 14px 16px;
+  margin-bottom: 14px;
+  box-shadow: 0 4px 14px rgba(154, 115, 32, 0.14);
+}
+.guia-tip-head {
+  font-weight: 700;
+  color: var(--guia-amber-dark);
+  font-size: 1.02rem;
+  margin-bottom: 5px;
+}
+.guia-tip-body {
+  margin: 0;
+  font-size: 0.92rem;
+  line-height: 1.5;
+  color: var(--guia-ink);
+}
+
+/* Structures header with Save all */
+.guia-structures-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 0 2px 8px;
+  font-weight: 600;
+  color: var(--guia-ink);
+}
+.guia-save-all {
+  font-family: inherit;
+  font-size: 0.8rem;
+  font-weight: 600;
+  padding: 5px 12px;
+  border-radius: 999px;
+  border: 1px solid var(--guia-amber);
+  background: transparent;
+  color: var(--guia-amber);
+  cursor: pointer;
+  transition: all 0.18s ease;
+}
+.guia-save-all:hover { background: var(--guia-amber); color: #2A1E08; }
+
+/* Groups (Formal/Informal in Email) */
+.guia-group { margin-bottom: 10px; }
+.guia-group-label {
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  color: var(--guia-amber-dark);
+  margin: 6px 2px;
+}
+
+/* Structure list — white card holding rows */
+.guia-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  background: #fff;
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: 0 4px 14px rgba(154, 115, 32, 0.14);
+}
+.guia-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 11px 14px;
+  border-bottom: 1px solid rgba(26, 23, 20, 0.08);
+}
+.guia-item:last-child { border-bottom: none; }
+.guia-item-text { flex: 1; min-width: 0; }
+.guia-item-en {
+  font-size: 0.92rem;
+  font-weight: 600;
+  color: var(--guia-ink);
+  line-height: 1.4;
+}
+.guia-item-es {
+  font-size: 0.84rem;
+  font-style: italic;
+  color: var(--guia-muted);
+  margin-top: 2px;
+  line-height: 1.4;
+}
+.guia-item-save {
+  flex-shrink: 0;
+  font-family: inherit;
+  font-size: 0.76rem;
+  font-weight: 600;
+  padding: 5px 10px;
+  border-radius: 999px;
+  border: 1px solid var(--guia-terra);
+  background: transparent;
+  color: var(--guia-terra);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.18s ease;
+}
+.guia-item-save:hover {
+  background: var(--guia-terra);
+  color: var(--guia-cream);
+}
+.guia-item-save-done {
+  border-color: #2E7D32;
+  color: #2E7D32;
+  background: rgba(46, 125, 50, 0.08);
+}
+.guia-item-save-done:hover {
+  background: rgba(46, 125, 50, 0.16);
+  color: #2E7D32;
+}
+
+/* Footer credit */
+.guia-footer {
+  max-width: 600px;
+  margin: 1.6rem auto 0;
+  text-align: center;
+}
+.guia-footer-line {
+  font-size: 0.82rem;
+  color: var(--guia-muted);
+  margin: 0;
+}
+.guia-footer-line em { color: var(--guia-amber-dark); font-style: italic; }
+
+/* Toast */
+.guia-toast {
+  position: fixed;
+  left: 50%;
+  bottom: 24px;
+  transform: translateX(-50%);
+  background: var(--guia-ink);
+  color: #fff;
+  padding: 10px 18px;
+  border-radius: 999px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+  z-index: 50;
+  animation: guia-toast-in 0.2s ease;
+}
+@keyframes guia-toast-in {
+  from { opacity: 0; transform: translate(-50%, 8px); }
+  to   { opacity: 1; transform: translateX(-50%); }
+}
+
+@media (max-width: 560px) {
+  .guia-h1 { font-size: 2.1rem; }
+  .guia-tab { font-size: 0.8rem; padding: 6px 12px; }
+}
+
+/* ─── Landing: large skill bubbles (Grammar-style) ───────────────── */
+.guia-bubbles {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 22px;
+  max-width: 380px;
+  margin: 1.4rem auto 0;
+  justify-items: center;
+}
+.guia-bubble {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  width: 100%;
+  max-width: 160px;
+  aspect-ratio: 1 / 1;
+  border-radius: 50%;
+  border: none;
+  background: linear-gradient(140deg, #E0A938, #B5821E);
+  color: #fff;
+  cursor: pointer;
+  box-shadow: 0 10px 24px rgba(181, 130, 30, 0.35);
+  transition: transform 0.18s, box-shadow 0.18s;
+}
+.guia-bubble:hover:not(:disabled) {
+  transform: translateY(-3px);
+  box-shadow: 0 16px 32px rgba(181, 130, 30, 0.45);
+}
+.guia-bubble-soon {
+  background: #CFC4B0;
+  box-shadow: none;
+  opacity: 0.75;
+  cursor: default;
+}
+.guia-bubble-icon { font-size: 2.2rem; line-height: 1; }
+.guia-bubble-label { font-size: 1rem; font-weight: 600; }
+.guia-bubble-badge {
+  font-size: 0.6rem;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  opacity: 0.95;
+}
+
+/* Compact hero when inside a skill */
+.guia-hero-compact { margin-bottom: 1.1rem; }
+.guia-hero-icon { font-style: normal; }
+
+/* Phone: keep two columns but shrink so they never overflow. */
+@media (max-width: 420px) {
+  .guia-bubbles { gap: 16px; max-width: 320px; }
+  .guia-bubble { max-width: 140px; }
+  .guia-bubble-icon { font-size: 1.9rem; }
+  .guia-bubble-label { font-size: 0.9rem; }
+}
+
+/* Explanatory trick cards (Speaking) */
+.guia-tricks {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  margin-bottom: 1.2rem;
+}
+.guia-trick {
+  background: rgba(224, 169, 56, 0.12);
+  border: 1px solid rgba(224, 169, 56, 0.35);
+  border-radius: 12px;
+  padding: 11px 14px;
+}
+.guia-trick-title {
+  font-size: 0.86rem;
+  font-weight: 700;
+  color: var(--guia-amber-dark);
+  margin-bottom: 3px;
+}
+.guia-trick-body {
+  font-size: 0.84rem;
+  color: var(--guia-ink);
+  line-height: 1.5;
+  margin: 0;
+}
+
+/* ─── Inner tabs: Trucos / Estructuras (Speaking) ────────────────── */
+.guia-inner-tabs {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+.guia-inner-tab {
+  flex: 1;
+  font-family: inherit;
+  font-size: 0.86rem;
+  font-weight: 600;
+  padding: 9px 14px;
+  border-radius: 12px;
+  border: 1px solid rgba(154, 115, 32, 0.3);
+  background: #fff;
+  color: var(--guia-ink);
+  cursor: pointer;
+  transition: all 0.16s;
+}
+.guia-inner-tab:hover { background: #FBF3E4; }
+.guia-inner-tab-active {
+  background: linear-gradient(140deg, #E0A938, #B5821E);
+  border-color: #B5821E;
+  color: #3a2a06;
+}

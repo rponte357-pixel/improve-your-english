@@ -93,6 +93,38 @@ export const connectorFamilies = [
         ans: "She finished the marathon, albeit slowly.",
         exp: "'Albeit' takes an adjective/phrase, not a full clause.",
       },
+      {
+        type: "blank",
+        sent:
+          "The first attempt failed completely. ___, the team refused to give up.",
+        opts: ["Nevertheless", "Therefore", "Moreover", "Similarly"],
+        key: "Nevertheless",
+        exp: "Failure (bad) contrasts with refusing to quit — 'Nevertheless' marks the contrast.",
+      },
+      {
+        type: "blank",
+        sent:
+          "Urban areas enjoy excellent public transport. ___, rural regions often depend entirely on cars.",
+        opts: ["Conversely", "Consequently", "Furthermore", "Hence"],
+        key: "Conversely",
+        exp: "Two opposite cases (urban vs rural) — 'Conversely' signals the opposition.",
+      },
+      {
+        type: "blank",
+        sent:
+          "He accepted the new terms, ___ reluctantly, to keep the deal alive.",
+        opts: ["albeit", "therefore", "moreover", "whereas"],
+        key: "albeit",
+        exp: "'Albeit' introduces a short phrase ('reluctantly'), conceding a point.",
+      },
+      {
+        type: "blank",
+        sent:
+          "The report was thorough and well researched. ___, it failed to convince the board.",
+        opts: ["Nonetheless", "Likewise", "Accordingly", "In addition"],
+        key: "Nonetheless",
+        exp: "Strong qualities (good) contrast with failing to convince — 'Nonetheless'.",
+      },
     ],
     build: [
       {
@@ -232,6 +264,38 @@ export const connectorFamilies = [
         opts: ["Furthermore", "And also"],
         ans: "Furthermore",
         exp: "'Furthermore' belongs to formal/academic register; 'and also' is colloquial.",
+      },
+      {
+        type: "blank",
+        sent:
+          "The proposal is well structured. ___, it addresses every concern raised in the previous meeting.",
+        opts: ["Furthermore", "Nonetheless", "Conversely", "Therefore"],
+        key: "Furthermore",
+        exp: "Adding a strong supporting point in formal writing — 'Furthermore'.",
+      },
+      {
+        type: "blank",
+        sent:
+          "The campaign reached millions online. ___, it generated extensive media coverage.",
+        opts: ["Moreover", "However", "Albeit", "Whereas"],
+        key: "Moreover",
+        exp: "A second positive achievement is added — 'Moreover' fits naturally.",
+      },
+      {
+        type: "blank",
+        sent:
+          "Northern Europe has invested heavily in renewables. ___, several Asian economies are now following suit.",
+        opts: ["Likewise", "Nevertheless", "Despite", "On the contrary"],
+        key: "Likewise",
+        exp: "Same behaviour in a parallel case — 'Likewise' = similarly.",
+      },
+      {
+        type: "blank",
+        sent:
+          "The flight was delayed for hours. ___, they lost our luggage on arrival.",
+        opts: ["What is more", "Therefore", "Albeit", "Conversely"],
+        key: "What is more",
+        exp: "Piling on a second complaint, slightly less formal — 'What is more'.",
       },
     ],
     build: [
@@ -382,6 +446,30 @@ export const connectorFamilies = [
         opts: ["So", "Thus", "And then"],
         ans: "Thus",
         exp: "'Thus' is the most formal of the three.",
+      },
+      {
+        type: "blank",
+        sent:
+          "The factory failed three safety inspections. ___, the authorities ordered it to close.",
+        opts: ["Consequently", "Nevertheless", "Likewise", "Albeit"],
+        key: "Consequently",
+        exp: "A clear chain cause → effect — 'Consequently' fits formal writing.",
+      },
+      {
+        type: "blank",
+        sent:
+          "Government investment in research has tripled. ___, the country leads several scientific fields today.",
+        opts: ["Therefore", "However", "Whereas", "Moreover"],
+        key: "Therefore",
+        exp: "Investment (cause) → leadership (effect) — 'Therefore' draws the conclusion.",
+      },
+      {
+        type: "blank",
+        sent:
+          "Customer feedback has been overwhelmingly positive. ___, the company plans to expand the product line.",
+        opts: ["Accordingly", "Nonetheless", "Albeit", "Furthermore"],
+        key: "Accordingly",
+        exp: "Acting in line with the feedback — 'Accordingly' = in keeping with that.",
       },
     ],
     build: [
@@ -540,6 +628,38 @@ export const connectorFamilies = [
         ],
         ans: "In spite of being tired, she finished the report.",
         exp: "'In spite of' takes a noun or -ing form, never a full clause.",
+      },
+      {
+        type: "blank",
+        sent:
+          "She accepted the position ___ her serious concerns about the salary.",
+        opts: ["despite", "therefore", "moreover", "likewise"],
+        key: "despite",
+        exp: "'Despite' + noun ('her concerns') concedes a difficulty.",
+      },
+      {
+        type: "blank",
+        sent:
+          "The new policy is unpopular among staff. ___, management refuses to reconsider it.",
+        opts: ["Even so", "Furthermore", "Accordingly", "Likewise"],
+        key: "Even so",
+        exp: "Conceding the unpopularity then pushing back with refusal — 'Even so'.",
+      },
+      {
+        type: "blank",
+        sent:
+          "___ I admire his dedication, I cannot agree with his methods.",
+        opts: ["Much as", "Therefore", "Whereas", "In addition"],
+        key: "Much as",
+        exp: "Formal concession at the start of a sentence — 'Much as' + clause.",
+      },
+      {
+        type: "blank",
+        sent:
+          "___ the budget is limited, the team is determined to deliver on time.",
+        opts: ["While", "Hence", "Furthermore", "Conversely"],
+        key: "While",
+        exp: "Conceding a limitation while asserting determination — 'While' + clause.",
       },
     ],
     build: [

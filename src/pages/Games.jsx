@@ -23,8 +23,9 @@ const GAMES = [
     name: "Connector Combat",
     blurb: "Although, despite, in case — pick the linker that fits the register.",
     levels: "B2 · C1",
-    status: "soon",
+    status: "live",
     icon: "🔗",
+    route: "/games/connectors",
   },
   {
     id: "cleft",

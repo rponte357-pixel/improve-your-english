@@ -70,6 +70,7 @@ const CUSTOM_BLOCK = {
 };
 
 const STORAGE_KEY = "iye:vocab:progress";
+
 // All possible levels. Each block exposes its own subset via block.levels
 // (Block 1 has B1/B2/C1; Blocks 2-4 also include C2).
 const ALL_LEVELS = ["B1", "B2", "C1", "C2"];
@@ -131,6 +132,12 @@ export default function Vocabulary() {
   // or the CUSTOM_BLOCK_ID for the user's custom lists.
   const [selectedBlock, setSelectedBlock] = useState(null);
 
+  // When the user selects the Foundations block, we first show a
+  // dedicated "explosion" screen with 8 large theme bubbles (Grammar
+  // style). selectedFoundationsTheme tells us which theme was tapped
+  // there; null means "show the explosion screen".
+  const [selectedFoundationsTheme, setSelectedFoundationsTheme] = useState(null);
+
   // When non-null and we're inside the custom block, show the ListEditor
   // for that specific list instead of MyListsView. Kept as plain
   // component state — no React Router change needed.
@@ -174,6 +181,13 @@ export default function Vocabulary() {
       if (importToast)       setImportToast(null);
     }
   }, [isCustom, selectedListId, pasteImportOpen, lastImportedListId, importToast]);
+
+  // Clear the selected Foundations theme when leaving that block.
+  useEffect(() => {
+    if (selectedBlock !== "foundations" && selectedFoundationsTheme) {
+      setSelectedFoundationsTheme(null);
+    }
+  }, [selectedBlock, selectedFoundationsTheme]);
 
   // Auto-dismiss the import toast after a few seconds.
   useEffect(() => {
@@ -269,13 +283,33 @@ export default function Vocabulary() {
         </div>
       )}
 
-      {block && !isCustom && (
+      {block && !isCustom && block.id === "foundations" && !selectedFoundationsTheme && (
+        <FoundationsHub
+          block={block}
+          onBack={() => setSelectedBlock(null)}
+          onPickTheme={(themeId) => setSelectedFoundationsTheme(themeId)}
+        />
+      )}
+
+      {block && !isCustom && block.id !== "foundations" && (
         <ThemeView
           block={block}
           onBack={() => setSelectedBlock(null)}
           progress={progress}
           markLearned={markLearned}
           isLearned={isLearned}
+        />
+      )}
+
+      {block && !isCustom && block.id === "foundations" && selectedFoundationsTheme && (
+        <ThemeView
+          block={block}
+          onBack={() => setSelectedFoundationsTheme(null)}
+          progress={progress}
+          markLearned={markLearned}
+          isLearned={isLearned}
+          initialTheme={selectedFoundationsTheme}
+          isFoundations={true}
         />
       )}
     </section>
@@ -536,28 +570,28 @@ function BubbleCrash({ block, onEnd }) {
 // now scoped to a single block. Shows a "← Back to blocks" button.
 // =======================================================================
 
-function ThemeView({ block, onBack, progress, markLearned, isLearned }) {
-  // Default to the first theme of this block.
-  const [theme, setTheme] = useState(block.themeIds[0]);
+function ThemeView({ block, onBack, progress, markLearned, isLearned, initialTheme = null, isFoundations = false }) {
+  // Default to the first theme of this block (or the one explicitly passed in).
+  const [theme, setTheme] = useState(initialTheme || block.themeIds[0]);
   const [level, setLevel] = useState(block.levels[0]);
   const [mode, setMode] = useState("flashcards");
 
   // If the user comes back into a different block, reset the selection.
   useEffect(() => {
-    setTheme(block.themeIds[0]);
+    setTheme(initialTheme || block.themeIds[0]);
     setLevel(block.levels[0]);
     setMode("flashcards");
-  }, [block]);
+  }, [block, initialTheme]);
 
   const themeData = VOCAB_THEMES[theme];
   const words = themeData?.levels[level] || [];
   const isEmpty = words.length === 0;
 
   return (
-    <>
+    <div className={isFoundations ? "vocab-themeview-foundations" : ""}>
       <div className="vocab-blocknav">
         <button className="vocab-blocknav-back" onClick={onBack}>
-          ← Back to blocks
+          {isFoundations ? "← Back to topics" : "← Back to blocks"}
         </button>
         <div className="vocab-blocknav-title">
           <span className="vocab-blocknav-icon">{block.icon}</span>
@@ -566,29 +600,39 @@ function ThemeView({ block, onBack, progress, markLearned, isLearned }) {
         <div className="vocab-blocknav-spacer" />
       </div>
 
-      {/* Theme picker — only themes that belong to this block */}
-      <div className="vocab-themes">
-        {block.themeIds.map((id) => {
-          const t = VOCAB_THEMES[id];
-          if (!t) return null;
-          const hasAny = block.levels.some((lvl) => hasContent(id, lvl));
-          return (
-            <button
-              key={id}
-              className={`vocab-theme ${theme === id ? "vocab-theme-on" : ""} ${!hasAny ? "vocab-theme-soon" : ""}`}
-              onClick={() => setTheme(id)}
-              style={theme === id ? { borderColor: t.color } : undefined}
-            >
-              <span className="vocab-theme-icon">{t.icon}</span>
-              <span className="vocab-theme-name">{t.name}</span>
-              {!hasAny && <span className="vocab-theme-soon-pill">Coming soon</span>}
-            </button>
-          );
-        })}
-      </div>
+      {/* Theme picker — hidden for Foundations (user picked from explosion screen) */}
+      {!isFoundations && (
+        <div className="vocab-themes">
+          {block.themeIds.map((id) => {
+            const t = VOCAB_THEMES[id];
+            if (!t) return null;
+            const hasAny = block.levels.some((lvl) => hasContent(id, lvl));
+            return (
+              <button
+                key={id}
+                className={`vocab-theme ${theme === id ? "vocab-theme-on" : ""} ${!hasAny ? "vocab-theme-soon" : ""}`}
+                onClick={() => setTheme(id)}
+                style={theme === id ? { borderColor: t.color } : undefined}
+              >
+                <span className="vocab-theme-icon">{t.icon}</span>
+                <span className="vocab-theme-name">{t.name}</span>
+                {!hasAny && <span className="vocab-theme-soon-pill">Coming soon</span>}
+              </button>
+            );
+          })}
+        </div>
+      )}
 
-      {/* Level picker — only the levels this block exposes */}
-      <div className="vocab-levels">
+      {/* For Foundations, show the current theme as a small heading instead */}
+      {isFoundations && themeData && (
+        <div className="vocab-current-theme">
+          <span className="vocab-current-theme-icon">{themeData.icon}</span>
+          <span className="vocab-current-theme-name">{themeData.name}</span>
+        </div>
+      )}
+
+      {/* Level picker — compact for Foundations (~20% smaller) */}
+      <div className={`vocab-levels ${isFoundations ? "vocab-levels-compact" : ""}`}>
         {block.levels.map((lvl) => {
           const count = themeData?.levels[lvl]?.length || 0;
           return (
@@ -653,7 +697,7 @@ function ThemeView({ block, onBack, progress, markLearned, isLearned }) {
 
         {mode === "stats" && <Stats progress={progress} block={block} />}
       </div>
-    </>
+    </div>
   );
 }
 
@@ -682,11 +726,13 @@ function EmptyState({ themeName }) {
 export function Flashcards({ words, themeId, level, markLearned, isLearned }) {
   const [index, setIndex] = useState(0);
   const [flipped, setFlipped] = useState(false);
+  const [celebrating, setCelebrating] = useState(false);
 
   // Reset index when the word list changes (theme/level switch).
   useEffect(() => {
     setIndex(0);
     setFlipped(false);
+    setCelebrating(false);
   }, [words]);
 
   const word = words[index];
@@ -702,10 +748,25 @@ export function Flashcards({ words, themeId, level, markLearned, isLearned }) {
 
   const go = (dir) => {
     setFlipped(false);
+    // Going forward from the last card → celebrate instead of wrapping.
+    if (dir === 1 && index === words.length - 1) {
+      setCelebrating(true);
+      return;
+    }
     setIndex((i) => (i + dir + words.length) % words.length);
   };
 
+  const closeCelebration = () => {
+    setCelebrating(false);
+    setIndex(0);
+  };
+
   const learned = isLearned(themeId, level, word.en);
+
+  // ── Celebration screen — shown when the last card is finished ──
+  if (celebrating) {
+    return <FlashcardsCelebration level={level} count={words.length} onContinue={closeCelebration} />;
+  }
 
   return (
     <div className="vocab-fc">
@@ -761,7 +822,63 @@ export function Flashcards({ words, themeId, level, markLearned, isLearned }) {
           {learned ? "✓ Learned" : "Mark as learned"}
         </button>
         <button className="vocab-fc-btn vocab-fc-btn-next" onClick={() => go(1)}>
-          Next →
+          {index === words.length - 1 ? "Finish ✨" : "Next →"}
+        </button>
+      </div>
+    </div>
+  );
+}
+
+// =======================================================================
+// Celebration — big "well done" with confetti when you finish a level's
+// flashcards. Pure decoration; the user picks what to do next.
+// =======================================================================
+
+function FlashcardsCelebration({ level, count, onContinue }) {
+  // 24 confetti pieces, randomised positions/colours/delays.
+  const confetti = useMemo(() => {
+    const colours = ["#EC4899", "#14B8A6", "#F59E0B", "#A855F7", "#22C55E", "#3B82F6", "#EF4444"];
+    return Array.from({ length: 24 }).map((_, i) => ({
+      left: Math.random() * 100,
+      delay: Math.random() * 0.8,
+      duration: 1.6 + Math.random() * 1.4,
+      colour: colours[i % colours.length],
+      rotate: Math.random() * 360,
+      size: 8 + Math.random() * 6,
+    }));
+  }, []);
+
+  return (
+    <div className="vocab-celebration" role="dialog" aria-live="polite">
+      <div className="vocab-celebration-confetti" aria-hidden="true">
+        {confetti.map((c, i) => (
+          <span
+            key={i}
+            className="vocab-celebration-piece"
+            style={{
+              left: `${c.left}%`,
+              background: c.colour,
+              width: `${c.size}px`,
+              height: `${c.size}px`,
+              transform: `rotate(${c.rotate}deg)`,
+              animationDelay: `${c.delay}s`,
+              animationDuration: `${c.duration}s`,
+            }}
+          />
+        ))}
+      </div>
+
+      <div className="vocab-celebration-card">
+        <div className="vocab-celebration-emoji">🎉</div>
+        <h2 className="vocab-celebration-title">¡Bien hecho!</h2>
+        <p className="vocab-celebration-text">
+          Has terminado las <strong>{count} palabras</strong> de <strong>{level}</strong>.
+        </p>
+        <p className="vocab-celebration-sub">
+          ¿Qué quieres hacer ahora? Puedes repasar, probar el Quiz, el Matching o cambiar de nivel cuando quieras.
+        </p>
+        <button className="vocab-celebration-btn" onClick={onContinue}>
+          Volver a las cards
         </button>
       </div>
     </div>
@@ -771,7 +888,6 @@ export function Flashcards({ words, themeId, level, markLearned, isLearned }) {
 // =======================================================================
 // Quiz mode — pick the correct Spanish translation
 // =======================================================================
-
 export function Quiz({ words, themeId, level, markLearned }) {
   const [index, setIndex] = useState(0);
   const [score, setScore] = useState(0);
@@ -1159,6 +1275,52 @@ function Stats({ progress, block }) {
                 <span className="vocab-st-total-l">learned</span>
               </div>
             </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
+// =======================================================================
+// FoundationsHub — the "explosion" screen shown when the user enters the
+// Foundations block. Light, elegant background with 8 large round
+// bubbles in the same style as the Grammar page. Tapping a bubble
+// selects that theme and the user enters the normal ThemeView (with
+// A1/A2 selector and the Flashcards/Quiz/Matching/Stats tabs).
+// =======================================================================
+
+function FoundationsHub({ block, onBack, onPickTheme }) {
+  return (
+    <div className="foundations-hub">
+      <button type="button" className="foundations-back" onClick={onBack}>
+        ← Back to blocks
+      </button>
+
+      <header className="foundations-header">
+        <h1 className="foundations-title">{block.name}</h1>
+        <p className="foundations-subtitle">
+          {block.themeIds.length} topics — {block.levels.join(" + ")}
+        </p>
+      </header>
+
+      <div className="foundations-eyebrow">CORE {block.levels.join("-")}</div>
+
+      <div className="foundations-grid">
+        {block.themeIds.map((id) => {
+          const theme = VOCAB_THEMES[id];
+          if (!theme) return null;
+          return (
+            <button
+              key={id}
+              type="button"
+              className="foundations-bubble"
+              onClick={() => onPickTheme(id)}
+              aria-label={`${theme.name} — open theme`}
+            >
+              <span className="foundations-bubble-icon">{theme.icon}</span>
+              <span className="foundations-bubble-name">{theme.name}</span>
+            </button>
           );
         })}
       </div>

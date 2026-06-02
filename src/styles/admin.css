@@ -1,0 +1,385 @@
+/* ─── Admin / login area ─────────────────────────────────────────────
+   Branded screen for R. Ponte: soft background with pink/teal accents,
+   a centered card, the RP logo on the login form. */
+
+.admin-screen {
+  --rp-pink:      #EC4899;
+  --rp-pink-dark: #BE2768;
+  --rp-teal:      #14B8A6;
+  --rp-ink:       #1F2433;
+  --rp-muted:     #6B7280;
+
+  min-height: 100vh;
+  margin: -24px;
+  padding: 24px 20px 60px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background:
+    radial-gradient(720px 480px at 18% -10%, rgba(236, 72, 153, 0.16), transparent 60%),
+    radial-gradient(720px 480px at 82% 0%, rgba(20, 184, 166, 0.14), transparent 60%),
+    linear-gradient(180deg, #FBFAFC 0%, #F1F0F6 100%);
+  color: var(--rp-ink);
+  font-family: 'Outfit', system-ui, sans-serif;
+}
+
+/* Top bar (signed-in view) */
+.admin-topbar {
+  width: 100%;
+  max-width: 560px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 18px;
+}
+.admin-back {
+  color: var(--rp-ink);
+  text-decoration: none;
+  font-size: 0.9rem;
+  padding: 6px 12px;
+  border-radius: 999px;
+  border: 1px solid rgba(31, 36, 51, 0.18);
+  transition: background 0.18s;
+}
+.admin-back:hover { background: rgba(31, 36, 51, 0.06); }
+.admin-signout {
+  font-family: inherit;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #fff;
+  background: var(--rp-pink);
+  border: none;
+  border-radius: 999px;
+  padding: 8px 16px;
+  cursor: pointer;
+  transition: background 0.18s;
+}
+.admin-signout:hover { background: var(--rp-pink-dark); }
+
+/* Card */
+.admin-card {
+  width: 100%;
+  max-width: 560px;
+  background: #fff;
+  border-radius: 18px;
+  padding: 28px 24px;
+  box-shadow: 0 18px 44px rgba(31, 36, 51, 0.12);
+}
+.admin-card-center { text-align: center; max-width: 420px; }
+.admin-checking { color: var(--rp-muted); font-size: 1rem; }
+
+/* Signed-in welcome + placeholder */
+.admin-welcome {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.95rem;
+  color: var(--rp-muted);
+  margin-bottom: 20px;
+}
+.admin-welcome strong { color: var(--rp-ink); }
+.admin-welcome-dot {
+  width: 9px; height: 9px; border-radius: 50%;
+  background: var(--rp-teal);
+  box-shadow: 0 0 0 4px rgba(20, 184, 166, 0.18);
+}
+.admin-placeholder {
+  text-align: center;
+  padding: 40px 20px;
+  border: 1px dashed rgba(31, 36, 51, 0.2);
+  border-radius: 14px;
+  background: #FBFAFC;
+}
+.admin-placeholder-icon { font-size: 2.4rem; }
+.admin-placeholder-title { font-weight: 700; margin: 10px 0 4px; }
+.admin-placeholder-text { color: var(--rp-muted); font-size: 0.9rem; margin: 0; }
+
+/* Login form */
+.admin-login {
+  max-width: 400px;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  margin-top: 6vh;
+}
+.admin-logo {
+  width: 84px;
+  height: 84px;
+  object-fit: contain;
+  align-self: center;
+  margin-bottom: 14px;
+}
+.admin-title {
+  text-align: center;
+  font-size: 1.5rem;
+  margin: 0 0 4px;
+  color: var(--rp-ink);
+}
+.admin-subtitle {
+  text-align: center;
+  font-size: 0.9rem;
+  color: var(--rp-muted);
+  margin: 0 0 22px;
+}
+.admin-label {
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.4px;
+  text-transform: uppercase;
+  color: var(--rp-muted);
+  margin-bottom: 5px;
+}
+.admin-input {
+  font-family: inherit;
+  font-size: 1rem;
+  padding: 11px 14px;
+  border: 1px solid rgba(31, 36, 51, 0.2);
+  border-radius: 11px;
+  margin-bottom: 16px;
+  background: #fff;
+  color: var(--rp-ink);
+  transition: border-color 0.16s, box-shadow 0.16s;
+}
+.admin-input:focus {
+  outline: none;
+  border-color: var(--rp-pink);
+  box-shadow: 0 0 0 3px rgba(236, 72, 153, 0.18);
+}
+.admin-error {
+  color: var(--rp-pink-dark);
+  font-size: 0.85rem;
+  margin: 0 0 14px;
+  text-align: center;
+}
+.admin-submit {
+  font-family: inherit;
+  font-size: 1rem;
+  font-weight: 700;
+  color: #fff;
+  background: linear-gradient(135deg, var(--rp-pink), var(--rp-teal));
+  border: none;
+  border-radius: 11px;
+  padding: 13px;
+  cursor: pointer;
+  transition: opacity 0.16s, transform 0.1s;
+}
+.admin-submit:hover:not(:disabled) { opacity: 0.94; }
+.admin-submit:active:not(:disabled) { transform: translateY(1px); }
+.admin-submit:disabled { opacity: 0.6; cursor: default; }
+.admin-cancel {
+  text-align: center;
+  margin-top: 16px;
+  font-size: 0.85rem;
+  color: var(--rp-muted);
+  text-decoration: none;
+}
+.admin-cancel:hover { color: var(--rp-ink); }
+
+/* ─── Roots editor (read view, 3a) ───────────────────────────────── */
+.redit-status {
+  text-align: center;
+  color: var(--rp-muted);
+  padding: 24px;
+  font-size: 0.95rem;
+}
+.redit-error { color: var(--rp-pink-dark); }
+
+.redit-pickbar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 16px;
+}
+.redit-label {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.4px;
+  text-transform: uppercase;
+  color: var(--rp-muted);
+}
+.redit-select {
+  flex: 1;
+  min-width: 200px;
+  font-family: inherit;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--rp-ink);
+  background: #fff;
+  border: 1px solid rgba(31, 36, 51, 0.2);
+  border-radius: 10px;
+  padding: 10px 12px;
+  cursor: pointer;
+}
+.redit-select:focus {
+  outline: none;
+  border-color: var(--rp-pink);
+  box-shadow: 0 0 0 3px rgba(236, 72, 153, 0.18);
+}
+.redit-count { font-size: 0.8rem; color: var(--rp-muted); }
+
+.redit-roothead {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  padding: 12px 0;
+  border-bottom: 1px solid rgba(31, 36, 51, 0.1);
+  margin-bottom: 14px;
+}
+.redit-root-word { font-size: 1.3rem; font-weight: 700; color: var(--rp-pink-dark); }
+.redit-root-idea { font-size: 0.9rem; color: var(--rp-muted); font-style: italic; }
+
+.redit-cat { margin-bottom: 16px; }
+.redit-cat-label {
+  font-size: 0.74rem;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  color: var(--rp-teal);
+  margin-bottom: 6px;
+}
+.redit-words { list-style: none; margin: 0; padding: 0; }
+.redit-word {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 12px;
+  background: #FBFAFC;
+  border: 1px solid rgba(31, 36, 51, 0.08);
+  border-radius: 9px;
+  margin-bottom: 6px;
+}
+.redit-word-en { font-weight: 600; color: var(--rp-ink); }
+.redit-word-es { color: var(--rp-muted); font-size: 0.9rem; }
+.redit-word-affix {
+  margin-left: auto;
+  font-size: 0.75rem;
+  font-family: ui-monospace, monospace;
+  color: var(--rp-pink-dark);
+  background: rgba(236, 72, 153, 0.1);
+  padding: 2px 8px;
+  border-radius: 999px;
+}
+.redit-total {
+  text-align: center;
+  font-size: 0.8rem;
+  color: var(--rp-muted);
+  margin-top: 12px;
+}
+
+/* ─── Word edit (3b) ─────────────────────────────────────────────── */
+.redit-edit-btn {
+  margin-left: auto;
+  font-family: inherit;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--rp-pink-dark);
+  background: rgba(236, 72, 153, 0.1);
+  border: none;
+  border-radius: 999px;
+  padding: 5px 13px;
+  cursor: pointer;
+  transition: background 0.16s;
+}
+.redit-edit-btn:hover { background: rgba(236, 72, 153, 0.2); }
+.redit-saved {
+  margin-left: auto;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--rp-teal);
+}
+.redit-saved + .redit-edit-btn { margin-left: 10px; }
+
+.redit-word-editing {
+  list-style: none;
+  background: #fff;
+  border: 1px solid rgba(236, 72, 153, 0.3);
+  border-radius: 11px;
+  padding: 14px;
+  margin-bottom: 8px;
+  box-shadow: 0 6px 18px rgba(31, 36, 51, 0.1);
+}
+
+.wef-row {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+.wef-field { flex: 1; display: flex; flex-direction: column; }
+.wef-label {
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.4px;
+  text-transform: uppercase;
+  color: var(--rp-muted);
+  margin-bottom: 4px;
+}
+.wef-input {
+  font-family: inherit;
+  font-size: 0.95rem;
+  padding: 9px 11px;
+  border: 1px solid rgba(31, 36, 51, 0.2);
+  border-radius: 9px;
+  color: var(--rp-ink);
+  background: #fff;
+}
+.wef-input:focus {
+  outline: none;
+  border-color: var(--rp-pink);
+  box-shadow: 0 0 0 3px rgba(236, 72, 153, 0.16);
+}
+.wef-error { color: var(--rp-pink-dark); font-size: 0.84rem; margin: 0 0 10px; }
+.wef-actions { display: flex; justify-content: flex-end; gap: 10px; }
+.wef-cancel {
+  font-family: inherit;
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--rp-muted);
+  background: transparent;
+  border: 1px solid rgba(31, 36, 51, 0.2);
+  border-radius: 9px;
+  padding: 8px 16px;
+  cursor: pointer;
+}
+.wef-cancel:hover:not(:disabled) { background: rgba(31, 36, 51, 0.05); }
+.wef-save {
+  font-family: inherit;
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: #fff;
+  background: linear-gradient(135deg, var(--rp-pink), var(--rp-teal));
+  border: none;
+  border-radius: 9px;
+  padding: 8px 18px;
+  cursor: pointer;
+}
+.wef-save:disabled, .wef-cancel:disabled { opacity: 0.6; cursor: default; }
+
+/* Phone: stack the two-field rows */
+@media (max-width: 480px) {
+  .wef-row { flex-direction: column; gap: 12px; }
+}
+
+/* ─── Export PDF button (3b extra) ───────────────────────────────── */
+.redit-export-btn {
+  font-family: inherit;
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #fff;
+  background: linear-gradient(135deg, var(--rp-pink), var(--rp-teal));
+  border: none;
+  border-radius: 999px;
+  padding: 8px 16px;
+  cursor: pointer;
+  transition: opacity 0.16s;
+}
+.redit-export-btn:hover:not(:disabled) { opacity: 0.92; }
+.redit-export-btn:disabled { opacity: 0.6; cursor: default; }
+.redit-export-msg {
+  font-size: 0.85rem;
+  padding: 8px 12px;
+  border-radius: 9px;
+  margin-bottom: 14px;
+}
+.redit-export-ok  { color: #0f766e; background: rgba(20, 184, 166, 0.12); }
+.redit-export-err { color: var(--rp-pink-dark); background: rgba(236, 72, 153, 0.1); }

@@ -1,0 +1,351 @@
+// ─── GrammarExercises — engine for 4 exercise types ────────────────
+//
+// Types:
+//   fill_blank       — text input, normalized comparison
+//   multiple_choice  — pick one of 3-4 options
+//   transform        — text input + optional "accept" alternatives
+//   word_order       — drag/click words into order
+//
+// Shared behaviour:
+//   - User answers → feedback (correct ✓ or wrong ✗ with the answer)
+//   - "Next" button advances
+//   - Score tracked at the end
+//   - "Restart" button at the end
+//   - "Show explanation" reveals the pedagogical note for each item
+
+import { useState, useEffect, useMemo } from "react";
+import LetterWheel from "./LetterWheel";
+
+export default function GrammarExercises({ exercises, unitName }) {
+  const [index, setIndex] = useState(0);
+  const [answers, setAnswers] = useState({}); // {idx: {given, correct}}
+  const [showFeedback, setShowFeedback] = useState(false);
+  const [finished, setFinished] = useState(false);
+
+  // Reset everything when the exercise list (i.e., the unit) changes.
+  useEffect(() => {
+    setIndex(0);
+    setAnswers({});
+    setShowFeedback(false);
+    setFinished(false);
+  }, [exercises]);
+
+  if (!exercises || exercises.length === 0) {
+    return (
+      <div className="ge-empty">
+        <p>No exercises for this unit yet.</p>
+      </div>
+    );
+  }
+
+  if (finished) {
+    return <Summary answers={answers} exercises={exercises} onRestart={() => {
+      setAnswers({}); setIndex(0); setShowFeedback(false); setFinished(false);
+    }} />;
+  }
+
+  const exercise = exercises[index];
+  const total = exercises.length;
+  const correctCount = Object.values(answers).filter(a => a.correct).length;
+
+  function handleAnswer(given, correct) {
+    setAnswers({ ...answers, [index]: { given, correct } });
+    setShowFeedback(true);
+  }
+
+  function handleNext() {
+    if (index + 1 >= total) setFinished(true);
+    else {
+      setIndex(index + 1);
+      setShowFeedback(false);
+    }
+  }
+
+  return (
+    <div className="ge-container">
+      <div className="ge-progress">
+        <div className="ge-progress-bar" style={{ width: `${(index / total) * 100}%` }} />
+        <span className="ge-progress-text">{index + 1} / {total} · {correctCount} correct</span>
+      </div>
+
+      <ExerciseRenderer
+        exercise={exercise}
+        showFeedback={showFeedback}
+        userAnswer={answers[index]?.given}
+        onAnswer={handleAnswer}
+      />
+
+      {showFeedback && (
+        <div className={`ge-feedback ${answers[index]?.correct ? "ge-feedback-ok" : "ge-feedback-ko"}`}>
+          {answers[index]?.correct ? (
+            <strong>✓ {exercise.type === "letter_wheel" ? "All words found!" : "Correct!"}</strong>
+          ) : exercise.type === "letter_wheel" ? (
+            <>
+              <strong>✗ Not all words found.</strong>{" "}
+              <span className="ge-feedback-answer">
+                You found {answers[index]?.given} of {exercise.words.length}.
+              </span>
+            </>
+          ) : (
+            <>
+              <strong>✗ Not quite.</strong>{" "}
+              <span className="ge-feedback-answer">The answer is: <em>{exercise.answer}</em></span>
+            </>
+          )}
+          {exercise.explanation && (
+            <p className="ge-feedback-explanation">{exercise.explanation}</p>
+          )}
+          <button type="button" className="ge-next-btn" onClick={handleNext}>
+            {index + 1 >= total ? "See results" : "Next →"}
+          </button>
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ─── Renderer dispatcher ────────────────────────────────────────────
+
+function ExerciseRenderer({ exercise, showFeedback, userAnswer, onAnswer }) {
+  switch (exercise.type) {
+    case "fill_blank":      return <FillBlank exercise={exercise} showFeedback={showFeedback} userAnswer={userAnswer} onAnswer={onAnswer} />;
+    case "multiple_choice": return <MultipleChoice exercise={exercise} showFeedback={showFeedback} userAnswer={userAnswer} onAnswer={onAnswer} />;
+    case "transform":       return <Transform exercise={exercise} showFeedback={showFeedback} userAnswer={userAnswer} onAnswer={onAnswer} />;
+    case "word_order":      return <WordOrder exercise={exercise} showFeedback={showFeedback} userAnswer={userAnswer} onAnswer={onAnswer} />;
+    case "letter_wheel":    return <LetterWheel exercise={exercise} showFeedback={showFeedback} userAnswer={userAnswer} onAnswer={onAnswer} />;
+    default:                return <p>Unknown exercise type: {exercise.type}</p>;
+  }
+}
+
+// ─── Type 1: Fill in the blank ──────────────────────────────────────
+
+function FillBlank({ exercise, showFeedback, userAnswer, onAnswer }) {
+  const [value, setValue] = useState("");
+  useEffect(() => { setValue(""); }, [exercise]);
+
+  function submit() {
+    if (!value.trim() || showFeedback) return;
+    const correct = matchesAnswer(value, exercise.answer, exercise.accept);
+    onAnswer(value, correct);
+  }
+
+  // Split the prompt around the "___" placeholder so we can show input inline.
+  const parts = exercise.prompt.split("___");
+
+  return (
+    <div className="ge-exercise">
+      <div className="ge-label">FILL IN THE BLANK</div>
+      <div className="ge-prompt ge-prompt-inline">
+        {parts[0]}
+        <input
+          type="text"
+          className="ge-input ge-input-inline"
+          value={value}
+          onChange={e => setValue(e.target.value)}
+          onKeyDown={e => { if (e.key === "Enter") submit(); }}
+          disabled={showFeedback}
+          autoFocus
+          placeholder="..."
+        />
+        {parts[1] || ""}
+      </div>
+      {exercise.hint && !showFeedback && (
+        <p className="ge-hint">Hint: {exercise.hint}</p>
+      )}
+      {!showFeedback && (
+        <button type="button" className="ge-submit-btn" onClick={submit} disabled={!value.trim()}>
+          Check
+        </button>
+      )}
+    </div>
+  );
+}
+
+// ─── Type 2: Multiple choice ────────────────────────────────────────
+
+function MultipleChoice({ exercise, showFeedback, userAnswer, onAnswer }) {
+  return (
+    <div className="ge-exercise">
+      <div className="ge-label">CHOOSE THE CORRECT OPTION</div>
+      <div className="ge-prompt">{exercise.prompt}</div>
+      <div className="ge-options">
+        {exercise.options.map((opt) => {
+          const isPicked = showFeedback && userAnswer === opt;
+          const isCorrect = showFeedback && opt === exercise.answer;
+          let className = "ge-option";
+          if (isCorrect)         className += " ge-option-correct";
+          else if (isPicked)     className += " ge-option-wrong";
+          return (
+            <button
+              key={opt}
+              type="button"
+              className={className}
+              onClick={() => !showFeedback && onAnswer(opt, opt === exercise.answer)}
+              disabled={showFeedback}
+            >
+              {opt}
+            </button>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
+// ─── Type 3: Transform ──────────────────────────────────────────────
+
+function Transform({ exercise, showFeedback, userAnswer, onAnswer }) {
+  const [value, setValue] = useState("");
+  useEffect(() => { setValue(""); }, [exercise]);
+
+  function submit() {
+    if (!value.trim() || showFeedback) return;
+    const correct = matchesAnswer(value, exercise.answer, exercise.accept);
+    onAnswer(value, correct);
+  }
+
+  return (
+    <div className="ge-exercise">
+      <div className="ge-label">TRANSFORM</div>
+      <div className="ge-prompt">{exercise.prompt}</div>
+      {exercise.source && (
+        <blockquote className="ge-source">{exercise.source}</blockquote>
+      )}
+      <input
+        type="text"
+        className="ge-input"
+        value={value}
+        onChange={e => setValue(e.target.value)}
+        onKeyDown={e => { if (e.key === "Enter") submit(); }}
+        disabled={showFeedback}
+        autoFocus
+        placeholder="Type your answer..."
+      />
+      {!showFeedback && (
+        <button type="button" className="ge-submit-btn" onClick={submit} disabled={!value.trim()}>
+          Check
+        </button>
+      )}
+    </div>
+  );
+}
+
+// ─── Type 4: Word order ─────────────────────────────────────────────
+
+function WordOrder({ exercise, showFeedback, userAnswer, onAnswer }) {
+  // Shuffle the words once per exercise.
+  const shuffled = useMemo(() => shuffle(exercise.words), [exercise]);
+  const [picked, setPicked] = useState([]);     // chosen words (indices into shuffled)
+  const [available, setAvailable] = useState(shuffled.map((_, i) => i));
+
+  useEffect(() => {
+    setPicked([]);
+    setAvailable(shuffled.map((_, i) => i));
+  }, [exercise, shuffled]);
+
+  function pick(idx) {
+    if (showFeedback) return;
+    setPicked([...picked, idx]);
+    setAvailable(available.filter(a => a !== idx));
+  }
+  function unpick(pos) {
+    if (showFeedback) return;
+    const idx = picked[pos];
+    setPicked(picked.filter((_, i) => i !== pos));
+    setAvailable([...available, idx]);
+  }
+
+  function submit() {
+    if (picked.length !== shuffled.length || showFeedback) return;
+    const built = picked.map(i => shuffled[i]).join(" ");
+    const correct = matchesAnswer(built, exercise.answer, exercise.accept);
+    onAnswer(built, correct);
+  }
+
+  return (
+    <div className="ge-exercise">
+      <div className="ge-label">WORD ORDER</div>
+      <div className="ge-prompt">{exercise.prompt}</div>
+
+      <div className="ge-wo-built">
+        {picked.length === 0 ? (
+          <span className="ge-wo-placeholder">Tap the words below in order…</span>
+        ) : (
+          picked.map((idx, pos) => (
+            <button key={pos} type="button" className="ge-wo-chip ge-wo-chip-picked" onClick={() => unpick(pos)} disabled={showFeedback}>
+              {shuffled[idx]}
+            </button>
+          ))
+        )}
+      </div>
+
+      <div className="ge-wo-pool">
+        {available.map(idx => (
+          <button key={idx} type="button" className="ge-wo-chip" onClick={() => pick(idx)} disabled={showFeedback}>
+            {shuffled[idx]}
+          </button>
+        ))}
+      </div>
+
+      {!showFeedback && (
+        <button type="button" className="ge-submit-btn" onClick={submit} disabled={picked.length !== shuffled.length}>
+          Check
+        </button>
+      )}
+    </div>
+  );
+}
+
+// ─── End-of-exercises summary ───────────────────────────────────────
+
+function Summary({ answers, exercises, onRestart }) {
+  const total = exercises.length;
+  const correct = Object.values(answers).filter(a => a.correct).length;
+  const pct = Math.round((correct / total) * 100);
+  let medal = "🥉";
+  if (pct >= 90) medal = "🥇";
+  else if (pct >= 70) medal = "🥈";
+
+  return (
+    <div className="ge-summary">
+      <div className="ge-summary-medal">{medal}</div>
+      <h3 className="ge-summary-title">{correct} / {total} correct</h3>
+      <p className="ge-summary-pct">{pct}%</p>
+      <p className="ge-summary-note">
+        {pct >= 90 ? "Excellent work! You've mastered this unit."
+         : pct >= 70 ? "Great job. A bit of review and you'll have it."
+         : "Keep practising — repetition is the key to grammar."}
+      </p>
+      <button type="button" className="ge-restart-btn" onClick={onRestart}>
+        🔄 Restart
+      </button>
+    </div>
+  );
+}
+
+// ─── Helpers ────────────────────────────────────────────────────────
+
+// Normalize text for comparison: trim, lowercase, strip extra spaces,
+// remove trailing punctuation (but keep "?" in answers that need it).
+function normalize(s) {
+  return String(s)
+    .trim()
+    .toLowerCase()
+    .replace(/\s+/g, " ")
+    .replace(/[.,;]+$/, ""); // remove final period/comma/semicolon, keep "?" and "!"
+}
+
+function matchesAnswer(given, expected, accept) {
+  const g = normalize(given);
+  const candidates = [expected, ...(accept || [])].map(normalize);
+  return candidates.includes(g);
+}
+
+function shuffle(arr) {
+  const out = [...arr];
+  for (let i = out.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [out[i], out[j]] = [out[j], out[i]];
+  }
+  return out;
+}

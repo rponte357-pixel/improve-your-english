@@ -3492,3 +3492,1638 @@
   /* Topbar export button shrinks to icon-only label on mobile. */
   .vocab-topbar-export-label { display: none; }
 }
+
+/* ─── Foundations hub (explosion screen) ─────────────────────────────
+   Light, elegant background with 8 large round bubbles in the same
+   style as Grammar. Shown when the user enters the Foundations block. */
+
+.foundations-hub {
+  min-height: calc(100vh - 100px);
+  /* No negative margins — we live inside the parent's padding. This
+     is the only way to guarantee we never overflow on narrow screens. */
+  width: 100%;
+  box-sizing: border-box;
+  padding: 28px 18px 60px;
+  background: linear-gradient(180deg, #EFF1F4 0%, #E5E8EE 100%);
+  border-radius: 18px;
+  color: #1F2937;
+  font-family: 'Outfit', system-ui, sans-serif;
+  overflow-x: hidden;
+}
+
+.foundations-back {
+  font-family: inherit;
+  font-size: 0.88rem;
+  background: transparent;
+  border: 1px solid rgba(31, 41, 55, 0.18);
+  color: #1F2937;
+  padding: 6px 14px;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: background 0.16s;
+}
+.foundations-back:hover { background: rgba(31, 41, 55, 0.06); }
+
+.foundations-header {
+  text-align: center;
+  margin-top: 18px;
+  margin-bottom: 6px;
+}
+.foundations-title {
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 2.6rem;
+  font-weight: 700;
+  margin: 0;
+  color: #1F2937;
+  letter-spacing: -0.5px;
+}
+.foundations-subtitle {
+  font-size: 1rem;
+  color: #6B7280;
+  margin: 8px 0 0;
+}
+.foundations-eyebrow {
+  text-align: center;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  color: #6B7280;
+  margin: 26px 0 22px;
+}
+
+.foundations-grid {
+  display: grid;
+  /* auto-fit + minmax = browser fits as many columns as can hold a
+     bubble of at least ~115px. Two bubbles fit comfortably on a ~350px
+     viewport; three on ~500px; four on ~700px+. */
+  grid-template-columns: repeat(auto-fit, minmax(115px, 1fr));
+  gap: 14px;
+  max-width: 880px;
+  margin: 0 auto;
+  width: 100%;
+  box-sizing: border-box;
+}
+.foundations-bubble {
+  aspect-ratio: 1;
+  background: #5C6E83;
+  border-radius: 50%;
+  border: none;
+  font-family: inherit;
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 14px;
+  cursor: pointer;
+  transition: transform 0.18s, box-shadow 0.18s, background 0.18s;
+  box-shadow: 0 4px 14px rgba(31, 41, 55, 0.12);
+  min-width: 0;
+  /* hard cap on max size — even on big desktops, bubbles don't get huge */
+  max-width: 200px;
+  justify-self: center;
+  width: 100%;
+}
+.foundations-bubble:hover {
+  background: #6B7E94;
+  transform: translateY(-3px) scale(1.03);
+  box-shadow: 0 10px 26px rgba(31, 41, 55, 0.22);
+}
+.foundations-bubble-icon {
+  font-size: clamp(1.2rem, 3.5vw, 1.7rem);
+  margin-bottom: 6px;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+}
+.foundations-bubble-name {
+  font-size: clamp(0.78rem, 2.5vw, 0.95rem);
+  font-weight: 500;
+  line-height: 1.15;
+}
+
+/* Phone tweaks (kept minimal — auto-fit does most of the work) */
+@media (max-width: 480px) {
+  .foundations-hub { padding: 22px 16px 60px; }
+  .foundations-title { font-size: 1.8rem; }
+  .foundations-grid { gap: 12px; }
+}
+
+/* ─── Foundations theme view — light background ─────────────────────
+   Wraps the ThemeView when the user is inside a Foundations theme.
+   Light, elegant background (Grammar style) — easier on the eyes for
+   A1-A2 beginners. Only applies inside Foundations; other blocks keep
+   the navy theme. */
+
+.vocab-themeview-foundations {
+  min-height: calc(100vh - 100px);
+  width: 100%;
+  box-sizing: border-box;
+  padding: 22px 16px 60px;
+  background: linear-gradient(180deg, #EFF1F4 0%, #E5E8EE 100%);
+  border-radius: 18px;
+  color: #1F2937;
+  overflow-x: hidden;
+}
+
+/* All inner text returns to dark on the light background */
+.vocab-themeview-foundations .vocab-blocknav,
+.vocab-themeview-foundations .vocab-blocknav-title,
+.vocab-themeview-foundations .vocab-tabs,
+.vocab-themeview-foundations .vocab-tab,
+.vocab-themeview-foundations .vocab-fc,
+.vocab-themeview-foundations .vocab-fc-counter,
+.vocab-themeview-foundations .vocab-fc-nav,
+.vocab-themeview-foundations .vocab-content {
+  color: #1F2937;
+}
+
+.vocab-themeview-foundations .vocab-blocknav-back {
+  background: #fff;
+  color: #1F2937;
+  border: 1px solid rgba(31, 41, 55, 0.18);
+}
+.vocab-themeview-foundations .vocab-blocknav-back:hover {
+  background: rgba(31, 41, 55, 0.06);
+}
+
+/* Tabs — keep them readable on light bg */
+.vocab-themeview-foundations .vocab-tab {
+  color: #6B7280;
+}
+.vocab-themeview-foundations .vocab-tab.vocab-tab-on {
+  color: #1F2937;
+  border-bottom-color: #5C6E83;
+}
+
+/* Flashcards inside the light theme — KEEP the card's navy/red faces
+   (they're meant to pop on the light background) but force white text
+   inside, because the .vocab-themeview-foundations parent forces dark
+   inherited colour everywhere. Without this, the card text goes dark
+   on dark and becomes invisible. */
+.vocab-themeview-foundations .vocab-fc-card,
+.vocab-themeview-foundations .vocab-fc-card * {
+  color: #fff;
+}
+.vocab-themeview-foundations .vocab-fc-front .vocab-fc-label,
+.vocab-themeview-foundations .vocab-fc-back .vocab-fc-label {
+  color: rgba(255, 255, 255, 0.85);
+}
+.vocab-themeview-foundations .vocab-fc-tap {
+  color: rgba(255, 255, 255, 0.7);
+}
+.vocab-themeview-foundations .vocab-fc-counter {
+  color: #6B7280;
+}
+.vocab-themeview-foundations .vocab-fc-btn,
+.vocab-themeview-foundations .vocab-fc-mark {
+  background: #fff;
+  color: #1F2937;
+  border: 1px solid rgba(31, 41, 55, 0.2);
+}
+.vocab-themeview-foundations .vocab-fc-btn:hover,
+.vocab-themeview-foundations .vocab-fc-mark:hover:not(:disabled) {
+  background: rgba(31, 41, 55, 0.05);
+}
+.vocab-themeview-foundations .vocab-fc-btn-next {
+  background: linear-gradient(135deg, #EC4899, #14B8A6);
+  color: #fff;
+  border: none;
+}
+.vocab-themeview-foundations .vocab-fc-btn-next:hover {
+  opacity: 0.92;
+  background: linear-gradient(135deg, #EC4899, #14B8A6);
+}
+.vocab-themeview-foundations .vocab-fc-mark-on {
+  background: rgba(20, 184, 166, 0.12);
+  color: #0F766E;
+  border-color: rgba(20, 184, 166, 0.4);
+}
+
+/* Mini header showing the current theme (replaces the pill row) */
+.vocab-current-theme {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  justify-content: center;
+  padding: 6px 0 14px;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: #1F2937;
+}
+.vocab-current-theme-icon { font-size: 1.5rem; }
+
+/* Compact level selector (20% smaller) — applies inside Foundations */
+.vocab-levels-compact {
+  gap: 8px;
+  max-width: 320px;
+  margin: 0 auto 12px;
+}
+.vocab-levels-compact .vocab-level {
+  padding: 8px 14px;
+  min-width: 0;
+  font-size: 0.88rem;
+}
+.vocab-levels-compact .vocab-level-badge {
+  font-size: 1rem;
+}
+.vocab-levels-compact .vocab-level-count {
+  font-size: 0.72rem;
+}
+
+/* ─── Celebration screen (flashcards finished) ───────────────────── */
+.vocab-celebration {
+  position: relative;
+  padding: 40px 16px;
+  text-align: center;
+  overflow: hidden;
+}
+.vocab-celebration-card {
+  position: relative;
+  z-index: 2;
+  background: #fff;
+  border-radius: 18px;
+  padding: 28px 22px;
+  box-shadow: 0 12px 36px rgba(31, 41, 55, 0.16);
+  max-width: 420px;
+  margin: 0 auto;
+}
+.vocab-celebration-emoji {
+  font-size: 3.5rem;
+  animation: vc-bounce 1.4s ease-in-out infinite;
+}
+@keyframes vc-bounce {
+  0%, 100% { transform: translateY(0) scale(1); }
+  50%      { transform: translateY(-8px) scale(1.1); }
+}
+.vocab-celebration-title {
+  font-family: Georgia, serif;
+  font-size: 2rem;
+  font-weight: 700;
+  margin: 6px 0 4px;
+  color: #1F2937;
+}
+.vocab-celebration-text {
+  font-size: 1rem;
+  color: #1F2937;
+  margin: 8px 0 4px;
+}
+.vocab-celebration-sub {
+  font-size: 0.88rem;
+  color: #6B7280;
+  margin: 8px 0 18px;
+  line-height: 1.5;
+}
+.vocab-celebration-btn {
+  font-family: inherit;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #fff;
+  background: linear-gradient(135deg, #EC4899, #14B8A6);
+  border: none;
+  border-radius: 12px;
+  padding: 11px 26px;
+  cursor: pointer;
+  transition: opacity 0.16s, transform 0.1s;
+}
+.vocab-celebration-btn:hover { opacity: 0.92; }
+.vocab-celebration-btn:active { transform: translateY(1px); }
+
+/* Confetti */
+.vocab-celebration-confetti {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+.vocab-celebration-piece {
+  position: absolute;
+  top: -20px;
+  border-radius: 2px;
+  animation: vc-fall linear forwards;
+}
+@keyframes vc-fall {
+  0%   { transform: translateY(0) rotate(0deg); opacity: 1; }
+  80%  { opacity: 1; }
+  100% { transform: translateY(110vh) rotate(720deg); opacity: 0; }
+}
+
+/* ─── Responsive (mobile + tablet) for Foundations ──────────────── */
+@media (max-width: 760px) {
+  .vocab-themeview-foundations {
+    padding: 18px 14px 50px;
+  }
+  .vocab-current-theme { font-size: 1.15rem; }
+  .vocab-levels-compact { max-width: 260px; }
+  .vocab-celebration { padding: 24px 12px; }
+  .vocab-celebration-title { font-size: 1.6rem; }
+  .vocab-celebration-emoji { font-size: 2.8rem; }
+}
+@media (max-width: 480px) {
+  .vocab-themeview-foundations {
+    padding: 16px 12px 50px;
+  }
+  .vocab-current-theme { font-size: 1.05rem; }
+  .vocab-levels-compact {
+    max-width: 100%;
+    gap: 6px;
+  }
+  .vocab-levels-compact .vocab-level {
+    padding: 7px 10px;
+  }
+  .vocab-celebration-card { padding: 22px 16px; }
+  .vocab-celebration-title { font-size: 1.4rem; }
+}
+
+/* ─── FOUNDATIONS — exhaustive text colour fix (r80) ────────────────
+   The r79 light theme missed many inner elements: Quiz, Matching,
+   Stats, A1/A2 buttons all kept the navy-theme text colours so on a
+   light background they were invisible. This block covers them all.
+   Scoped under .vocab-themeview-foundations so other blocks are
+   untouched. */
+
+.vocab-themeview-foundations {
+  --vf-ink: #1F2433;
+  --vf-muted: #6B7280;
+  --vf-soft: #E5E7EB;
+  --vf-pink: #EC4899;
+  --vf-teal: #14B8A6;
+  --vf-slate: #5C6E83;
+}
+
+/* Default text colour on the light background (NOT applied with
+   universal selector — that broke the flashcard's own white text on
+   its navy/red faces). Each component below sets its own colour. */
+.vocab-themeview-foundations {
+  color: var(--vf-ink);
+}
+
+/* A1 / A2 level buttons — text was white before */
+.vocab-themeview-foundations .vocab-level {
+  background: #fff;
+  color: var(--vf-ink);
+  border: 1.5px solid rgba(31, 36, 51, 0.18);
+  box-shadow: 0 2px 8px rgba(31, 36, 51, 0.06);
+}
+.vocab-themeview-foundations .vocab-level:hover:not(:disabled) {
+  border-color: var(--vf-pink);
+  background: rgba(236, 72, 153, 0.04);
+}
+.vocab-themeview-foundations .vocab-level.vocab-level-on {
+  background: linear-gradient(135deg, rgba(236, 72, 153, 0.1), rgba(20, 184, 166, 0.1));
+  border-color: var(--vf-pink);
+  color: var(--vf-ink);
+  box-shadow: 0 4px 12px rgba(236, 72, 153, 0.15);
+}
+.vocab-themeview-foundations .vocab-level-badge {
+  color: var(--vf-ink);
+  font-weight: 800;
+}
+.vocab-themeview-foundations .vocab-level-on .vocab-level-badge {
+  color: var(--vf-pink);
+}
+.vocab-themeview-foundations .vocab-level-count {
+  color: var(--vf-muted);
+}
+
+/* ── Quiz mode ── */
+.vocab-themeview-foundations .vocab-qz,
+.vocab-themeview-foundations .vocab-qz * { color: var(--vf-ink); }
+.vocab-themeview-foundations .vocab-qz-hud { color: var(--vf-muted); }
+.vocab-themeview-foundations .vocab-qz-progress { color: var(--vf-muted); }
+.vocab-themeview-foundations .vocab-qz-score { color: var(--vf-ink); }
+.vocab-themeview-foundations .vocab-qz-prompt {
+  background: #fff;
+  color: var(--vf-ink);
+  box-shadow: 0 4px 14px rgba(31, 36, 51, 0.08);
+}
+.vocab-themeview-foundations .vocab-qz-word {
+  color: var(--vf-pink);
+  font-weight: 700;
+}
+.vocab-themeview-foundations .vocab-qz-opts button {
+  background: #fff;
+  color: var(--vf-ink);
+  border: 1.5px solid rgba(31, 36, 51, 0.15);
+}
+.vocab-themeview-foundations .vocab-qz-opts button:hover:not(:disabled) {
+  border-color: var(--vf-pink);
+  background: rgba(236, 72, 153, 0.04);
+}
+.vocab-themeview-foundations .vocab-qz-feedback { color: var(--vf-ink); }
+.vocab-themeview-foundations .vocab-qz-example-lbl { color: var(--vf-muted); }
+.vocab-themeview-foundations .vocab-qz-example { color: var(--vf-ink); }
+.vocab-themeview-foundations .vocab-qz-next,
+.vocab-themeview-foundations .vocab-qz-restart {
+  background: linear-gradient(135deg, var(--vf-pink), var(--vf-teal));
+  color: #fff;
+  border: none;
+}
+.vocab-themeview-foundations .vocab-qz-result {
+  background: #fff;
+  color: var(--vf-ink);
+  box-shadow: 0 6px 18px rgba(31, 36, 51, 0.1);
+}
+.vocab-themeview-foundations .vocab-qz-result-n,
+.vocab-themeview-foundations .vocab-qz-result-sl,
+.vocab-themeview-foundations .vocab-qz-pct,
+.vocab-themeview-foundations .vocab-qz-trophy { color: var(--vf-ink); }
+
+/* ── Matching mode ── */
+.vocab-themeview-foundations .vocab-mt,
+.vocab-themeview-foundations .vocab-mt * { color: var(--vf-ink); }
+.vocab-themeview-foundations .vocab-mt-setup,
+.vocab-themeview-foundations .vocab-mt-end {
+  background: #fff;
+  color: var(--vf-ink);
+  box-shadow: 0 6px 18px rgba(31, 36, 51, 0.1);
+  border-radius: 16px;
+  padding: 22px;
+}
+.vocab-themeview-foundations .vocab-mt-sub { color: var(--vf-muted); }
+.vocab-themeview-foundations .vocab-mt-diff button {
+  background: #fff;
+  color: var(--vf-ink);
+  border: 1.5px solid rgba(31, 36, 51, 0.18);
+}
+.vocab-themeview-foundations .vocab-mt-diff button:hover {
+  border-color: var(--vf-pink);
+  background: rgba(236, 72, 153, 0.04);
+}
+.vocab-themeview-foundations .vocab-mt-start {
+  background: linear-gradient(135deg, var(--vf-pink), var(--vf-teal));
+  color: #fff;
+  border: none;
+}
+.vocab-themeview-foundations .vocab-mt-hud { color: var(--vf-muted); }
+.vocab-themeview-foundations .vocab-mt-score,
+.vocab-themeview-foundations .vocab-mt-time { color: var(--vf-ink); font-weight: 700; }
+.vocab-themeview-foundations .vocab-mt-col-h { color: var(--vf-muted); }
+.vocab-themeview-foundations .vocab-mt-col button {
+  background: #fff;
+  color: var(--vf-ink);
+  border: 1.5px solid rgba(31, 36, 51, 0.15);
+}
+.vocab-themeview-foundations .vocab-mt-end-emoji { color: var(--vf-ink); }
+
+/* ── Stats mode ── */
+.vocab-themeview-foundations .vocab-st,
+.vocab-themeview-foundations .vocab-st * { color: var(--vf-ink); }
+.vocab-themeview-foundations .vocab-st-card {
+  background: #fff;
+  box-shadow: 0 4px 14px rgba(31, 36, 51, 0.08);
+}
+.vocab-themeview-foundations .vocab-st-card-h { color: var(--vf-muted); }
+.vocab-themeview-foundations .vocab-st-bar { background: var(--vf-soft); }
+.vocab-themeview-foundations .vocab-st-bar-fill {
+  background: linear-gradient(90deg, var(--vf-pink), var(--vf-teal));
+}
+
+/* ── Empty state ── */
+.vocab-themeview-foundations .vocab-empty,
+.vocab-themeview-foundations .vocab-empty * { color: var(--vf-ink); }
+
+/* ── Mini header for the current theme ── */
+.vocab-current-theme,
+.vocab-current-theme * { color: var(--vf-ink); }
+
+/* ─── RESPONSIVE — Foundations explosion grid ────────────────────────
+   Fix that bubbles got cut on the edges. Constrain max-width on the
+   parent and ensure the grid items shrink on small screens. */
+
+.foundations-grid {
+  max-width: 100%;
+  padding: 0 4px;
+  box-sizing: border-box;
+}
+.foundations-bubble {
+  min-width: 0; /* allow shrinking below default min-content */
+}
+
+/* Tablet — 3 columns */
+@media (max-width: 900px) {
+  .foundations-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
+  }
+}
+/* Small tablet / large phone — 2 columns */
+@media (max-width: 620px) {
+  .foundations-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+  .foundations-hub { padding: 22px 14px 50px; }
+  .foundations-title { font-size: 2rem; }
+  .foundations-bubble { padding: 10px; }
+  .foundations-bubble-icon { font-size: 1.5rem; }
+  .foundations-bubble-name { font-size: 0.85rem; }
+}
+/* Phone — 2 columns, smaller bubbles */
+@media (max-width: 430px) {
+  .foundations-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
+  .foundations-hub { padding: 18px 12px 50px; }
+  .foundations-title { font-size: 1.7rem; }
+  .foundations-subtitle { font-size: 0.85rem; }
+  .foundations-bubble { padding: 8px; }
+  .foundations-bubble-icon { font-size: 1.3rem; margin-bottom: 4px; }
+  .foundations-bubble-name { font-size: 0.78rem; }
+}
+
+/* Theme view inner area — make it responsive too */
+@media (max-width: 620px) {
+  .vocab-themeview-foundations .vocab-blocknav {
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .vocab-themeview-foundations .vocab-qz-prompt,
+  .vocab-themeview-foundations .vocab-mt-setup,
+  .vocab-themeview-foundations .vocab-mt-end {
+    padding: 16px;
+  }
+}
+/* ─── Useful Expressions — two-block entry (r85) ────────────────────
+   Append this block at the end of src/styles/vocabulary.css.
+   The entry screen of Useful Expressions shows two large cards side by
+   side: Foundations Phrases (A1-A2, coral) and Intermediate Phrases
+   (B1-B2, purple). Each card uses the block's own gradient so the two
+   are clearly distinct. */
+
+.ue-blocks-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 18px;
+  max-width: 880px;
+  margin: 0 auto;
+  padding: 0 4px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.ue-block-card {
+  font-family: inherit;
+  border: none;
+  border-radius: 18px;
+  padding: 26px 22px;
+  text-align: left;
+  cursor: pointer;
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  box-shadow: 0 8px 22px rgba(31, 41, 55, 0.16);
+  transition: transform 0.18s, box-shadow 0.18s;
+  min-width: 0;
+}
+.ue-block-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 14px 32px rgba(31, 41, 55, 0.24);
+}
+.ue-block-card:active { transform: translateY(-1px); }
+
+.ue-block-icon {
+  font-size: 2.4rem;
+  margin-bottom: 2px;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+}
+.ue-block-name {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: 1.6rem;
+  font-weight: 700;
+  margin: 0;
+  line-height: 1.15;
+  color: #fff;
+}
+.ue-block-subtitle {
+  font-size: 0.85rem;
+  font-style: italic;
+  margin: 0;
+  opacity: 0.92;
+  color: #fff;
+}
+.ue-block-description {
+  font-size: 0.88rem;
+  line-height: 1.5;
+  margin: 4px 0 8px;
+  opacity: 0.94;
+  color: #fff;
+}
+.ue-block-meta {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: auto;
+}
+.ue-block-meta-pill {
+  background: rgba(255, 255, 255, 0.22);
+  color: #fff;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  padding: 4px 11px;
+  border-radius: 999px;
+  text-transform: uppercase;
+}
+
+/* Phone: cards stack and use less padding */
+@media (max-width: 620px) {
+  .ue-blocks-grid {
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
+  .ue-block-card { padding: 22px 18px; }
+  .ue-block-name { font-size: 1.4rem; }
+  .ue-block-icon { font-size: 2rem; }
+  .ue-block-description { font-size: 0.85rem; }
+}
+/* ─── Matching: visible "done" state (r86) ──────────────────────────
+   Append this block at the end of src/styles/vocabulary.css.
+
+   Bug: when a pair was matched, the .vocab-mt-done class was applied
+   to both cells but the visual feedback was too subtle (or non-existent
+   depending on the theme) — the user couldn't see which pairs were
+   already done. Fix: matched cells now turn green with a checkmark
+   ribbon and reduced opacity, so done pairs visually recede and the
+   remaining ones stand out. */
+
+/* Done state — applies to both the navy theme and the Foundations
+   light theme. Uses a green palette that reads on either background. */
+.vocab-mt-cell.vocab-mt-done {
+  background: linear-gradient(135deg, #22C55E 0%, #15803D 100%) !important;
+  color: #fff !important;
+  border-color: #15803D !important;
+  opacity: 0.85;
+  position: relative;
+  cursor: default;
+  box-shadow: 0 2px 8px rgba(21, 128, 61, 0.25) !important;
+  transition: background 0.3s, opacity 0.3s;
+}
+
+/* Checkmark ribbon at the top-right corner */
+.vocab-mt-cell.vocab-mt-done::after {
+  content: "✓";
+  position: absolute;
+  top: 4px;
+  right: 8px;
+  font-size: 1rem;
+  font-weight: 800;
+  color: #fff;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+  pointer-events: none;
+}
+
+/* Strike-through effect on the text for extra "done" feedback */
+.vocab-mt-cell.vocab-mt-done {
+  text-decoration: none; /* keep text clean, the green + tick are enough */
+}
+
+/* Done cells should NOT light up on hover — they're finished */
+.vocab-mt-cell.vocab-mt-done:hover {
+  background: linear-gradient(135deg, #22C55E 0%, #15803D 100%) !important;
+  transform: none;
+}
+
+/* Inside the Foundations light theme, the done state must override
+   the foundations-specific button-on-white styles too. */
+.vocab-themeview-foundations .vocab-mt-cell.vocab-mt-done {
+  background: linear-gradient(135deg, #22C55E 0%, #15803D 100%) !important;
+  color: #fff !important;
+  border: 1.5px solid #15803D !important;
+}
+
+/* Make sure the score in the HUD updates colour as the user progresses */
+.vocab-mt-score {
+  transition: color 0.3s;
+}
+/* ─── Useful Expressions — PDF download button (r88) ────────────────
+   Append at the end of src/styles/vocabulary.css.
+
+   The button sits beneath the function bubbles on each block's hub
+   (Foundations, Intermediate, Advanced). Style mirrors the existing
+   "Descargar PDF" button in Word Building: rounded pill, brand
+   accent, hover lift. Lives on the light Foundations-style background. */
+
+.ue-pdf-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  margin-top: 32px;
+  padding: 0 16px;
+}
+
+.ue-pdf-btn {
+  font-family: inherit;
+  font-size: 0.95rem;
+  font-weight: 600;
+  background: linear-gradient(135deg, #B5451B, #9C3B17);
+  color: #fff;
+  border: none;
+  border-radius: 999px;
+  padding: 12px 28px;
+  cursor: pointer;
+  box-shadow: 0 6px 16px rgba(181, 69, 27, 0.32);
+  transition: transform 0.18s, box-shadow 0.18s, opacity 0.18s;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+.ue-pdf-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 24px rgba(181, 69, 27, 0.42);
+}
+.ue-pdf-btn:active {
+  transform: translateY(0);
+}
+
+.ue-pdf-error {
+  color: #B91C1C;
+  font-size: 0.85rem;
+  margin: 0;
+  text-align: center;
+  max-width: 340px;
+}
+
+@media (max-width: 480px) {
+  .ue-pdf-btn { padding: 11px 22px; font-size: 0.9rem; }
+}
+/* ─── Useful Expressions — PDF download button (r89) ────────────────
+   Append at the end of src/styles/vocabulary.css.
+   IMPORTANT: this REPLACES the r88 .ue-pdf-actions / .ue-pdf-btn block
+   (the button is now ABOVE the bubbles instead of below). Just appending
+   this is harmless — the new rules win by source order.
+
+   The button sits between the header and the function bubbles, centered. */
+
+.ue-pdf-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  margin: 4px 0 18px;   /* above the FUNCTIONAL LANGUAGE eyebrow */
+  padding: 0 16px;
+}
+
+.ue-pdf-btn {
+  font-family: inherit;
+  font-size: 0.95rem;
+  font-weight: 600;
+  background: linear-gradient(135deg, #B5451B, #9C3B17);
+  color: #fff;
+  border: none;
+  border-radius: 999px;
+  padding: 11px 26px;
+  cursor: pointer;
+  box-shadow: 0 6px 16px rgba(181, 69, 27, 0.32);
+  transition: transform 0.18s, box-shadow 0.18s, opacity 0.18s;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+.ue-pdf-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 24px rgba(181, 69, 27, 0.42);
+}
+.ue-pdf-btn:active {
+  transform: translateY(0);
+}
+
+.ue-pdf-error {
+  color: #B91C1C;
+  font-size: 0.85rem;
+  margin: 0;
+  text-align: center;
+  max-width: 340px;
+}
+
+@media (max-width: 480px) {
+  .ue-pdf-btn { padding: 10px 22px; font-size: 0.9rem; }
+  .ue-pdf-actions { margin: 2px 0 14px; }
+}
+/* ─── Foundations Grammar (r91) ─────────────────────────────────────
+   Append at the end of src/styles/vocabulary.css. Light theme
+   (inherits from .vocab-themeview-foundations). */
+
+/* Level sections in the hub */
+.grammar-level-section {
+  width: 100%;
+  margin-bottom: 28px;
+}
+.grammar-level-title {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: #1F2937;
+  margin: 16px 4px 12px;
+  letter-spacing: 0.3px;
+}
+
+/* Locked unit bubbles (coming soon) */
+.foundations-bubble-locked {
+  opacity: 0.45;
+  cursor: not-allowed;
+  filter: grayscale(40%);
+}
+.foundations-bubble-locked:hover {
+  transform: none;
+  box-shadow: 0 4px 12px rgba(31, 41, 55, 0.12);
+}
+.foundations-bubble-lock {
+  position: absolute;
+  top: 8px;
+  right: 10px;
+  font-size: 0.9rem;
+  opacity: 0.7;
+}
+
+/* Level badge on the unit header */
+.grammar-unit-level-badge {
+  display: inline-block;
+  background: linear-gradient(135deg, #EC4899, #14B8A6);
+  color: #fff;
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 3px 10px;
+  border-radius: 999px;
+  margin-left: 10px;
+  letter-spacing: 0.5px;
+}
+
+/* ─── Lesson layout ─────────────────────────────────────────────── */
+
+.grammar-lesson {
+  padding: 0 4px;
+  max-width: 760px;
+  margin: 0 auto;
+}
+
+.grammar-section {
+  background: #fff;
+  border-radius: 14px;
+  padding: 20px 22px;
+  margin-bottom: 18px;
+  box-shadow: 0 4px 14px rgba(31, 41, 55, 0.08);
+}
+
+.grammar-section-title {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: #1F2937;
+  margin: 0 0 12px;
+}
+
+.grammar-concept {
+  color: #374151;
+  font-size: 1rem;
+  line-height: 1.65;
+  margin: 0;
+}
+
+.grammar-form-title,
+.grammar-form-subtitle {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #4B5563;
+  margin: 8px 0 8px;
+}
+.grammar-form-subtitle { margin-top: 16px; }
+
+/* Tables */
+.grammar-table-wrapper {
+  overflow-x: auto;
+  margin: 4px 0;
+  -webkit-overflow-scrolling: touch;
+}
+.grammar-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+.grammar-table th,
+.grammar-table td {
+  text-align: left;
+  padding: 8px 10px;
+  border-bottom: 1px solid #E5E7EB;
+}
+.grammar-table th {
+  background: #F9FAFB;
+  color: #374151;
+  font-weight: 600;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+}
+.grammar-table td {
+  color: #1F2937;
+}
+.grammar-table tr:hover td { background: #FAFAFB; }
+
+/* Uses */
+.grammar-uses {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.grammar-use {
+  padding: 10px 0;
+  border-bottom: 1px solid #F3F4F6;
+  color: #1F2937;
+}
+.grammar-use:last-child { border-bottom: none; }
+.grammar-use-note {
+  color: #6B7280;
+  font-size: 0.92rem;
+}
+.grammar-use-example {
+  color: #4B5563;
+  font-size: 0.9rem;
+  font-style: italic;
+  margin-top: 4px;
+  padding-left: 16px;
+  border-left: 3px solid #EC4899;
+}
+
+/* Examples */
+.grammar-examples {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  gap: 10px;
+}
+.grammar-example {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 10px 12px;
+  background: #F9FAFB;
+  border-radius: 8px;
+  border-left: 3px solid #14B8A6;
+}
+.grammar-example-en {
+  font-weight: 600;
+  color: #1F2937;
+}
+.grammar-example-es {
+  color: #6B7280;
+  font-size: 0.92rem;
+}
+.grammar-example-note {
+  font-style: italic;
+  color: #9CA3AF;
+  font-size: 0.85rem;
+  margin-top: 4px;
+}
+
+/* Warning section */
+.grammar-section-warning {
+  background: #FEF7F0;
+  border: 1px solid #FED7AA;
+}
+.grammar-warnings {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  gap: 14px;
+}
+.grammar-warning-item {
+  padding: 12px 14px;
+  background: #fff;
+  border-radius: 10px;
+  border: 1px solid #FED7AA;
+}
+.grammar-warning-wrong {
+  color: #DC2626;
+  font-weight: 600;
+  font-size: 0.95rem;
+  margin-bottom: 4px;
+}
+.grammar-warning-wrong span { text-decoration: line-through; }
+.grammar-warning-right {
+  color: #15803D;
+  font-weight: 600;
+  font-size: 0.95rem;
+  margin-bottom: 6px;
+}
+.grammar-warning-reason {
+  color: #6B7280;
+  font-size: 0.88rem;
+  font-style: italic;
+}
+
+/* ─── Exercises engine ──────────────────────────────────────────── */
+
+.ge-container {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 0 4px;
+}
+
+.ge-progress {
+  position: relative;
+  height: 8px;
+  background: #E5E7EB;
+  border-radius: 999px;
+  margin-bottom: 24px;
+  overflow: visible;
+}
+.ge-progress-bar {
+  height: 100%;
+  background: linear-gradient(90deg, #EC4899, #14B8A6);
+  border-radius: 999px;
+  transition: width 0.3s;
+}
+.ge-progress-text {
+  position: absolute;
+  top: 12px;
+  right: 0;
+  font-size: 0.8rem;
+  color: #6B7280;
+  font-weight: 600;
+}
+
+.ge-exercise {
+  background: #fff;
+  border-radius: 14px;
+  padding: 22px 22px 18px;
+  box-shadow: 0 6px 18px rgba(31, 41, 55, 0.1);
+  margin-bottom: 16px;
+}
+.ge-label {
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+  color: #B5451B;
+  margin-bottom: 8px;
+}
+.ge-prompt {
+  font-size: 1.05rem;
+  color: #1F2937;
+  margin-bottom: 14px;
+  line-height: 1.5;
+}
+.ge-prompt-inline {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+}
+.ge-source {
+  background: #F3F4F6;
+  border-left: 3px solid #6B7280;
+  padding: 10px 14px;
+  margin: 0 0 14px;
+  font-style: italic;
+  color: #374151;
+  border-radius: 6px;
+}
+.ge-hint {
+  font-size: 0.85rem;
+  color: #6B7280;
+  font-style: italic;
+  margin: 6px 0 12px;
+}
+
+.ge-input {
+  width: 100%;
+  font-family: inherit;
+  font-size: 1rem;
+  padding: 10px 14px;
+  border: 2px solid #D1D5DB;
+  border-radius: 10px;
+  outline: none;
+  transition: border-color 0.15s;
+  box-sizing: border-box;
+}
+.ge-input:focus { border-color: #EC4899; }
+.ge-input-inline {
+  width: auto;
+  min-width: 80px;
+  max-width: 200px;
+  padding: 6px 10px;
+  font-size: 1rem;
+  margin: 0 4px;
+}
+.ge-input:disabled {
+  background: #F9FAFB;
+  color: #6B7280;
+}
+
+.ge-submit-btn {
+  background: linear-gradient(135deg, #EC4899, #14B8A6);
+  color: #fff;
+  font-family: inherit;
+  font-weight: 700;
+  font-size: 0.95rem;
+  padding: 10px 24px;
+  border: none;
+  border-radius: 999px;
+  cursor: pointer;
+  margin-top: 12px;
+  transition: transform 0.15s, box-shadow 0.15s;
+  box-shadow: 0 4px 12px rgba(236, 72, 153, 0.3);
+}
+.ge-submit-btn:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(236, 72, 153, 0.4);
+}
+.ge-submit-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Multiple choice */
+.ge-options {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.ge-option {
+  font-family: inherit;
+  font-size: 0.98rem;
+  padding: 12px 16px;
+  background: #fff;
+  color: #1F2937;
+  border: 2px solid #E5E7EB;
+  border-radius: 10px;
+  cursor: pointer;
+  text-align: left;
+  transition: all 0.15s;
+}
+.ge-option:hover:not(:disabled) {
+  border-color: #EC4899;
+  background: #FDF2F8;
+}
+.ge-option-correct {
+  background: #D1FAE5 !important;
+  border-color: #10B981 !important;
+  color: #065F46 !important;
+  font-weight: 600;
+}
+.ge-option-wrong {
+  background: #FEE2E2 !important;
+  border-color: #DC2626 !important;
+  color: #7F1D1D !important;
+}
+
+/* Word order */
+.ge-wo-built {
+  min-height: 56px;
+  background: #F9FAFB;
+  border: 2px dashed #D1D5DB;
+  border-radius: 10px;
+  padding: 10px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-items: center;
+  margin-bottom: 12px;
+}
+.ge-wo-placeholder {
+  color: #9CA3AF;
+  font-style: italic;
+  font-size: 0.9rem;
+  padding: 0 10px;
+}
+.ge-wo-pool {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding: 8px;
+}
+.ge-wo-chip {
+  font-family: inherit;
+  font-size: 0.95rem;
+  padding: 8px 14px;
+  background: #fff;
+  color: #1F2937;
+  border: 2px solid #E5E7EB;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.ge-wo-chip:hover:not(:disabled) {
+  border-color: #EC4899;
+  background: #FDF2F8;
+  transform: translateY(-1px);
+}
+.ge-wo-chip-picked {
+  background: linear-gradient(135deg, #EC4899, #14B8A6);
+  color: #fff;
+  border-color: transparent;
+}
+.ge-wo-chip-picked:hover:not(:disabled) {
+  background: linear-gradient(135deg, #DB2777, #0D9488);
+}
+
+/* Feedback */
+.ge-feedback {
+  padding: 16px 18px;
+  border-radius: 12px;
+  margin-top: 4px;
+  animation: ge-fade-in 0.25s ease-out;
+}
+.ge-feedback-ok {
+  background: #D1FAE5;
+  color: #065F46;
+}
+.ge-feedback-ko {
+  background: #FEE2E2;
+  color: #7F1D1D;
+}
+.ge-feedback-answer { font-weight: 600; }
+.ge-feedback-answer em { font-style: italic; text-decoration: underline; }
+.ge-feedback-explanation {
+  margin: 8px 0 12px;
+  font-size: 0.9rem;
+  font-weight: normal;
+  opacity: 0.9;
+}
+.ge-next-btn {
+  background: #fff;
+  color: #1F2937;
+  border: 1.5px solid currentColor;
+  border-radius: 999px;
+  padding: 8px 18px;
+  font-family: inherit;
+  font-weight: 600;
+  font-size: 0.92rem;
+  cursor: pointer;
+  margin-top: 4px;
+  transition: transform 0.15s;
+}
+.ge-next-btn:hover { transform: translateY(-1px); }
+
+@keyframes ge-fade-in {
+  from { opacity: 0; transform: translateY(-4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Summary */
+.ge-summary {
+  text-align: center;
+  background: #fff;
+  border-radius: 16px;
+  padding: 36px 24px;
+  max-width: 480px;
+  margin: 20px auto;
+  box-shadow: 0 8px 24px rgba(31, 41, 55, 0.12);
+}
+.ge-summary-medal { font-size: 3.5rem; line-height: 1; margin-bottom: 8px; }
+.ge-summary-title {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: #1F2937;
+  margin: 8px 0 4px;
+}
+.ge-summary-pct {
+  font-size: 1.4rem;
+  font-weight: 700;
+  background: linear-gradient(90deg, #EC4899, #14B8A6);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  margin: 0 0 12px;
+}
+.ge-summary-note {
+  color: #6B7280;
+  font-size: 0.95rem;
+  margin-bottom: 20px;
+}
+.ge-restart-btn {
+  background: linear-gradient(135deg, #EC4899, #14B8A6);
+  color: #fff;
+  font-family: inherit;
+  font-weight: 700;
+  font-size: 0.95rem;
+  padding: 11px 28px;
+  border: none;
+  border-radius: 999px;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(236, 72, 153, 0.3);
+}
+
+.ge-empty {
+  text-align: center;
+  color: #6B7280;
+  padding: 40px 20px;
+  font-style: italic;
+}
+
+/* Mobile */
+@media (max-width: 620px) {
+  .grammar-section { padding: 16px 16px; }
+  .grammar-section-title { font-size: 1.15rem; }
+  .grammar-table { font-size: 0.82rem; }
+  .grammar-table th, .grammar-table td { padding: 6px 8px; }
+  .ge-exercise { padding: 16px 16px 14px; }
+  .ge-prompt { font-size: 0.98rem; }
+  .ge-input-inline { max-width: 140px; font-size: 0.9rem; }
+}
+/* ─── Letter Wheel (r92) ────────────────────────────────────────────
+   Append at the end of src/styles/vocabulary.css.
+   Mobile-first word game: circular wheel of letters, tap to build,
+   center button to check. Light theme. */
+
+.lw-container {
+  background: #fff;
+  border-radius: 14px;
+  padding: 18px 16px 20px;
+  box-shadow: 0 6px 18px rgba(31, 41, 55, 0.1);
+  margin-bottom: 16px;
+  max-width: 420px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.lw-label {
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+  color: #B5451B;
+  margin-bottom: 6px;
+}
+
+.lw-prompt {
+  font-size: 0.95rem;
+  color: #1F2937;
+  margin-bottom: 12px;
+  line-height: 1.45;
+}
+
+.lw-score {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #6B7280;
+  text-align: center;
+  margin-bottom: 12px;
+}
+.lw-hints-used {
+  color: #B5451B;
+}
+
+/* Word slots ─────────────────────────────────────────────────────── */
+.lw-slots {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.lw-slot {
+  background: #F9FAFB;
+  border-radius: 10px;
+  padding: 8px 10px;
+  border: 1.5px solid #E5E7EB;
+  transition: all 0.3s;
+}
+.lw-slot-found {
+  background: #D1FAE5;
+  border-color: #10B981;
+}
+.lw-slot-revealed {
+  background: #FEF3C7;
+  border-color: #F59E0B;
+}
+
+.lw-slot-letters {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 4px;
+}
+
+.lw-slot-box {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 28px;
+  height: 32px;
+  padding: 0 4px;
+  background: #fff;
+  border: 1.5px solid #D1D5DB;
+  border-radius: 6px;
+  font-weight: 700;
+  font-size: 1rem;
+  color: #1F2937;
+}
+.lw-slot-found .lw-slot-box {
+  background: #fff;
+  border-color: #10B981;
+  color: #065F46;
+}
+.lw-slot-revealed .lw-slot-box {
+  background: #fff;
+  border-color: #F59E0B;
+  color: #92400E;
+}
+
+.lw-slot-hint {
+  font-size: 0.8rem;
+  color: #6B7280;
+  font-style: italic;
+  padding-left: 2px;
+}
+
+/* Current word being built ───────────────────────────────────────── */
+.lw-current {
+  min-height: 48px;
+  background: #F3F4F6;
+  border: 2px dashed #D1D5DB;
+  border-radius: 10px;
+  padding: 10px 12px;
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  font-weight: 700;
+  font-size: 1.2rem;
+  letter-spacing: 2px;
+  color: #1F2937;
+  transition: all 0.2s;
+}
+.lw-current-placeholder {
+  color: #9CA3AF;
+  font-weight: 400;
+  font-size: 0.9rem;
+  letter-spacing: normal;
+  font-style: italic;
+}
+.lw-current-ok {
+  background: #D1FAE5;
+  border-color: #10B981;
+  color: #065F46;
+  animation: lw-pop 0.4s;
+}
+.lw-current-ko {
+  background: #FEE2E2;
+  border-color: #DC2626;
+  color: #7F1D1D;
+  animation: lw-shake 0.4s;
+}
+.lw-current-dup {
+  background: #FEF3C7;
+  border-color: #F59E0B;
+  color: #92400E;
+  animation: lw-shake 0.4s;
+}
+
+.lw-current-letter {
+  display: inline-block;
+}
+
+@keyframes lw-pop {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.08); }
+  100% { transform: scale(1); }
+}
+@keyframes lw-shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-4px); }
+  75% { transform: translateX(4px); }
+}
+
+/* Wheel ──────────────────────────────────────────────────────────── */
+.lw-wheel {
+  position: relative;
+  width: 280px;
+  height: 280px;
+  margin: 0 auto 14px;
+}
+
+.lw-letter {
+  position: absolute;
+  width: 48px;
+  height: 48px;
+  font-family: inherit;
+  font-size: 1.3rem;
+  font-weight: 700;
+  background: linear-gradient(135deg, #EC4899, #14B8A6);
+  color: #fff;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(31, 41, 55, 0.2);
+  transition: transform 0.12s, box-shadow 0.12s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+.lw-letter:active:not(:disabled) {
+  transform: scale(0.92);
+  box-shadow: 0 2px 6px rgba(31, 41, 55, 0.25);
+}
+.lw-letter:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.lw-center {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 72px;
+  height: 72px;
+  font-family: inherit;
+  font-size: 1.8rem;
+  font-weight: 700;
+  background: #fff;
+  color: #10B981;
+  border: 3px solid #10B981;
+  border-radius: 50%;
+  cursor: pointer;
+  box-shadow: 0 4px 14px rgba(16, 185, 129, 0.3);
+  transition: all 0.15s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  -webkit-tap-highlight-color: transparent;
+}
+.lw-center:active:not(:disabled) {
+  background: #10B981;
+  color: #fff;
+  transform: translate(-50%, -50%) scale(0.92);
+}
+.lw-center:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  border-color: #9CA3AF;
+  color: #9CA3AF;
+}
+
+/* Controls ───────────────────────────────────────────────────────── */
+.lw-controls {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-bottom: 12px;
+}
+
+.lw-control-btn {
+  font-family: inherit;
+  font-size: 0.85rem;
+  font-weight: 600;
+  padding: 8px 14px;
+  background: #fff;
+  color: #4B5563;
+  border: 1.5px solid #D1D5DB;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: all 0.15s;
+  -webkit-tap-highlight-color: transparent;
+}
+.lw-control-btn:active:not(:disabled) {
+  background: #F3F4F6;
+  transform: translateY(1px);
+}
+.lw-control-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.lw-control-hint {
+  color: #B5451B;
+  border-color: #FED7AA;
+  background: #FEF7F0;
+}
+.lw-control-hint:active:not(:disabled) {
+  background: #FED7AA;
+}
+
+.lw-giveup {
+  display: block;
+  margin: 8px auto 0;
+  font-family: inherit;
+  font-size: 0.8rem;
+  color: #9CA3AF;
+  background: none;
+  border: none;
+  text-decoration: underline;
+  cursor: pointer;
+  padding: 6px;
+}
+
+/* Mobile tighter spacing ─────────────────────────────────────────── */
+@media (max-width: 480px) {
+  .lw-container { padding: 14px 12px 16px; }
+  .lw-wheel { width: 260px; height: 260px; }
+  .lw-letter { width: 44px; height: 44px; font-size: 1.2rem; }
+  .lw-center { width: 64px; height: 64px; font-size: 1.6rem; }
+  .lw-slot-box { min-width: 24px; height: 28px; font-size: 0.92rem; }
+  .lw-prompt { font-size: 0.9rem; }
+}
+
+@media (max-width: 360px) {
+  .lw-wheel { width: 240px; height: 240px; }
+  .lw-letter { width: 42px; height: 42px; font-size: 1.1rem; }
+}

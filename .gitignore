@@ -36,3 +36,7 @@ scaffold-*
 .env.production.local
 src-backup-*
 *.backup-*
+
+# Backup env files (NEVER commit)
+.env.save
+.env.save.*

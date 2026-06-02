@@ -26,7 +26,15 @@ import Phrases from "./pages/Phrases";
 import PhraseDetail from "./pages/PhraseDetail";
 import Games from "./pages/Games";
 import InversionsGame from "./pages/InversionsGame";
+import ConnectorCombat from "./pages/ConnectorCombat";
 import Vocabulary from "./pages/Vocabulary";
+import GuiaC1 from "./pages/GuiaC1";
+import ReadingRoom from "./pages/ReadingRoom";
+import WordBuilding from "./pages/WordBuilding";
+import Admin from "./pages/Admin";
+import TutorOnboarding from "./pages/TutorOnboarding";
+import UsefulExpressions from "./pages/UsefulExpressions";
+import FoundationsGrammar from "./pages/FoundationsGrammar";
 
 import "./App.css";
 
@@ -46,6 +54,9 @@ export default function App() {
         <Route element={<Shell />}>
           <Route path="/" element={<Hub />} />
           <Route path="/grammar" element={<GrammarHub />} />
+
+          {/* Foundations A1/A2 */}
+          <Route path="/grammar/foundations" element={<FoundationsGrammar />} />
 
           {/* Core C1 */}
           <Route path="/grammar/inversion" element={<Inversion />} />
@@ -77,8 +88,20 @@ export default function App() {
 
           <Route path="/games" element={<Games />} />
           <Route path="/games/inversions" element={<InversionsGame />} />
+          <Route path="/games/connectors" element={<ConnectorCombat />} />
 
           <Route path="/vocabulary" element={<Vocabulary />} />
+
+          <Route path="/guia-c1" element={<GuiaC1 />} />
+          <Route path="/reading" element={<ReadingRoom />} />
+          <Route path="/word-building" element={<WordBuilding />} />
+
+          {/* Private maintenance area (login-gated). */}
+          <Route path="/admin" element={<Admin />} />
+
+          {/* Tutor onboarding (Tu Tutor). */}
+          <Route path="/tutor" element={<TutorOnboarding />} />
+          <Route path="/useful-expressions" element={<UsefulExpressions />} />
 
           {/* Catch-all: send unknown paths back to the main hub. */}
           <Route path="*" element={<Hub />} />

@@ -53,6 +53,23 @@ export default function GrammarHub() {
       </header>
 
       <section className="grammar-section">
+        <h2 className="section-heading">Foundations A1-A2</h2>
+        <div className="bubble-container">
+          <Link
+            to="/grammar/foundations"
+            className="bubble progress-bubble"
+            style={{ backgroundColor: "#EA580C", animationDelay: "0s" }}
+            aria-label="Foundations Grammar — A1-A2"
+          >
+            <span className="bubble-content">
+              Foundations Grammar
+              <span className="bubble-percent">A1 · A2</span>
+            </span>
+          </Link>
+        </div>
+      </section>
+
+      <section className="grammar-section">
         <h2 className="section-heading">Core C1</h2>
         <div className="bubble-container">
           {core.map((g, i) => (

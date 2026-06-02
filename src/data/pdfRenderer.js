@@ -565,3 +565,122 @@ function stripEmoji(s) {
     .replace(/\uFE0F/g, "")                    // variation selector
     .trim();
 }
+
+// ─── Word Building export ────────────────────────────────────────────
+// Reuses the same engine (cover, section renderer, footers) but builds
+// its sections from Word Building roots loaded from Supabase. Each root
+// becomes one section; its words carry en/es/example, and we fold the
+// affix into the Spanish line so it shows in the reference layout.
+//
+// Input: roots = [{ root, idea, words: [{category, en, es, affix, example}] }]
+// Always uses the "reference" layout (the readable two-column one) and
+// does not mark anything as learned (markLearned = false).
+
+// ─── Word Building export ────────────────────────────────────────────
+// Loads ALL roots + words from Supabase, groups words under their root,
+// and exports a PDF. Shared by the admin editor and the public Word
+// Building page so the logic lives in one place.
+//
+// `supabase` is passed in (not imported) to keep this data module free of
+// the client import. Returns { ok, filename } or { ok:false, error }.
+export async function loadAndExportRoots(supabase) {
+  try {
+    const [rootsRes, wordsRes] = await Promise.all([
+      supabase.from("roots").select("id, root, idea, sort_order").order("sort_order", { ascending: true }),
+      supabase.from("words").select("root_id, category, en, es, affix, example, sort_order").order("sort_order", { ascending: true }),
+    ]);
+    if (rootsRes.error) throw new Error(rootsRes.error.message);
+    if (wordsRes.error) throw new Error(wordsRes.error.message);
+
+    const byRoot = {};
+    for (const w of wordsRes.data) {
+      (byRoot[w.root_id] = byRoot[w.root_id] || []).push(w);
+    }
+    const rootsWithWords = rootsRes.data.map((r) => ({
+      root: r.root,
+      idea: r.idea,
+      words: byRoot[r.id] || [],
+    }));
+
+    return exportRootsToPdf(rootsWithWords);
+  } catch (e) {
+    return { ok: false, error: (e && e.message) || "Export failed." };
+  }
+}
+
+export function exportRootsToPdf(roots) {
+  if (!roots || roots.length === 0) {
+    return { ok: false, error: "No hay raíces para exportar." };
+  }
+  const jsPDFCtor = resolveJsPDF();
+  if (!jsPDFCtor) {
+    return { ok: false, error: "PDF engine not loaded (jsPDF script missing in index.html)." };
+  }
+
+  // Build sections in the shape the renderers expect.
+  const sections = roots.map((r) => {
+    const words = (r.words || []).map((w) => ({
+      en: w.en,
+      // Fold the affix into the Spanish line so it appears in the PDF.
+      es: w.affix ? `${w.es}  ·  ${w.affix}` : w.es,
+      example: w.example || null,
+      learned: false,
+    }));
+    return {
+      kind: "root",
+      blockName: "Word Building",
+      themeName: `${r.root} — ${shortIdeaForPdf(r.idea)}`,
+      themeIcon: "",
+      level: null,
+      words,
+      totalCount: words.length,
+      learnedCount: 0,
+    };
+  });
+
+  try {
+    const doc = new jsPDFCtor({ unit: "mm", format: "a4", orientation: "portrait", compress: true });
+    renderRootsCover(doc, sections);
+    let y = coverEndY();
+    for (const section of sections) {
+      y = renderSectionReference(doc, section, y, false);
+    }
+    renderFooters(doc);
+    const filename = `word-building-${new Date().toISOString().slice(0, 10)}.pdf`;
+    doc.save(filename);
+    return { ok: true, filename };
+  } catch (e) {
+    return { ok: false, error: (e && e.message) || "PDF generation failed." };
+  }
+}
+
+function shortIdeaForPdf(idea) {
+  if (!idea) return "";
+  const m = String(idea).match(/"([^"]+)"/);
+  return m ? m[1] : idea;
+}
+
+function renderRootsCover(doc, sections) {
+  const cx = PAGE.width / 2;
+  doc.setFont("helvetica", "bold");
+  doc.setFontSize(22);
+  doc.setTextColor(...C_ACCENT);
+  doc.text("Word Building", cx, PAGE.marginTop + 6, { align: "center" });
+
+  doc.setFont("helvetica", "italic");
+  doc.setFontSize(11);
+  doc.setTextColor(...C_GREY);
+  const dateStr = new Date().toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" });
+  doc.text(`Raíces y familias de palabras · ${dateStr}`, cx, PAGE.marginTop + 12, { align: "center" });
+
+  const totalWords = sections.reduce((a, s) => a + s.words.length, 0);
+  const meta = `${sections.length} raíces · ${totalWords} palabras`;
+  doc.setFont("helvetica", "normal");
+  doc.setFontSize(10);
+  doc.setTextColor(...C_GREY_LIGHT);
+  doc.text(meta, cx, PAGE.marginTop + 17, { align: "center" });
+
+  doc.setDrawColor(...C_DIVIDER);
+  doc.setLineWidth(0.3);
+  doc.line(PAGE.marginLeft, PAGE.marginTop + 22, PAGE.width - PAGE.marginRight, PAGE.marginTop + 22);
+}
