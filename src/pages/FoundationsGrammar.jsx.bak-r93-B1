@@ -243,7 +243,7 @@ function FormTable({ form }) {
         <tbody>
           {rows.map((row, i) => (
             <tr key={i}>
-              {keys.map(k => <td key={k} data-label={prettyKey(k)}>{row[k]}</td>)}
+              {keys.map(k => <td key={k}>{row[k]}</td>)}
             </tr>
           ))}
         </tbody>
@@ -266,9 +266,9 @@ function ShortAnswersTable({ answers }) {
         <tbody>
           {answers.map((a, i) => (
             <tr key={i}>
-              <td data-label="Question">{a.question}</td>
-              <td data-label="✓ Yes">{a.positive}</td>
-              <td data-label="✗ No">{a.negative}</td>
+              <td>{a.question}</td>
+              <td>{a.positive}</td>
+              <td>{a.negative}</td>
             </tr>
           ))}
         </tbody>

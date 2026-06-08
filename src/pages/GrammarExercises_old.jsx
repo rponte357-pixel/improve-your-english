@@ -209,16 +209,11 @@ function toAnswerArray(answer, numBlanks) {
   return parts.slice(0, numBlanks);
 }
 
-// Compare blank by blank (strict, but normalized). For each blank,
-// in addition to normalize() equality, check that the first-char
-// case is respected when the expected blank starts with uppercase.
+// Compare blank by blank (strict, but normalized).
 function matchesBlanks(values, expected, acceptVariants) {
   const tryMatch = (target) => {
     if (!Array.isArray(target) || target.length !== values.length) return false;
-    return values.every((v, i) => {
-      const exp = target[i] || "";
-      return normalize(v) === normalize(exp) && firstCharCaseMatches(v, exp);
-    });
+    return values.every((v, i) => normalize(v) === normalize(target[i] || ""));
   };
   if (tryMatch(expected)) return true;
   return acceptVariants.some(tryMatch);
@@ -267,18 +262,11 @@ function Transform({ exercise, showFeedback, userAnswer, onAnswer }) {
     onAnswer(value, correct);
   }
 
-  // Hide the `source` if the prompt already contains it (avoids
-  // showing the same sentence twice). Comparison is done with the
-  // text stripped of quotes and trimmed.
-  const sourceClean  = exercise.source ? exercise.source.replace(/['"']/g, "").trim().toLowerCase() : "";
-  const promptClean  = exercise.prompt.replace(/['"']/g, "").trim().toLowerCase();
-  const sourceIsRedundant = sourceClean && promptClean.includes(sourceClean);
-
   return (
     <div className="ge-exercise">
       <div className="ge-label">TRANSFORM</div>
       <div className="ge-prompt">{exercise.prompt}</div>
-      {exercise.source && !sourceIsRedundant && (
+      {exercise.source && (
         <blockquote className="ge-source">{exercise.source}</blockquote>
       )}
       <input
@@ -399,37 +387,19 @@ function Summary({ answers, exercises, onRestart }) {
 // ─── Helpers ────────────────────────────────────────────────────────
 
 // Normalize text for comparison: trim, lowercase, strip extra spaces,
-// remove trailing punctuation (but keep "?" in answers that need it),
-// and strip spaces before punctuation (so "name ?" matches "name?").
+// remove trailing punctuation (but keep "?" in answers that need it).
 function normalize(s) {
   return String(s)
     .trim()
     .toLowerCase()
     .replace(/\s+/g, " ")
-    .replace(/\s+([?!.,;:])/g, "$1")  // remove space before punctuation
     .replace(/[.,;]+$/, ""); // remove final period/comma/semicolon, keep "?" and "!"
 }
 
-// Check if the first character matches in case (when the expected
-// answer starts with a capital letter). Used in addition to normalize()
-// so that "are you from Spain?" is rejected if expected is
-// "Are you from Spain?".
-function firstCharCaseMatches(given, expected) {
-  const g = String(given).trim();
-  const e = String(expected).trim();
-  if (!g || !e) return true;
-  const firstE = e[0];
-  // Only enforce if expected starts with a letter that has distinct cases.
-  if (firstE !== firstE.toUpperCase() || firstE === firstE.toLowerCase()) return true;
-  return g[0] === firstE;
-}
-
 function matchesAnswer(given, expected, accept) {
-  const candidates = [expected, ...(accept || [])];
   const g = normalize(given);
-  // Find a candidate whose normalized form matches AND whose first-char
-  // case is respected by the user's input.
-  return candidates.some(c => normalize(c) === g && firstCharCaseMatches(given, c));
+  const candidates = [expected, ...(accept || [])].map(normalize);
+  return candidates.includes(g);
 }
 
 function shuffle(arr) {

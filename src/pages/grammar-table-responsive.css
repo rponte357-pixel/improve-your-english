@@ -1,0 +1,41 @@
+/* ─── Fix responsive: tablas de gramática que se salían en móvil ───── */
+/* Añade / fusiona esto en src/styles/vocabulary.css                     */
+
+.grammar-table-wrapper {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: auto;               /* scroll horizontal si no cabe        */
+  -webkit-overflow-scrolling: touch;
+  box-sizing: border-box;
+}
+
+.grammar-table {
+  width: 100%;
+  border-collapse: collapse;
+  /* min-width fuerza que las columnas no se aplasten; con overflow-x el  */
+  /* usuario puede deslizar. Ajusta el valor a tu contenido.             */
+  min-width: 480px;
+}
+
+.grammar-table th,
+.grammar-table td {
+  padding: 10px 12px;
+  text-align: left;
+  vertical-align: top;
+  white-space: normal;            /* deja que el texto haga wrap          */
+  word-break: break-word;
+  overflow-wrap: anywhere;
+}
+
+/* En pantallas pequeñas: tipografía y padding más compactos para que la
+   mayoría de tablas quepan sin scroll. */
+@media (max-width: 600px) {
+  .grammar-table {
+    min-width: 0;                 /* permite que quepa sin scroll         */
+    font-size: 14px;
+  }
+  .grammar-table th,
+  .grammar-table td {
+    padding: 7px 6px;
+  }
+}

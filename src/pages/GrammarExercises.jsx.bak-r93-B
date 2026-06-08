@@ -118,110 +118,47 @@ function ExerciseRenderer({ exercise, showFeedback, userAnswer, onAnswer }) {
 }
 
 // ─── Type 1: Fill in the blank ──────────────────────────────────────
-// Supports MULTIPLE blanks in one prompt. The prompt can contain one
-// or more "___" placeholders. The answer can be:
-//   - a string: "doesn't like"  → split by whitespace, one word per blank
-//   - an array: ["doesn't", "like"]  → one entry per blank
-// `accept` works the same way (each accept variant can be a string or array).
 
 function FillBlank({ exercise, showFeedback, userAnswer, onAnswer }) {
-  // Split prompt and count blanks
-  const parts = exercise.prompt.split("___");
-  const numBlanks = parts.length - 1;
-
-  // values[i] = what the user typed in blank i
-  const [values, setValues] = useState(() => Array(numBlanks).fill(""));
-  useEffect(() => { setValues(Array(numBlanks).fill("")); }, [exercise, numBlanks]);
-
-  // Resolve the answer into an array of strings, one per blank.
-  const expectedArray = toAnswerArray(exercise.answer, numBlanks);
-  // Accept array: each variant becomes its own array of length numBlanks.
-  const acceptArrays = (exercise.accept || []).map(a => toAnswerArray(a, numBlanks));
+  const [value, setValue] = useState("");
+  useEffect(() => { setValue(""); }, [exercise]);
 
   function submit() {
-    if (values.some(v => !v.trim()) || showFeedback) return;
-    const given = values.join(" ");
-    const correct = matchesBlanks(values, expectedArray, acceptArrays);
-    onAnswer(given, correct);
+    if (!value.trim() || showFeedback) return;
+    const correct = matchesAnswer(value, exercise.answer, exercise.accept);
+    onAnswer(value, correct);
   }
 
-  function setValueAt(i, v) {
-    const next = [...values];
-    next[i] = v;
-    setValues(next);
-  }
-
-  function onKeyDownAt(e, i) {
-    if (e.key === "Enter") {
-      // Enter on last input submits; otherwise move to next.
-      if (i === numBlanks - 1) submit();
-    }
-  }
-
-  // Build the prompt with inputs interleaved.
-  const children = [];
-  for (let i = 0; i < parts.length; i++) {
-    if (parts[i]) children.push(<span key={`p${i}`}>{parts[i]}</span>);
-    if (i < numBlanks) {
-      children.push(
-        <input
-          key={`i${i}`}
-          type="text"
-          className="ge-input ge-input-inline"
-          value={values[i]}
-          onChange={e => setValueAt(i, e.target.value)}
-          onKeyDown={e => onKeyDownAt(e, i)}
-          disabled={showFeedback}
-          autoFocus={i === 0}
-          autoCapitalize="off"
-          autoCorrect="off"
-          spellCheck="false"
-          placeholder="..."
-        />
-      );
-    }
-  }
+  // Split the prompt around the "___" placeholder so we can show input inline.
+  const parts = exercise.prompt.split("___");
 
   return (
     <div className="ge-exercise">
       <div className="ge-label">FILL IN THE BLANK</div>
-      <div className="ge-prompt ge-prompt-inline">{children}</div>
+      <div className="ge-prompt ge-prompt-inline">
+        {parts[0]}
+        <input
+          type="text"
+          className="ge-input ge-input-inline"
+          value={value}
+          onChange={e => setValue(e.target.value)}
+          onKeyDown={e => { if (e.key === "Enter") submit(); }}
+          disabled={showFeedback}
+          autoFocus
+          placeholder="..."
+        />
+        {parts[1] || ""}
+      </div>
       {exercise.hint && !showFeedback && (
         <p className="ge-hint">Hint: {exercise.hint}</p>
       )}
       {!showFeedback && (
-        <button type="button" className="ge-submit-btn" onClick={submit} disabled={values.some(v => !v.trim())}>
+        <button type="button" className="ge-submit-btn" onClick={submit} disabled={!value.trim()}>
           Check
         </button>
       )}
     </div>
   );
-}
-
-// Convert "doesn't like" or ["doesn't", "like"] into an array of length
-// numBlanks. Falls back to splitting on whitespace.
-function toAnswerArray(answer, numBlanks) {
-  if (Array.isArray(answer)) {
-    return answer.slice(0, numBlanks);
-  }
-  const parts = String(answer).trim().split(/\s+/);
-  // If the number of words doesn't match the blanks, just return as-is.
-  return parts.slice(0, numBlanks);
-}
-
-// Compare blank by blank (strict, but normalized). For each blank,
-// in addition to normalize() equality, check that the first-char
-// case is respected when the expected blank starts with uppercase.
-function matchesBlanks(values, expected, acceptVariants) {
-  const tryMatch = (target) => {
-    if (!Array.isArray(target) || target.length !== values.length) return false;
-    return values.every((v, i) => {
-      const exp = target[i] || "";
-      return normalize(v) === normalize(exp) && firstCharCaseMatches(v, exp);
-    });
-  };
-  if (tryMatch(expected)) return true;
-  return acceptVariants.some(tryMatch);
 }
 
 // ─── Type 2: Multiple choice ────────────────────────────────────────
@@ -267,18 +204,11 @@ function Transform({ exercise, showFeedback, userAnswer, onAnswer }) {
     onAnswer(value, correct);
   }
 
-  // Hide the `source` if the prompt already contains it (avoids
-  // showing the same sentence twice). Comparison is done with the
-  // text stripped of quotes and trimmed.
-  const sourceClean  = exercise.source ? exercise.source.replace(/['"']/g, "").trim().toLowerCase() : "";
-  const promptClean  = exercise.prompt.replace(/['"']/g, "").trim().toLowerCase();
-  const sourceIsRedundant = sourceClean && promptClean.includes(sourceClean);
-
   return (
     <div className="ge-exercise">
       <div className="ge-label">TRANSFORM</div>
       <div className="ge-prompt">{exercise.prompt}</div>
-      {exercise.source && !sourceIsRedundant && (
+      {exercise.source && (
         <blockquote className="ge-source">{exercise.source}</blockquote>
       )}
       <input
@@ -289,9 +219,6 @@ function Transform({ exercise, showFeedback, userAnswer, onAnswer }) {
         onKeyDown={e => { if (e.key === "Enter") submit(); }}
         disabled={showFeedback}
         autoFocus
-        autoCapitalize="off"
-        autoCorrect="off"
-        spellCheck="false"
         placeholder="Type your answer..."
       />
       {!showFeedback && (
@@ -399,37 +326,19 @@ function Summary({ answers, exercises, onRestart }) {
 // ─── Helpers ────────────────────────────────────────────────────────
 
 // Normalize text for comparison: trim, lowercase, strip extra spaces,
-// remove trailing punctuation (but keep "?" in answers that need it),
-// and strip spaces before punctuation (so "name ?" matches "name?").
+// remove trailing punctuation (but keep "?" in answers that need it).
 function normalize(s) {
   return String(s)
     .trim()
     .toLowerCase()
     .replace(/\s+/g, " ")
-    .replace(/\s+([?!.,;:])/g, "$1")  // remove space before punctuation
     .replace(/[.,;]+$/, ""); // remove final period/comma/semicolon, keep "?" and "!"
 }
 
-// Check if the first character matches in case (when the expected
-// answer starts with a capital letter). Used in addition to normalize()
-// so that "are you from Spain?" is rejected if expected is
-// "Are you from Spain?".
-function firstCharCaseMatches(given, expected) {
-  const g = String(given).trim();
-  const e = String(expected).trim();
-  if (!g || !e) return true;
-  const firstE = e[0];
-  // Only enforce if expected starts with a letter that has distinct cases.
-  if (firstE !== firstE.toUpperCase() || firstE === firstE.toLowerCase()) return true;
-  return g[0] === firstE;
-}
-
 function matchesAnswer(given, expected, accept) {
-  const candidates = [expected, ...(accept || [])];
   const g = normalize(given);
-  // Find a candidate whose normalized form matches AND whose first-char
-  // case is respected by the user's input.
-  return candidates.some(c => normalize(c) === g && firstCharCaseMatches(given, c));
+  const candidates = [expected, ...(accept || [])].map(normalize);
+  return candidates.includes(g);
 }
 
 function shuffle(arr) {
