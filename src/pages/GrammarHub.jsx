@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import { grammarIndex } from "../data/lessons";
 import { useProgress, computeCompletion } from "../hooks/useProgress";
@@ -10,6 +11,10 @@ const SECTION_STYLE = {
 };
 
 export default function GrammarHub() {
+  // Which level is "exploded" open. null = the 3-level landing.
+  // "c1" = the existing C1 grammar topics. "b1b2" = coming soon.
+  const [level, setLevel] = useState(null);
+
   const { all, resetAll } = useProgress();
 
   // Per-lesson completion %.
@@ -33,85 +38,172 @@ export default function GrammarHub() {
     }
   };
 
+  // ─── Sub-view: C1 grammar topics ──────────────────────────────────
+  if (level === "c1") {
+    return (
+      <>
+        <header className="hub-header">
+          <button
+            type="button"
+            className="grammar-level-back"
+            onClick={() => setLevel(null)}
+          >
+            ← Grammar levels
+          </button>
+          <h1>Advanced C1</h1>
+          <p>
+            {overall > 0
+              ? `${overall}% complete · ${grammarIndex.length} topics`
+              : `${grammarIndex.length} topics — Core + Advanced`}
+          </p>
+          {overall > 0 && (
+            <div className="overall-progress">
+              <div
+                className="overall-progress-fill"
+                style={{ width: `${overall}%` }}
+              />
+            </div>
+          )}
+        </header>
+
+        <section className="grammar-section">
+          <h2 className="section-heading">Core C1</h2>
+          <div className="bubble-container">
+            {core.map((g, i) => (
+              <ProgressBubble
+                key={g.slug}
+                title={g.title}
+                to={g.path}
+                delay={`${i * 0.06}s`}
+                percent={lessonCompletion[g.slug]}
+                section="core"
+              />
+            ))}
+          </div>
+        </section>
+
+        <section className="grammar-section">
+          <h2 className="section-heading">Advanced topics</h2>
+          <div className="bubble-container">
+            {advanced.map((g, i) => (
+              <ProgressBubble
+                key={g.slug}
+                title={g.title}
+                to={g.path}
+                delay={`${i * 0.06}s`}
+                percent={lessonCompletion[g.slug]}
+                section="advanced"
+              />
+            ))}
+          </div>
+        </section>
+
+        <div className="grammar-footer">
+          <Bubble title="Back to home" color="#bbb" to="/" />
+          {overall > 0 && (
+            <button
+              type="button"
+              className="link-btn reset-progress"
+              onClick={handleReset}
+            >
+              Reset progress
+            </button>
+          )}
+        </div>
+      </>
+    );
+  }
+
+  // ─── Sub-view: B1-B2 coming soon ──────────────────────────────────
+  if (level === "b1b2") {
+    return (
+      <>
+        <header className="hub-header">
+          <button
+            type="button"
+            className="grammar-level-back"
+            onClick={() => setLevel(null)}
+          >
+            ← Grammar levels
+          </button>
+          <h1>Intermediate B1-B2</h1>
+        </header>
+
+        <div className="grammar-coming-soon">
+          <div className="grammar-coming-soon-icon">🚧</div>
+          <h2>Próximamente</h2>
+          <p>
+            La gramática de nivel intermedio (B1-B2) está en preparación.
+            Mientras tanto, puedes consolidar tu base en Foundations (A1-A2)
+            o avanzar con la gramática C1.
+          </p>
+          <button
+            type="button"
+            className="grammar-coming-soon-btn"
+            onClick={() => setLevel(null)}
+          >
+            ← Volver a los niveles
+          </button>
+        </div>
+      </>
+    );
+  }
+
+  // ─── Landing: the 3 level bubbles ─────────────────────────────────
   return (
     <>
       <header className="hub-header">
         <h1>Grammar</h1>
-        <p>
-          {overall > 0
-            ? `${overall}% complete · ${grammarIndex.length} topics`
-            : `${grammarIndex.length} topics — Core + Advanced`}
-        </p>
-        {overall > 0 && (
-          <div className="overall-progress">
-            <div
-              className="overall-progress-fill"
-              style={{ width: `${overall}%` }}
-            />
-          </div>
-        )}
+        <p>Elige tu nivel</p>
       </header>
 
       <section className="grammar-section">
-        <h2 className="section-heading">Foundations A1-A2</h2>
         <div className="bubble-container">
+          {/* Foundations A1-A2 → navigates to the existing page */}
           <Link
             to="/grammar/foundations"
-            className="bubble progress-bubble"
+            className="bubble level-bubble"
             style={{ backgroundColor: "#EA580C", animationDelay: "0s" }}
             aria-label="Foundations Grammar — A1-A2"
           >
             <span className="bubble-content">
-              Foundations Grammar
+              Foundations
               <span className="bubble-percent">A1 · A2</span>
             </span>
           </Link>
-        </div>
-      </section>
 
-      <section className="grammar-section">
-        <h2 className="section-heading">Core C1</h2>
-        <div className="bubble-container">
-          {core.map((g, i) => (
-            <ProgressBubble
-              key={g.slug}
-              title={g.title}
-              to={g.path}
-              delay={`${i * 0.06}s`}
-              percent={lessonCompletion[g.slug]}
-              section="core"
-            />
-          ))}
-        </div>
-      </section>
+          {/* Intermediate B1-B2 → coming soon */}
+          <button
+            type="button"
+            className="bubble level-bubble"
+            style={{ backgroundColor: "#14B8A6", animationDelay: "0.06s" }}
+            onClick={() => setLevel("b1b2")}
+            aria-label="Intermediate Grammar — B1-B2 — coming soon"
+          >
+            <span className="bubble-content">
+              Intermediate
+              <span className="bubble-percent">B1 · B2</span>
+            </span>
+          </button>
 
-      <section className="grammar-section">
-        <h2 className="section-heading">Advanced topics</h2>
-        <div className="bubble-container">
-          {advanced.map((g, i) => (
-            <ProgressBubble
-              key={g.slug}
-              title={g.title}
-              to={g.path}
-              delay={`${i * 0.06}s`}
-              percent={lessonCompletion[g.slug]}
-              section="advanced"
-            />
-          ))}
+          {/* Advanced C1 → expands the existing C1 topics */}
+          <button
+            type="button"
+            className="bubble level-bubble"
+            style={{ backgroundColor: "#7D3C98", animationDelay: "0.12s" }}
+            onClick={() => setLevel("c1")}
+            aria-label="Advanced Grammar — C1"
+          >
+            <span className="bubble-content">
+              Advanced
+              <span className="bubble-percent">C1</span>
+            </span>
+          </button>
         </div>
       </section>
 
       <div className="grammar-footer">
         <Bubble title="Back to home" color="#bbb" to="/" />
-        {overall > 0 && (
-          <button
-            type="button"
-            className="link-btn reset-progress"
-            onClick={handleReset}
-          >
-            Reset progress
-          </button>
-        )}
       </div>
     </>
   );
