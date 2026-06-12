@@ -588,18 +588,6 @@ export const GRAMMAR_UNITS = {
       ],
     },
     exercises: [
-      // ── Crucigrama (r96 — juego primero) ────────────────────────
-      { type: "crossword", level: "A1",
-        prompt: "Completa el crucigrama con los plurales irregulares:",
-        words: [
-          { word: "TEETH",  clue: "Plural de 'tooth'",  row: 0, col: 1, dir: "down" },
-          { word: "WOMEN",  clue: "Plural de 'woman'",  row: 0, col: 2, dir: "down" },
-          { word: "FEET",   clue: "Plural de 'foot'",   row: 0, col: 5, dir: "down" },
-          { word: "PEOPLE", clue: "Plural de 'person'", row: 1, col: 0, dir: "across" },
-          { word: "MEN",    clue: "Plural de 'man'",    row: 2, col: 2, dir: "across" },
-        ],
-        explanation: "Los plurales irregulares más importantes: men, women, people, teeth, feet. Ninguno usa -s." },
-
       { type: "fill_blank", level: "A1", prompt: "One box, two ___.",            answer: "boxes",    hint: "Termina en -x → +es" },
       { type: "fill_blank", level: "A1", prompt: "One baby, three ___.",         answer: "babies",   hint: "Consonante + y → ies" },
       { type: "fill_blank", level: "A1", prompt: "One leaf, many ___.",          answer: "leaves",   hint: "-f → -ves" },
@@ -948,18 +936,6 @@ export const GRAMMAR_UNITS = {
       ],
     },
     exercises: [
-      // ── Crucigrama (r96 — juego primero) ────────────────────────
-      { type: "crossword", level: "A1",
-        prompt: "Completa el crucigrama con los adverbios de frecuencia:",
-        words: [
-          { word: "NEVER",   clue: "0% — nunca",            row: 0, col: 0, dir: "across" },
-          { word: "RARELY",  clue: "10% — raramente",       row: 0, col: 4, dir: "down" },
-          { word: "USUALLY", clue: "90% — normalmente",     row: 0, col: 6, dir: "down" },
-          { word: "ALWAYS",  clue: "100% — siempre",        row: 1, col: 1, dir: "across" },
-          { word: "OFTEN",   clue: "70% — a menudo",        row: 3, col: 1, dir: "across" },
-        ],
-        explanation: "La escala de frecuencia: always (100%) → usually (90%) → often (70%) → rarely (10%) → never (0%)." },
-
       { type: "fill_blank", level: "A1", prompt: "I ___ get up at 7. (siempre)",                    answer: "always",    hint: "100%" },
       { type: "fill_blank", level: "A1", prompt: "She ___ goes to the gym. (normalmente)",          answer: "usually",   hint: "90%" },
       { type: "fill_blank", level: "A1", prompt: "We ___ eat fish. (raramente)",                    answer: "rarely",    hint: "10%",  accept: ["seldom"] },
@@ -1782,19 +1758,6 @@ export const GRAMMAR_UNITS = {
       ],
     },
     exercises: [
-      // ── Crucigrama (r96 — juego primero) ────────────────────────
-      { type: "crossword", level: "A2",
-        prompt: "Completa el crucigrama con el pasado simple de estos verbos irregulares:",
-        words: [
-          { word: "CAME", clue: "Pasado de 'come'", row: 0, col: 0, dir: "across" },
-          { word: "MADE", clue: "Pasado de 'make'", row: 0, col: 2, dir: "down" },
-          { word: "SAID", clue: "Pasado de 'say'",  row: 1, col: 1, dir: "across" },
-          { word: "SAT",  clue: "Pasado de 'sit'",  row: 1, col: 1, dir: "down" },
-          { word: "DID",  clue: "Pasado de 'do'",   row: 1, col: 4, dir: "down" },
-          { word: "HAD",  clue: "Pasado de 'have'", row: 2, col: 0, dir: "across" },
-        ],
-        explanation: "Seis pasados irregulares de uso diario: came, made, said, sat, did, had. No siguen regla: hay que memorizarlos." },
-
       { type: "fill_blank", level: "A2", prompt: "I ___ to Paris last month. (go)",       answer: "went",    hint: "go → ?" },
       { type: "fill_blank", level: "A2", prompt: "She ___ a beautiful song. (write)",     answer: "wrote",   hint: "write → ?" },
       { type: "fill_blank", level: "A2", prompt: "We ___ lunch at 1 o'clock. (have)",     answer: "had",     hint: "have → ?" },
@@ -2375,18 +2338,6 @@ export const GRAMMAR_UNITS = {
       ],
     },
     exercises: [
-      // ── Crucigrama (r96 — juego primero) ────────────────────────
-      { type: "crossword", level: "A2",
-        prompt: "Completa el crucigrama con comparativos y superlativos:",
-        words: [
-          { word: "BETTER",  clue: "Comparativo de 'good'",        row: 0, col: 1, dir: "across" },
-          { word: "BEST",    clue: "Superlativo de 'good'",        row: 0, col: 1, dir: "down" },
-          { word: "TALLEST", clue: "Superlativo de 'tall'",        row: 0, col: 3, dir: "down" },
-          { word: "WORSE",   clue: "Comparativo de 'bad'",         row: 3, col: 2, dir: "down" },
-          { word: "WORST",   clue: "Superlativo de 'bad'",         row: 5, col: 0, dir: "across" },
-        ],
-        explanation: "Los irregulares estrella: good → better → the best; bad → worse → the worst. Los regulares cortos añaden -est (tall → the tallest)." },
-
       { type: "fill_blank", level: "A2", prompt: "She is ___ student in the class. (good)",         answer: "the best",          hint: "Irregular + artículo" },
       { type: "fill_blank", level: "A2", prompt: "This is ___ building in the city. (tall)",        answer: "the tallest",       hint: "Corto: the + adj + est" },
       { type: "fill_blank", level: "A2", prompt: "It was ___ day of my life. (bad)",                answer: "the worst",         hint: "Irregular" },

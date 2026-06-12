@@ -2,7 +2,6 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import { grammarIndex } from "../data/lessons";
 import { useProgress, computeCompletion } from "../hooks/useProgress";
-import { loadFavorites } from "../lib/grammarFavorites";
 import Bubble from "../components/Bubble";
 
 // Section visual config — base colour and a per-section progress-ring colour.
@@ -13,8 +12,7 @@ const SECTION_STYLE = {
 
 export default function GrammarHub() {
   // Which level is "exploded" open. null = the 3-level landing.
-  // "c1" = the existing C1 grammar topics. Foundations and Intermediate
-  // navigate to their own pages.
+  // "c1" = the existing C1 grammar topics. "b1b2" = coming soon.
   const [level, setLevel] = useState(null);
 
   const { all, resetAll } = useProgress();
@@ -116,6 +114,41 @@ export default function GrammarHub() {
     );
   }
 
+  // ─── Sub-view: B1-B2 coming soon ──────────────────────────────────
+  if (level === "b1b2") {
+    return (
+      <>
+        <header className="hub-header">
+          <button
+            type="button"
+            className="grammar-level-back"
+            onClick={() => setLevel(null)}
+          >
+            ← Grammar levels
+          </button>
+          <h1>Intermediate B1-B2</h1>
+        </header>
+
+        <div className="grammar-coming-soon">
+          <div className="grammar-coming-soon-icon">🚧</div>
+          <h2>Próximamente</h2>
+          <p>
+            La gramática de nivel intermedio (B1-B2) está en preparación.
+            Mientras tanto, puedes consolidar tu base en Foundations (A1-A2)
+            o avanzar con la gramática C1.
+          </p>
+          <button
+            type="button"
+            className="grammar-coming-soon-btn"
+            onClick={() => setLevel(null)}
+          >
+            ← Volver a los niveles
+          </button>
+        </div>
+      </>
+    );
+  }
+
   // ─── Landing: the 3 level bubbles ─────────────────────────────────
   return (
     <>
@@ -139,18 +172,19 @@ export default function GrammarHub() {
             </span>
           </Link>
 
-          {/* Intermediate B1-B2 → navigates to the new page (r95) */}
-          <Link
-            to="/grammar/intermediate"
+          {/* Intermediate B1-B2 → coming soon */}
+          <button
+            type="button"
             className="bubble level-bubble"
             style={{ backgroundColor: "#14B8A6", animationDelay: "0.06s" }}
-            aria-label="Intermediate Grammar — B1-B2"
+            onClick={() => setLevel("b1b2")}
+            aria-label="Intermediate Grammar — B1-B2 — coming soon"
           >
             <span className="bubble-content">
               Intermediate
               <span className="bubble-percent">B1 · B2</span>
             </span>
-          </Link>
+          </button>
 
           {/* Advanced C1 → expands the existing C1 topics */}
           <button
@@ -167,12 +201,6 @@ export default function GrammarHub() {
           </button>
         </div>
       </section>
-
-      <div className="grammar-review-entry">
-        <Link to="/grammar/review" className="grammar-review-link">
-          ★ Mi repaso{loadFavorites().length > 0 ? ` · ${loadFavorites().length}` : ""}
-        </Link>
-      </div>
 
       <div className="grammar-footer">
         <Bubble title="Back to home" color="#bbb" to="/" />

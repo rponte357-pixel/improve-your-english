@@ -1,22 +1,26 @@
-// ─── Foundations Grammar (A1/A2) ────────────────────────────────────
-// Flow (r91):
-//   1. Hub: 17 A1 bubbles + 21 A2 bubbles (greyed out if not available).
-//   2. UnitView: pedagogical content (concept / form / uses / examples
-//      / warning) + tabs for Practice (exercises).
+// ─── Intermediate Grammar (B1/B2) ───────────────────────────────────
+// Flow (r95):
+//   1. Hub: 18 B1 bubbles + 18 B2 bubbles (greyed out if not available).
+//   2. UnitView: pedagogical content (concept / form / uses / examples)
+//      + tabs for Practice (exercises).
+//
+// Unlike Foundations there is NO "errores típicos" section — ludic
+// exercises (crossword, letter wheel thread) take that slot in the
+// Practice tab where they fit.
 
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import {
-  GRAMMAR_CURRICULUM,
-  FOUNDATIONS_GRAMMAR_BLOCK,
-  isUnitAvailable,
-  getUnit,
-} from "../data/grammar";
+  GRAMMAR_CURRICULUM_INT,
+  INTERMEDIATE_GRAMMAR_BLOCK,
+  isUnitAvailableInt,
+  getUnitInt,
+} from "../data/grammarIntermediate";
 import GrammarExercises from "./GrammarExercises";
 import { isUnitCompleted } from "../lib/grammarProgress";
 import "../styles/vocabulary.css";
 
-export default function FoundationsGrammar() {
+export default function IntermediateGrammar() {
   const [selectedUnitId, setSelectedUnitId] = useState(null);
 
   if (!selectedUnitId) {
@@ -27,9 +31,8 @@ export default function FoundationsGrammar() {
     );
   }
 
-  const unit = getUnit(selectedUnitId);
+  const unit = getUnitInt(selectedUnitId);
   if (!unit) {
-    // Should not happen, but defensive: go back to hub.
     setSelectedUnitId(null);
     return null;
   }
@@ -41,7 +44,7 @@ export default function FoundationsGrammar() {
   );
 }
 
-// ─── Hub: all 38 units grouped by level ─────────────────────────────
+// ─── Hub: all 36 units grouped by level ─────────────────────────────
 
 function UnitsHub({ onPick }) {
   return (
@@ -51,23 +54,23 @@ function UnitsHub({ onPick }) {
       </Link>
 
       <header className="foundations-header">
-        <h1 className="foundations-title">{FOUNDATIONS_GRAMMAR_BLOCK.name}</h1>
-        <p className="foundations-subtitle">{FOUNDATIONS_GRAMMAR_BLOCK.subtitle}</p>
+        <h1 className="foundations-title">{INTERMEDIATE_GRAMMAR_BLOCK.name}</h1>
+        <p className="foundations-subtitle">{INTERMEDIATE_GRAMMAR_BLOCK.subtitle}</p>
       </header>
 
       <div className="grammar-level-section">
-        <h2 className="grammar-level-title">A1 — Beginner</h2>
+        <h2 className="grammar-level-title">B1 — Intermediate</h2>
         <div className="foundations-grid">
-          {GRAMMAR_CURRICULUM.A1.map((u) => (
+          {GRAMMAR_CURRICULUM_INT.B1.map((u) => (
             <UnitBubble key={u.id} unit={u} onPick={onPick} />
           ))}
         </div>
       </div>
 
       <div className="grammar-level-section">
-        <h2 className="grammar-level-title">A2 — Elementary</h2>
+        <h2 className="grammar-level-title">B2 — Upper-Intermediate</h2>
         <div className="foundations-grid">
-          {GRAMMAR_CURRICULUM.A2.map((u) => (
+          {GRAMMAR_CURRICULUM_INT.B2.map((u) => (
             <UnitBubble key={u.id} unit={u} onPick={onPick} />
           ))}
         </div>
@@ -77,7 +80,7 @@ function UnitsHub({ onPick }) {
 }
 
 function UnitBubble({ unit, onPick }) {
-  const available = isUnitAvailable(unit.id);
+  const available = isUnitAvailableInt(unit.id);
   const completed = available && isUnitCompleted(unit.id);
   return (
     <button
@@ -109,7 +112,7 @@ function UnitView({ unit, onBack }) {
         </button>
         <div className="vocab-blocknav-title">
           <span className="vocab-blocknav-icon">📚</span>
-          <span>Foundations Grammar</span>
+          <span>Intermediate Grammar</span>
         </div>
         <div className="vocab-blocknav-spacer" />
       </div>
@@ -145,7 +148,7 @@ function UnitView({ unit, onBack }) {
   );
 }
 
-// ─── Lesson: concept / form / uses / examples / warning ─────────────
+// ─── Lesson: concept / form / uses / examples (no warning) ──────────
 
 function Lesson({ unit }) {
   return (
@@ -202,37 +205,19 @@ function Lesson({ unit }) {
           </ul>
         </section>
       )}
-
-      {/* Warning */}
-      {unit.warning && (
-        <section className="grammar-section grammar-section-warning">
-          <h3 className="grammar-section-title">⚠️ {unit.warning.title}</h3>
-          <ul className="grammar-warnings">
-            {unit.warning.items.map((w, i) => (
-              <li key={i} className="grammar-warning-item">
-                <div className="grammar-warning-wrong">
-                  ✗ <span>{w.wrong}</span>
-                </div>
-                <div className="grammar-warning-right">
-                  ✓ <span>{w.right}</span>
-                </div>
-                <div className="grammar-warning-reason">{w.reason}</div>
-              </li>
-            ))}
-          </ul>
-        </section>
-      )}
     </div>
   );
 }
 
-// ─── Form table (afirmativa/negativa/interrogativa or similar) ──────
+// ─── Form tables (same renderers as Foundations) ────────────────────
+// Keys not present in the prettyKey map are printed literally, so the
+// Intermediate data can use Spanish column labels directly
+// ("Situación", "Tiempo", "Ejemplo"...).
 
 function FormTable({ form }) {
   const rows = form.table || [];
   if (rows.length === 0) return null;
 
-  // Detect column keys from the first row (excluding "person" if present).
   const keys = Object.keys(rows[0]);
 
   return (
@@ -240,13 +225,13 @@ function FormTable({ form }) {
       <table className="grammar-table">
         <thead>
           <tr>
-            {keys.map(k => <th key={k}>{prettyKey(k)}</th>)}
+            {keys.map((k) => <th key={k}>{prettyKey(k)}</th>)}
           </tr>
         </thead>
         <tbody>
           {rows.map((row, i) => (
             <tr key={i}>
-              {keys.map(k => <td key={k} data-label={prettyKey(k)}>{row[k]}</td>)}
+              {keys.map((k) => <td key={k} data-label={prettyKey(k)}>{row[k]}</td>)}
             </tr>
           ))}
         </tbody>
@@ -281,7 +266,6 @@ function ShortAnswersTable({ answers }) {
 }
 
 function prettyKey(k) {
-  // Map common keys to nice labels
   const map = {
     person: "Person",
     affirmative: "Afirmativa",

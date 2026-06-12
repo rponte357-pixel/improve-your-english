@@ -1,13 +1,10 @@
-// ─── GrammarExercises — engine for 7 exercise types (r95) ──────────
+// ─── GrammarExercises — engine for 4 exercise types ────────────────
 //
 // Types:
-//   fill_blank          — text input, normalized comparison
-//   multiple_choice     — pick one of 3-4 options
-//   transform           — text input + optional "accept" alternatives
-//   word_order          — drag/click words into order
-//   letter_wheel        — tap-to-build word wheel (Foundations legacy)
-//   letter_wheel_thread — swipe wheel: thread joins letters (r95)
-//   crossword           — hand-designed mini crossword (r95)
+//   fill_blank       — text input, normalized comparison
+//   multiple_choice  — pick one of 3-4 options
+//   transform        — text input + optional "accept" alternatives
+//   word_order       — drag/click words into order
 //
 // Shared behaviour:
 //   - User answers → feedback (correct ✓ or wrong ✗ with the answer)
@@ -17,20 +14,13 @@
 //   - "Show explanation" reveals the pedagogical note for each item
 
 import { useState, useEffect, useMemo } from "react";
-import LetterWheelThread from "./LetterWheelThread";
-import CrosswordGame from "./CrosswordGame";
-import { saveUnitResult } from "../lib/grammarProgress";
-import { isFavorite, toggleFavorite } from "../lib/grammarFavorites";
+import LetterWheel from "./LetterWheel";
 
-// Game-style exercises report "X of Y" instead of a single answer.
-const GAME_TYPES = ["letter_wheel", "letter_wheel_thread", "crossword"];
-
-export default function GrammarExercises({ exercises, unitName, unitId }) {
+export default function GrammarExercises({ exercises, unitName }) {
   const [index, setIndex] = useState(0);
   const [answers, setAnswers] = useState({}); // {idx: {given, correct}}
   const [showFeedback, setShowFeedback] = useState(false);
   const [finished, setFinished] = useState(false);
-  const [, setFavTick] = useState(0); // re-render after toggling a favorite
 
   // Reset everything when the exercise list (i.e., the unit) changes.
   useEffect(() => {
@@ -39,14 +29,6 @@ export default function GrammarExercises({ exercises, unitName, unitId }) {
     setShowFeedback(false);
     setFinished(false);
   }, [exercises]);
-
-  // Persist completion (r96): finishing the full run marks the unit.
-  useEffect(() => {
-    if (finished && unitId && exercises && exercises.length > 0) {
-      const correct = Object.values(answers).filter((a) => a.correct).length;
-      saveUnitResult(unitId, (correct / exercises.length) * 100);
-    }
-  }, [finished]); // eslint-disable-line react-hooks/exhaustive-deps
 
   if (!exercises || exercises.length === 0) {
     return (
@@ -86,31 +68,6 @@ export default function GrammarExercises({ exercises, unitName, unitId }) {
         <span className="ge-progress-text">{index + 1} / {total} · {correctCount} correct</span>
       </div>
 
-      {/* Star → "Mi repaso" (r97). Hidden in review mode (no unitId). */}
-      {unitId && (
-        <div className="ge-fav-row">
-          <button
-            type="button"
-            className={`ge-fav-btn ${isFavorite(unitId, index) ? "ge-fav-on" : ""}`}
-            onClick={() => {
-              toggleFavorite({
-                unitId,
-                exIndex: index,
-                prompt: exercise.prompt,
-                label: favLabel(exercise),
-                unitName,
-                level: exercise.level,
-              });
-              setFavTick((t) => t + 1);
-            }}
-            aria-label={isFavorite(unitId, index) ? "Quitar de Mi repaso" : "Guardar en Mi repaso"}
-            title="Mi repaso"
-          >
-            {isFavorite(unitId, index) ? "★" : "☆"}
-          </button>
-        </div>
-      )}
-
       <ExerciseRenderer
         exercise={exercise}
         showFeedback={showFeedback}
@@ -121,20 +78,12 @@ export default function GrammarExercises({ exercises, unitName, unitId }) {
       {showFeedback && (
         <div className={`ge-feedback ${answers[index]?.correct ? "ge-feedback-ok" : "ge-feedback-ko"}`}>
           {answers[index]?.correct ? (
-            <strong>
-              ✓ {exercise.type === "crossword"
-                ? "Crossword complete!"
-                : GAME_TYPES.includes(exercise.type)
-                ? "All words found!"
-                : "Correct!"}
-            </strong>
-          ) : GAME_TYPES.includes(exercise.type) ? (
+            <strong>✓ {exercise.type === "letter_wheel" ? "All words found!" : "Correct!"}</strong>
+          ) : exercise.type === "letter_wheel" ? (
             <>
-              <strong>
-                ✗ {exercise.type === "crossword" ? "Not all words correct." : "Not all words found."}
-              </strong>{" "}
+              <strong>✗ Not all words found.</strong>{" "}
               <span className="ge-feedback-answer">
-                You got {answers[index]?.given} of {exercise.words.length}.
+                You found {answers[index]?.given} of {exercise.words.length}.
               </span>
             </>
           ) : (
@@ -157,25 +106,13 @@ export default function GrammarExercises({ exercises, unitName, unitId }) {
 
 // ─── Renderer dispatcher ────────────────────────────────────────────
 
-// Human-readable snippet for the review list ("Mi repaso").
-function favLabel(exercise) {
-  let label = exercise.prompt || "";
-  if (exercise.source) label += ` — ${exercise.source}`;
-  else if (exercise.type === "word_order" && exercise.words) label += ` ${exercise.words.join(" / ")}`;
-  else if ((exercise.type === "letter_wheel" || exercise.type === "letter_wheel_thread") && exercise.words)
-    label += ` (${exercise.words.length} palabras)`;
-  return label.length > 90 ? label.slice(0, 87) + "…" : label;
-}
-
 function ExerciseRenderer({ exercise, showFeedback, userAnswer, onAnswer }) {
   switch (exercise.type) {
     case "fill_blank":      return <FillBlank exercise={exercise} showFeedback={showFeedback} userAnswer={userAnswer} onAnswer={onAnswer} />;
     case "multiple_choice": return <MultipleChoice exercise={exercise} showFeedback={showFeedback} userAnswer={userAnswer} onAnswer={onAnswer} />;
     case "transform":       return <Transform exercise={exercise} showFeedback={showFeedback} userAnswer={userAnswer} onAnswer={onAnswer} />;
     case "word_order":      return <WordOrder exercise={exercise} showFeedback={showFeedback} userAnswer={userAnswer} onAnswer={onAnswer} />;
-    case "letter_wheel":    return <LetterWheelThread exercise={exercise} showFeedback={showFeedback} userAnswer={userAnswer} onAnswer={onAnswer} />;
-    case "letter_wheel_thread": return <LetterWheelThread exercise={exercise} showFeedback={showFeedback} userAnswer={userAnswer} onAnswer={onAnswer} />;
-    case "crossword":       return <CrosswordGame exercise={exercise} showFeedback={showFeedback} userAnswer={userAnswer} onAnswer={onAnswer} />;
+    case "letter_wheel":    return <LetterWheel exercise={exercise} showFeedback={showFeedback} userAnswer={userAnswer} onAnswer={onAnswer} />;
     default:                return <p>Unknown exercise type: {exercise.type}</p>;
   }
 }

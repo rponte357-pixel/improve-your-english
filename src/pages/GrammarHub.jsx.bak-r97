@@ -2,7 +2,6 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import { grammarIndex } from "../data/lessons";
 import { useProgress, computeCompletion } from "../hooks/useProgress";
-import { loadFavorites } from "../lib/grammarFavorites";
 import Bubble from "../components/Bubble";
 
 // Section visual config — base colour and a per-section progress-ring colour.
@@ -167,12 +166,6 @@ export default function GrammarHub() {
           </button>
         </div>
       </section>
-
-      <div className="grammar-review-entry">
-        <Link to="/grammar/review" className="grammar-review-link">
-          ★ Mi repaso{loadFavorites().length > 0 ? ` · ${loadFavorites().length}` : ""}
-        </Link>
-      </div>
 
       <div className="grammar-footer">
         <Bubble title="Back to home" color="#bbb" to="/" />

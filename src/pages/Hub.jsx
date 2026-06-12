@@ -1,4 +1,5 @@
 import Bubble from "../components/Bubble";
+import AccountChip from "../components/AccountChip";
 
 // ── Personal website link ────────────────────────────────────────────
 // When your personal site is live, paste its URL here (keep the quotes),
@@ -17,6 +18,7 @@ export default function Hub() {
   return (
     <>
       <header className="hub-header">
+      <AccountChip />
         <h1>C1 Mastery Hub</h1>
         <p>Pick a tool to get started.</p>
       </header>

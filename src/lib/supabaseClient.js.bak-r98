@@ -19,15 +19,4 @@ if (!supabaseUrl || !supabaseAnonKey) {
   );
 }
 
-// PKCE flow (r98): with Google OAuth the user comes back with a
-// "?code=..." in the query string (NOT in the #hash), which is the
-// safe option for this app — HashRouter owns the hash, so implicit
-// flow tokens (#access_token=...) would collide with routing.
-export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
-  auth: {
-    flowType: "pkce",
-    persistSession: true,
-    autoRefreshToken: true,
-    detectSessionInUrl: true,
-  },
-});
+export const supabase = createClient(supabaseUrl, supabaseAnonKey);

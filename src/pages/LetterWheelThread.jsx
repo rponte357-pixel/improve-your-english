@@ -1,0 +1,294 @@
+// ─── LetterWheelThread — swipe letters joined by a thread (r95) ──────
+//
+// Evolution of LetterWheel: instead of tapping letters one by one, the
+// user DRAGS a finger (or mouse) across the wheel. A thread joins the
+// selected letters; lifting the finger submits the word.
+//
+// Props: same contract as LetterWheel —
+//   exercise: {
+//     type: "letter_wheel_thread",
+//     prompt: "...",
+//     letters: ["B","D","E","E","G","N","O","S"],   // duplicates allowed:
+//                                                   // each position is its own node
+//     words: [ { word: "GONE", hint: "Participio de 'go'" }, ... ],
+//     explanation: "..."
+//   }
+//   onAnswer(foundCount, allFound)
+//
+// Behaviour:
+//   - Pointer down on a letter starts the trace.
+//   - Dragging over an unused letter adds it; dragging back over the
+//     previous letter removes the last one (backtrack).
+//   - Pointer up validates: found / wrong / duplicate flash.
+//   - Hint reveals one letter of the first unfound word.
+//   - All found → onAnswer(n, true). Give up → onAnswer(found, false).
+
+import { useState, useEffect, useMemo, useRef } from "react";
+
+const SIZE = 300;       // viewBox units
+const RADIUS = 108;     // wheel radius
+const NODE_R = 26;      // letter circle radius
+const HIT_R = 34;       // pointer hit radius around a node
+
+export default function LetterWheelThread({ exercise, showFeedback, onAnswer }) {
+  const svgRef = useRef(null);
+  const totalWords = exercise.words.length;
+
+  const [trace, setTrace] = useState([]);       // node indices in order
+  const [cursor, setCursor] = useState(null);   // live pointer point {x,y}
+  const [tracing, setTracing] = useState(false);
+  const [foundIds, setFoundIds] = useState([]);
+  const [flash, setFlash] = useState(null);     // "ok" | "ko" | "dup" | null
+  const [lastWord, setLastWord] = useState(""); // word shown during flash
+  const [hintsUsed, setHintsUsed] = useState({});
+  const [gaveUp, setGaveUp] = useState(false);
+
+  // Reset on new exercise
+  useEffect(() => {
+    setTrace([]); setCursor(null); setTracing(false);
+    setFoundIds([]); setFlash(null); setLastWord("");
+    setHintsUsed({}); setGaveUp(false);
+  }, [exercise]);
+
+  // Wheel letters: start from the exercise letters and append any
+  // duplicates the words need (in thread mode each node is used once
+  // per word, so THAT needs two T nodes, WILL two L nodes, etc.).
+  // This makes legacy tap-to-build data ("letter_wheel") playable
+  // without touching grammar.js.
+  const wheelLetters = useMemo(() => {
+    const base = exercise.letters.map((l) => l.toUpperCase());
+    const counts = {};
+    base.forEach((l) => { counts[l] = (counts[l] || 0) + 1; });
+    for (const w of exercise.words) {
+      const need = {};
+      for (const ch of w.word.toUpperCase()) need[ch] = (need[ch] || 0) + 1;
+      for (const [ch, n] of Object.entries(need)) {
+        while ((counts[ch] || 0) < n) {
+          base.push(ch);
+          counts[ch] = (counts[ch] || 0) + 1;
+        }
+      }
+    }
+    return base;
+  }, [exercise]);
+
+  // Node positions on the circle (top first, clockwise)
+  const nodes = useMemo(() => wheelLetters.map((letter, i) => {
+    const angle = -Math.PI / 2 + (i * 2 * Math.PI) / wheelLetters.length;
+    return {
+      letter,
+      x: SIZE / 2 + Math.cos(angle) * RADIUS,
+      y: SIZE / 2 + Math.sin(angle) * RADIUS,
+    };
+  }), [wheelLetters]);
+
+  const wordIndex = useMemo(() => {
+    const map = new Map();
+    exercise.words.forEach((w, i) => map.set(w.word.toUpperCase(), i));
+    return map;
+  }, [exercise.words]);
+
+  const locked = showFeedback || gaveUp;
+
+  // ── Pointer helpers ───────────────────────────────────────────────
+
+  function svgPoint(e) {
+    const rect = svgRef.current.getBoundingClientRect();
+    return {
+      x: ((e.clientX - rect.left) * SIZE) / rect.width,
+      y: ((e.clientY - rect.top) * SIZE) / rect.height,
+    };
+  }
+
+  function nodeAt(p) {
+    let best = -1, bestDist = Infinity;
+    nodes.forEach((n, i) => {
+      const d = Math.hypot(n.x - p.x, n.y - p.y);
+      if (d < HIT_R && d < bestDist) { bestDist = d; best = i; }
+    });
+    return best;
+  }
+
+  function handleDown(e) {
+    if (locked) return;
+    const p = svgPoint(e);
+    const i = nodeAt(p);
+    if (i < 0) return;
+    e.preventDefault();
+    try { svgRef.current.setPointerCapture(e.pointerId); } catch { /* older browsers */ }
+    setTracing(true);
+    setTrace([i]);
+    setCursor(p);
+    setFlash(null);
+    setLastWord("");
+  }
+
+  function handleMove(e) {
+    if (!tracing || locked) return;
+    e.preventDefault();
+    const p = svgPoint(e);
+    setCursor(p);
+    const i = nodeAt(p);
+    if (i < 0) return;
+    setTrace((t) => {
+      if (t.length >= 2 && i === t[t.length - 2]) return t.slice(0, -1); // backtrack
+      if (t.includes(i)) return t;
+      return [...t, i];
+    });
+  }
+
+  function handleUp() {
+    if (!tracing) return;
+    setTracing(false);
+    setCursor(null);
+
+    const word = trace.map((i) => nodes[i].letter).join("").toUpperCase();
+    setTrace([]);
+    if (word.length < 2) return;
+
+    const idx = wordIndex.get(word);
+    setLastWord(word);
+    if (idx === undefined) {
+      setFlash("ko");
+    } else if (foundIds.includes(idx)) {
+      setFlash("dup");
+    } else {
+      setFlash("ok");
+      const newFound = [...foundIds, idx];
+      setFoundIds(newFound);
+      if (newFound.length === totalWords) {
+        setTimeout(() => onAnswer(newFound.length, true), 800);
+      }
+    }
+    setTimeout(() => { setFlash(null); setLastWord(""); }, 700);
+  }
+
+  // ── Hints / give up (same model as LetterWheel) ───────────────────
+
+  function useHint() {
+    const firstUnfound = exercise.words.findIndex((_, i) => !foundIds.includes(i));
+    if (firstUnfound === -1) return;
+    const revealed = (hintsUsed[firstUnfound] || 0) + 1;
+    setHintsUsed({ ...hintsUsed, [firstUnfound]: revealed });
+  }
+
+  function giveUp() {
+    setGaveUp(true);
+    setTimeout(() => onAnswer(foundIds.length, foundIds.length === totalWords), 400);
+  }
+
+  // ── Render ────────────────────────────────────────────────────────
+
+  const slots = exercise.words.map((w, i) => ({
+    word: w.word,
+    hint: w.hint,
+    found: foundIds.includes(i),
+    revealed: hintsUsed[i] || 0,
+  }));
+
+  const currentWord = trace.map((i) => nodes[i].letter).join("");
+  const threadPoints = trace.map((i) => `${nodes[i].x},${nodes[i].y}`).join(" ");
+
+  return (
+    <div className="lw-container lwt-container">
+      <div className="lw-label">LETTER WHEEL</div>
+      <div className="lw-prompt">{exercise.prompt}</div>
+
+      <div className="lw-score">
+        {foundIds.length} / {totalWords} found
+        {Object.keys(hintsUsed).length > 0 && (
+          <span className="lw-hints-used"> · {Object.keys(hintsUsed).length} hints used</span>
+        )}
+      </div>
+
+      {/* Word slots (reuses LetterWheel styles) */}
+      <div className="lw-slots">
+        {slots.map((s, i) => (
+          <ThreadWordSlot key={i} slot={s} revealed={gaveUp || showFeedback} />
+        ))}
+      </div>
+
+      {/* Word being traced / flash result */}
+      <div className={`lwt-current lwt-current-${flash || (tracing ? "tracing" : "idle")}`}>
+        {currentWord || lastWord || <span className="lwt-current-placeholder">Desliza para unir letras…</span>}
+      </div>
+
+      {/* The wheel */}
+      <svg
+        ref={svgRef}
+        className="lwt-wheel"
+        viewBox={`0 0 ${SIZE} ${SIZE}`}
+        onPointerDown={handleDown}
+        onPointerMove={handleMove}
+        onPointerUp={handleUp}
+        onPointerCancel={handleUp}
+        onPointerLeave={() => tracing && handleUp()}
+        role="application"
+        aria-label="Rueda de letras: desliza para unir letras y formar palabras"
+      >
+        <circle cx={SIZE / 2} cy={SIZE / 2} r={RADIUS + NODE_R + 6} className="lwt-bg" />
+
+        {/* Thread */}
+        {trace.length > 0 && (
+          <>
+            <polyline
+              points={threadPoints + (cursor ? ` ${cursor.x},${cursor.y}` : "")}
+              className={`lwt-thread ${flash === "ko" ? "lwt-thread-ko" : ""}`}
+            />
+          </>
+        )}
+
+        {/* Letter nodes */}
+        {nodes.map((n, i) => {
+          const active = trace.includes(i);
+          return (
+            <g key={i} className={`lwt-node ${active ? "lwt-node-active" : ""}`}>
+              <circle cx={n.x} cy={n.y} r={NODE_R} />
+              <text x={n.x} y={n.y + 8} textAnchor="middle">{n.letter}</text>
+            </g>
+          );
+        })}
+      </svg>
+
+      {/* Controls */}
+      <div className="lw-controls">
+        <button
+          type="button"
+          className="lw-control-btn lw-control-hint"
+          onClick={useHint}
+          disabled={foundIds.length === totalWords || locked}
+        >
+          💡 Hint
+        </button>
+      </div>
+
+      {!gaveUp && !showFeedback && foundIds.length < totalWords && (
+        <button type="button" className="lw-giveup" onClick={giveUp}>
+          Give up &amp; see answers
+        </button>
+      )}
+    </div>
+  );
+}
+
+// Same slot UI as LetterWheel (duplicated locally to keep components
+// independent — LetterWheel may be retired or restyled separately).
+function ThreadWordSlot({ slot, revealed }) {
+  const letters = slot.word.toUpperCase().split("");
+  const showAll = slot.found || revealed;
+  return (
+    <div className={`lw-slot ${slot.found ? "lw-slot-found" : ""} ${revealed && !slot.found ? "lw-slot-revealed" : ""}`}>
+      <div className="lw-slot-letters">
+        {letters.map((letter, i) => {
+          const shouldShow = showAll || i < slot.revealed;
+          return (
+            <span key={i} className="lw-slot-box">
+              {shouldShow ? letter : ""}
+            </span>
+          );
+        })}
+      </div>
+      {slot.hint && <div className="lw-slot-hint">{slot.hint}</div>}
+    </div>
+  );
+}

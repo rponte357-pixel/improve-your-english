@@ -20,7 +20,6 @@ import { useState, useEffect, useMemo } from "react";
 import LetterWheelThread from "./LetterWheelThread";
 import CrosswordGame from "./CrosswordGame";
 import { saveUnitResult } from "../lib/grammarProgress";
-import { isFavorite, toggleFavorite } from "../lib/grammarFavorites";
 
 // Game-style exercises report "X of Y" instead of a single answer.
 const GAME_TYPES = ["letter_wheel", "letter_wheel_thread", "crossword"];
@@ -30,7 +29,6 @@ export default function GrammarExercises({ exercises, unitName, unitId }) {
   const [answers, setAnswers] = useState({}); // {idx: {given, correct}}
   const [showFeedback, setShowFeedback] = useState(false);
   const [finished, setFinished] = useState(false);
-  const [, setFavTick] = useState(0); // re-render after toggling a favorite
 
   // Reset everything when the exercise list (i.e., the unit) changes.
   useEffect(() => {
@@ -86,31 +84,6 @@ export default function GrammarExercises({ exercises, unitName, unitId }) {
         <span className="ge-progress-text">{index + 1} / {total} · {correctCount} correct</span>
       </div>
 
-      {/* Star → "Mi repaso" (r97). Hidden in review mode (no unitId). */}
-      {unitId && (
-        <div className="ge-fav-row">
-          <button
-            type="button"
-            className={`ge-fav-btn ${isFavorite(unitId, index) ? "ge-fav-on" : ""}`}
-            onClick={() => {
-              toggleFavorite({
-                unitId,
-                exIndex: index,
-                prompt: exercise.prompt,
-                label: favLabel(exercise),
-                unitName,
-                level: exercise.level,
-              });
-              setFavTick((t) => t + 1);
-            }}
-            aria-label={isFavorite(unitId, index) ? "Quitar de Mi repaso" : "Guardar en Mi repaso"}
-            title="Mi repaso"
-          >
-            {isFavorite(unitId, index) ? "★" : "☆"}
-          </button>
-        </div>
-      )}
-
       <ExerciseRenderer
         exercise={exercise}
         showFeedback={showFeedback}
@@ -156,16 +129,6 @@ export default function GrammarExercises({ exercises, unitName, unitId }) {
 }
 
 // ─── Renderer dispatcher ────────────────────────────────────────────
-
-// Human-readable snippet for the review list ("Mi repaso").
-function favLabel(exercise) {
-  let label = exercise.prompt || "";
-  if (exercise.source) label += ` — ${exercise.source}`;
-  else if (exercise.type === "word_order" && exercise.words) label += ` ${exercise.words.join(" / ")}`;
-  else if ((exercise.type === "letter_wheel" || exercise.type === "letter_wheel_thread") && exercise.words)
-    label += ` (${exercise.words.length} palabras)`;
-  return label.length > 90 ? label.slice(0, 87) + "…" : label;
-}
 
 function ExerciseRenderer({ exercise, showFeedback, userAnswer, onAnswer }) {
   switch (exercise.type) {

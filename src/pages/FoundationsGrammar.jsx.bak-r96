@@ -13,7 +13,6 @@ import {
   getUnit,
 } from "../data/grammar";
 import GrammarExercises from "./GrammarExercises";
-import { isUnitCompleted } from "../lib/grammarProgress";
 import "../styles/vocabulary.css";
 
 export default function FoundationsGrammar() {
@@ -78,20 +77,18 @@ function UnitsHub({ onPick }) {
 
 function UnitBubble({ unit, onPick }) {
   const available = isUnitAvailable(unit.id);
-  const completed = available && isUnitCompleted(unit.id);
   return (
     <button
       type="button"
-      className={`foundations-bubble ${!available ? "foundations-bubble-locked" : ""} ${completed ? "foundations-bubble-done" : ""}`}
+      className={`foundations-bubble ${!available ? "foundations-bubble-locked" : ""}`}
       onClick={() => available && onPick(unit.id)}
-      aria-label={`${unit.name} — ${!available ? "coming soon" : completed ? "completed" : "open"}`}
+      aria-label={`${unit.name} — ${available ? "open" : "coming soon"}`}
       title={available ? unit.name_es : "Coming soon"}
       disabled={!available}
     >
       <span className="foundations-bubble-icon">{unit.icon}</span>
       <span className="foundations-bubble-name">{unit.name}</span>
       {!available && <span className="foundations-bubble-lock">🔒</span>}
-      {completed && <span className="foundations-bubble-check" aria-hidden="true">✓</span>}
     </button>
   );
 }
@@ -138,7 +135,7 @@ function UnitView({ unit, onBack }) {
       <div className="vocab-content">
         {tab === "lesson" && <Lesson unit={unit} />}
         {tab === "practice" && (
-          <GrammarExercises exercises={unit.exercises} unitName={unit.name} unitId={unit.id} />
+          <GrammarExercises exercises={unit.exercises} unitName={unit.name} />
         )}
       </div>
     </div>

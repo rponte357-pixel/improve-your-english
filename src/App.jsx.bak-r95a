@@ -35,9 +35,6 @@ import Admin from "./pages/Admin";
 import TutorOnboarding from "./pages/TutorOnboarding";
 import UsefulExpressions from "./pages/UsefulExpressions";
 import FoundationsGrammar from "./pages/FoundationsGrammar";
-import IntermediateGrammar from "./pages/IntermediateGrammar";
-import GrammarReview from "./pages/GrammarReview";
-import Account from "./pages/Account";
 
 import "./App.css";
 
@@ -60,15 +57,6 @@ export default function App() {
 
           {/* Foundations A1/A2 */}
           <Route path="/grammar/foundations" element={<FoundationsGrammar />} />
-
-          {/* Intermediate B1/B2 (r95) */}
-          <Route path="/grammar/intermediate" element={<IntermediateGrammar />} />
-
-          {/* Mi repaso — starred exercises (r97) */}
-          <Route path="/grammar/review" element={<GrammarReview />} />
-
-          {/* Tu cuenta — Google sign-in (r98) */}
-          <Route path="/account" element={<Account />} />
 
           {/* Core C1 */}
           <Route path="/grammar/inversion" element={<Inversion />} />

@@ -5204,3 +5204,613 @@
     content: none;
   }
 }
+/* ═══ r95-A — Intermediate Grammar: crossword + letter wheel thread ═══ */
+/* Anexar al final de src/styles/vocabulary.css                          */
+
+/* ─── Crossword (.cw-) ─────────────────────────────────────────────── */
+
+.cw-container {
+  --cw-cell: 38px;
+}
+
+.cw-grid {
+  display: grid;
+  gap: 3px;
+  justify-content: center;
+  margin: 18px auto 6px;
+  touch-action: manipulation;
+}
+
+.cw-void {
+  width: var(--cw-cell);
+  height: var(--cw-cell);
+}
+
+.cw-cell {
+  position: relative;
+  width: var(--cw-cell);
+  height: var(--cw-cell);
+  background: #fff;
+  border: 2px solid #d6d3e8;
+  border-radius: 6px;
+}
+
+.cw-cell input {
+  width: 100%;
+  height: 100%;
+  border: none;
+  background: transparent;
+  text-align: center;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #1f2937;
+  text-transform: uppercase;
+  caret-color: #ec4899;
+  padding: 0;
+  border-radius: 4px;
+}
+
+.cw-cell input:focus {
+  outline: none;
+  background: #fdf2f8;
+  box-shadow: inset 0 0 0 2px #ec4899;
+}
+
+.cw-num {
+  position: absolute;
+  top: 1px;
+  left: 3px;
+  font-size: 0.55rem;
+  font-weight: 700;
+  color: #9ca3af;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.cw-cell-ok {
+  border-color: #14b8a6;
+  background: #f0fdfa;
+}
+
+.cw-cell-wrong {
+  border-color: #ef4444;
+  background: #fef2f2;
+}
+
+.cw-cell-wrong input {
+  color: #ef4444;
+}
+
+.cw-clues {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 24px;
+  justify-content: center;
+  margin: 14px 0 4px;
+  text-align: left;
+}
+
+.cw-clues-col {
+  min-width: 180px;
+}
+
+.cw-clues-title {
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #14b8a6;
+  margin-bottom: 6px;
+}
+
+.cw-clue {
+  font-size: 0.92rem;
+  color: #374151;
+  margin-bottom: 4px;
+  line-height: 1.45;
+}
+
+.cw-clue-len {
+  color: #9ca3af;
+  font-size: 0.82rem;
+}
+
+.cw-controls {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  align-items: center;
+  margin-top: 14px;
+  flex-wrap: wrap;
+}
+
+.cw-check-btn {
+  margin-top: 0;
+}
+
+/* Móvil: casillas más compactas para que entren 9 columnas sin scroll */
+@media (max-width: 620px) {
+  .cw-container {
+    --cw-cell: min(9.5vw, 36px);
+  }
+  .cw-cell input {
+    font-size: 1rem;
+  }
+}
+
+/* ─── Letter Wheel Thread (.lwt-) ──────────────────────────────────── */
+
+.lwt-wheel {
+  display: block;
+  width: min(320px, 88vw);
+  height: auto;
+  margin: 10px auto 4px;
+  touch-action: none;          /* el dedo traza, no hace scroll */
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+.lwt-bg {
+  fill: #faf5ff;
+  stroke: #e9d5ff;
+  stroke-width: 1.5;
+}
+
+.lwt-thread {
+  fill: none;
+  stroke: #14b8a6;
+  stroke-width: 7;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  opacity: 0.85;
+}
+
+.lwt-thread-ko {
+  stroke: #ef4444;
+}
+
+.lwt-node circle {
+  fill: #fff;
+  stroke: #d6d3e8;
+  stroke-width: 2;
+  transition: fill 0.12s, stroke 0.12s;
+}
+
+.lwt-node text {
+  font-size: 22px;
+  font-weight: 700;
+  fill: #1f2937;
+  pointer-events: none;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+.lwt-node-active circle {
+  fill: #0f766e;
+  stroke: #14b8a6;
+}
+
+.lwt-node-active text {
+  fill: #ffffff;
+}
+
+/* Palabra en construcción / resultado */
+.lwt-current {
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 10px auto 0;
+  max-width: 320px;
+  border-radius: 12px;
+  font-size: 1.3rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  color: #1f2937;
+  background: #f3f4f6;
+  transition: background 0.15s, color 0.15s;
+}
+
+.lwt-current-placeholder {
+  font-size: 0.9rem;
+  font-weight: 500;
+  letter-spacing: normal;
+  color: #9ca3af;
+}
+
+.lwt-current-tracing {
+  background: #f0fdfa;
+  color: #0f766e;
+}
+
+.lwt-current-ok {
+  background: #d1fae5;
+  color: #047857;
+}
+
+.lwt-current-ko {
+  background: #fee2e2;
+  color: #b91c1c;
+}
+
+.lwt-current-dup {
+  background: #fef3c7;
+  color: #92400e;
+}
+/* ═══ r96 — Unidad completada: halo + check en la burbuja ═══ */
+/* Anexar al final de src/styles/vocabulary.css                */
+
+.foundations-bubble {
+  position: relative; /* ancla para el check (inofensivo si ya lo era) */
+}
+
+.foundations-bubble-check {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: #14b8a6;
+  color: #fff;
+  font-size: 13px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+  pointer-events: none;
+}
+
+/* ═══ r96.1 — Rueda: letras del color del borde, más contraste ═══ */
+.lwt-node circle { stroke: #0f766e; stroke-width: 2.5; }
+.lwt-node text   { fill: #0f766e; }
+.lwt-node-active circle { fill: #0f766e; stroke: #14b8a6; }
+.lwt-node-active text   { fill: #ffffff; }
+/* ═══ r97 — Mi repaso: estrella + entrada en hub + lista ═══ */
+/* Anexar al final de src/styles/vocabulary.css               */
+
+/* Estrella en el ejercicio */
+.ge-fav-row {
+  display: flex;
+  justify-content: flex-end;
+  margin: 4px 0 -6px;
+}
+
+.ge-fav-btn {
+  width: 40px;
+  height: 40px;
+  border: 2px solid #e5e7eb;
+  border-radius: 50%;
+  background: #fff;
+  color: #9ca3af;
+  font-size: 1.15rem;
+  line-height: 1;
+  cursor: pointer;
+  transition: color 0.12s, border-color 0.12s, background 0.12s;
+}
+
+.ge-fav-btn:active {
+  transform: scale(0.94);
+}
+
+.ge-fav-on {
+  border-color: #ec4899;
+  background: #fdf2f8;
+  color: #ec4899;
+}
+
+/* Entrada en el hub de Grammar */
+.grammar-review-entry {
+  display: flex;
+  justify-content: center;
+  margin: 18px 0 4px;
+}
+
+.grammar-review-link {
+  display: inline-block;
+  padding: 10px 22px;
+  border: 2px solid #ec4899;
+  border-radius: 999px;
+  background: #fff;
+  color: #be185d;
+  font-weight: 600;
+  font-size: 0.95rem;
+  text-decoration: none;
+  transition: background 0.12s;
+}
+
+.grammar-review-link:active {
+  background: #fdf2f8;
+}
+
+/* Pantalla Mi repaso */
+.gr-review {
+  max-width: 640px;
+  margin: 0 auto;
+}
+
+.gr-back-btn {
+  border: none;
+  background: none;
+  cursor: pointer;
+  padding: 0;
+  font: inherit;
+}
+
+.gr-practice-btn {
+  display: block;
+  width: 100%;
+  max-width: 360px;
+  margin: 6px auto 18px;
+  padding: 13px 18px;
+  border: none;
+  border-radius: 12px;
+  background: #ec4899;
+  color: #fff;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.gr-practice-btn:disabled {
+  background: #e5e7eb;
+  color: #9ca3af;
+  cursor: default;
+}
+
+.gr-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.gr-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border: 1.5px solid #e5e7eb;
+  border-radius: 12px;
+  background: #fff;
+  text-align: left;
+}
+
+.gr-item-stale {
+  opacity: 0.55;
+}
+
+.gr-item-main {
+  flex: 1;
+  min-width: 0;
+}
+
+.gr-item-label {
+  font-size: 0.92rem;
+  color: #1f2937;
+  line-height: 1.35;
+  overflow-wrap: anywhere;
+}
+
+.gr-item-meta {
+  font-size: 0.75rem;
+  color: #9ca3af;
+  margin-top: 2px;
+}
+
+.gr-item-remove {
+  flex-shrink: 0;
+  width: 36px;
+  height: 36px;
+  border: none;
+  border-radius: 50%;
+  background: #fdf2f8;
+  color: #ec4899;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+.gr-empty {
+  text-align: center;
+  color: #6b7280;
+  max-width: 420px;
+  margin: 24px auto;
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
+.gr-empty-icon {
+  font-size: 2.2rem;
+  color: #d1d5db;
+  margin-bottom: 8px;
+}
+
+/* ═══ r97.1 — Mi repaso: título en verde agua, back en blanco ═══ */
+.gr-review .foundations-title { color: #14B8A6; }
+.gr-back-btn { color: #ffffff; }
+
+/* ═══ r98.1 — Chip de cuenta: arriba a la derecha del Hub ═══ */
+.hub-header { position: relative; }
+.hub-header .account-chip { position: absolute; top: 0; right: 0; }
+/* ═══ r98 — Tu cuenta: chip del Hub + pantalla de cuenta ═══ */
+/* Anexar al final de src/styles/vocabulary.css              */
+
+/* Chip en la cabecera del Hub */
+.account-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 7px 16px;
+  border: 1.5px solid #14b8a6;
+  border-radius: 999px;
+  background: #fff;
+  color: #0f766e;
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.account-chip-on {
+  background: #f0fdfa;
+  padding-left: 8px;
+}
+
+.account-chip-avatar {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: #14b8a6;
+  color: #fff;
+  font-size: 0.7rem;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.account-chip-name {
+  max-width: 110px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Pantalla Tu cuenta */
+.account-page {
+  max-width: 460px;
+  margin: 0 auto;
+}
+
+.account-title {
+  color: #14b8a6;
+}
+
+.account-back {
+  color: #ffffff;
+}
+
+.account-card {
+  background: #fff;
+  border: 1.5px solid #e5e7eb;
+  border-radius: 16px;
+  padding: 22px 20px;
+  text-align: center;
+}
+
+.account-intro {
+  font-size: 0.95rem;
+  color: #374151;
+  line-height: 1.55;
+  margin: 0 0 18px;
+}
+
+.account-google-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+  max-width: 320px;
+  padding: 12px 18px;
+  border: 1.5px solid #d1d5db;
+  border-radius: 10px;
+  background: #fff;
+  color: #1f2937;
+  font-size: 0.98rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.account-google-btn:active {
+  background: #f9fafb;
+}
+
+.account-google-logo {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+}
+
+.account-note {
+  font-size: 0.78rem;
+  color: #9ca3af;
+  margin: 14px 0 0;
+}
+
+.account-identity {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-align: left;
+  margin-bottom: 14px;
+}
+
+.account-avatar {
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  background: #14b8a6;
+  color: #fff;
+  font-size: 1.2rem;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.account-name {
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: #1f2937;
+}
+
+.account-email {
+  font-size: 0.82rem;
+  color: #6b7280;
+  overflow-wrap: anywhere;
+}
+
+.account-role {
+  display: inline-block;
+  padding: 5px 14px;
+  border-radius: 999px;
+  background: #f0fdfa;
+  border: 1.5px solid #14b8a6;
+  color: #0f766e;
+  font-size: 0.8rem;
+  font-weight: 600;
+  margin-bottom: 18px;
+}
+
+.account-role-admin {
+  background: #fdf2f8;
+  border-color: #ec4899;
+  color: #be185d;
+}
+
+.account-signout-btn {
+  display: block;
+  width: 100%;
+  max-width: 320px;
+  margin: 0 auto;
+  padding: 11px 18px;
+  border: 1.5px solid #e5e7eb;
+  border-radius: 10px;
+  background: #fff;
+  color: #6b7280;
+  font-size: 0.92rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.account-signout-btn:active {
+  background: #fef2f2;
+  border-color: #ef4444;
+  color: #ef4444;
+}
+
+/* ═══ r98.2 — Chip de cuenta: sin solapar el título en móvil ═══ */
+@media (max-width: 680px) {
+  .hub-header { padding-top: 46px; }
+}
